@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Grilla de Contenido Orgánico - OPEX</title>
+    <title>Grilla de Contenido OPEX</title>
     <style>
         :root {
             --primary: #008080; /* Teal OPEX */
@@ -81,12 +81,22 @@
             font-size: 12px;
             font-weight: bold;
             color: white;
+            display: flex;
+            align-items: center;
+            gap: 4px;
         }
 
+        /* Plataformas */
         .badge.linkedin { background-color: #0077b5; }
         .badge.meta { background-color: #833AB4; }
         .badge.whatsapp { background-color: #25D366; }
         .badge.week { background-color: #4b5563; }
+
+        /* NUEVOS FORMATOS */
+        .badge.formato { background-color: #eab308; color: #000; } /* Amarillo */
+        .badge.video { background-color: #ef4444; } /* Rojo */
+        .badge.foto { background-color: #3b82f6; } /* Azul claro */
+        .badge.carrucel { background-color: #8b5cf6; } /* Violeta */
 
         h3 { margin: 0 0 10px 0; font-size: 18px; }
 
@@ -122,7 +132,7 @@
         .btn-copy:hover { background-color: #006666; }
         .btn-copy:active { transform: scale(0.98); }
 
-        .details { font-size: 13px; color: #64748b; }
+        .details { font-size: 13px; color: #64748b; font-style: italic;}
 
     </style>
 </head>
@@ -154,7 +164,7 @@
     </div>
 
 <script>
-    // Datos extraídos de los brochures proporcionados
+    // Datos extraídos de los brochures proporcionados con el nuevo campo mediaType
     const contentData = [
         // SEMANA 1
         {
@@ -162,27 +172,33 @@
             platform: "LinkedIn",
             course: "Risk & Compliance Manager",
             type: "risk",
+            mediaType: "carrucel", // NUEVO CAMPO
+            mediaLabel: "🎠 CARRUSEL", // NUEVO CAMPO
             title: "¿Tu matriz de riesgos es un mapa o solo colores?",
             copy: "Muchos gestores se quedan en la identificación. El verdadero reto es el diseño de controles y la integración normativa.\n\nEn nuestro curso Risk & Compliance Manager aprenderás a:\n✅ Integrar ISO 31000, ISO 37301 y COSO.\n✅ Diseñar mapas de calor reales.\n✅ Calcular el nivel de riesgo cuantitativo.\n\n👉 Certifícate con SGS y OPEX. Inicia en ENERO.",
-            details: "Formato: Carrusel PDF (Educativo)"
+            details: "Formato: PDF Multi-página"
         },
         {
             week: "Semana 1",
             platform: "Meta",
             course: "Risk & Compliance Manager",
             type: "risk",
+            mediaType: "foto",
+            mediaLabel: "📷 FOTO",
             title: "Visión 360° en Riesgos",
             copy: "🔍 ¿Buscas una certificación que lo tenga todo?\n\nSomos los únicos en LatAm que unimos:\n1️⃣ Estrategia (COSO)\n2️⃣ Cumplimiento (ISO 37301)\n3️⃣ Gestión de Riesgos (ISO 31000)\n\n🎓 Incluye Taller de Liderazgo e Insignia Digital.\n🚀 ¡Inscríbete ahora!",
-            details: "Formato: Imagen del Docente (Gary López) o Insignia"
+            details: "Formato: Imagen del Docente o Insignia"
         },
         {
             week: "Semana 1",
             platform: "WhatsApp",
             course: "Risk & Compliance Manager",
             type: "risk",
+            mediaType: "foto",
+            mediaLabel: "📷 FOTO",
             title: "Recurso Exclusivo",
             copy: "Hola comunidad 👋.\n\nLes comparto el BROCHURE oficial del curso Risk & Compliance Manager.\n\n🎁 Dato: Al inscribirse reciben plantillas editables y balotarios tipo examen para su certificación. Descárguenlo aquí 👇",
-            details: "Formato: Texto + PDF Adjunto"
+            details: "Formato: Flyer Promocional + PDF Adjunto"
         },
 
         // SEMANA 2
@@ -191,15 +207,19 @@
             platform: "LinkedIn",
             course: "Gerente Procesos 4.0",
             type: "process",
+            mediaType: "foto",
+            mediaLabel: "📷 FOTO",
             title: "IA en la Gestión de Procesos",
             copy: "La IA no reemplazará al Gerente de Procesos, pero el Gerente que use IA reemplazará al que no.\n\nEn nuestra certificación 'Gerente de Procesos 4.0' dominamos:\n🤖 Orange Data Mining (Modelos predictivos)\n⚡ Make.com (Automatización)\n📊 Minitab (Analítica avanzada)\n\n¿Tu empresa sigue usando solo Excel? Actualízate hoy.",
-            details: "Formato: Post Texto + Imagen Tech"
+            details: "Formato: Diseño Tech / Mockup Software"
         },
         {
             week: "Semana 2",
             platform: "Meta",
             course: "N/A",
             type: "pause",
+            mediaType: "pause",
+            mediaLabel: "⏸️ PAUSA",
             title: "Descanso Estratégico",
             copy: "(Sin publicación esta semana en Meta - Frecuencia Quincenal)",
             details: "Estrategia: Foco en LinkedIn esta semana."
@@ -209,9 +229,11 @@
             platform: "WhatsApp",
             course: "Gerente Procesos 4.0",
             type: "process",
+            mediaType: "foto",
+            mediaLabel: "📷 FOTO",
             title: "Dato Curioso Tech",
             copy: "💡 ¿Sabían que pueden predecir fallas en sus procesos usando Machine Learning sin saber programar?\n\nEn el Módulo 3 enseñamos a usar Orange Data Mining para esto. Es una de las herramientas favoritas de nuestros alumnos. ¿Les gustaría ver un demo?",
-            details: "Formato: Audio corto + Captura de pantalla"
+            details: "Formato: Captura de pantalla del software"
         },
 
         // SEMANA 3
@@ -220,27 +242,33 @@
             platform: "LinkedIn",
             course: "Risk & Compliance Manager",
             type: "risk",
+            mediaType: "foto",
+            mediaLabel: "📷 FOTO",
             title: "Lo que dicen nuestros alumnos",
             copy: "🗣️ 'Esta certificación aumentó mi visibilidad y me abrió nuevas puertas'. - Celso Concha, Perú.\n\nNo es solo teoría. Es un modelo de gestión robusto y sostenible avalado por SGS.\n\nÚnete a la red de profesionales que lideran el cumplimiento en la región.",
-            details: "Formato: Testimonio (Diseño tipo cita)"
+            details: "Formato: Diseño tipo Cita / Testimonio"
         },
         {
             week: "Semana 3",
             platform: "Meta",
             course: "Gerente Procesos 4.0",
             type: "process",
+            mediaType: "carrucel",
+            mediaLabel: "🎠 CARRUSEL",
             title: "Agilidad + Procesos",
             copy: "🚀 SCRUM + Design Thinking + Procesos\n\nNo diseñes procesos para papeles, diséñalos para personas. Aprende a integrar metodologías ágiles para mejorar la experiencia del cliente.\n\n✅ Certificación Internacional.\n✅ Doble constancia.\n✅ Docentes Top.\n\nInfo aquí 👇",
-            details: "Formato: Carrusel (Puntos de dolor vs Solución)"
+            details: "Formato: Carrusel (Problema vs Solución)"
         },
         {
             week: "Semana 3",
             platform: "WhatsApp",
             course: "Risk & Compliance Manager",
             type: "risk",
+            mediaType: "foto",
+            mediaLabel: "📷 FOTO",
             title: "Últimos Cupos Risk",
             copy: "⚠️ Equipo, quedan pocos cupos para la certificación de Risk & Compliance.\n\nRecuerden: Es el único curso que integra ISO 37301 y COSO. \n\n💳 Inversión: $800 (Consulten por dcto grupal por interno).",
-            details: "Formato: Texto de Urgencia"
+            details: "Formato: Flyer de Urgencia / Últimos cupos"
         },
 
         // SEMANA 4
@@ -249,6 +277,8 @@
             platform: "LinkedIn",
             course: "Gerente Procesos 4.0",
             type: "process",
+            mediaType: "foto",
+            mediaLabel: "📷 FOTO",
             title: "El perfil del Gerente 4.0",
             copy: "¿Qué buscan las empresas hoy?\n\n1. Gestión Inteligente de Datos.\n2. Arquitectura TI.\n3. Liderazgo en Innovación.\n\nNuestro programa cubre estos pilares con un enfoque práctico. Prepárate para liderar la transformación digital de tu área.",
             details: "Formato: Infografía Vertical"
@@ -258,6 +288,8 @@
             platform: "Meta",
             course: "N/A",
             type: "pause",
+            mediaType: "pause",
+            mediaLabel: "⏸️ PAUSA",
             title: "Descanso Estratégico",
             copy: "(Sin publicación esta semana en Meta - Frecuencia Quincenal)",
             details: "Estrategia: Foco en LinkedIn esta semana."
@@ -267,9 +299,11 @@
             platform: "WhatsApp",
             course: "Gerente Procesos 4.0",
             type: "process",
-            title: "Encuesta Interes",
+            mediaType: "video", 
+            mediaLabel: "🎥 VIDEO", /* Opcional: Encuesta no es video, pero para variar formats */
+            title: "Encuesta Interés",
             copy: "Para nuestra próxima edición de Procesos 4.0, ¿qué tema les interesa más profundizar en los webinars gratuitos?\n\n1️⃣ Automatización con IA (Make.com)\n2️⃣ Modelos de excelencia (Toyota/P&G)\n\nRespondan con el número 👇",
-            details: "Formato: Encuesta nativa de WhatsApp"
+            details: "Formato: Video corto explicando la encuesta o imagen"
         }
     ];
 
@@ -290,15 +324,16 @@
             const card = document.createElement('div');
             card.className = `card ${item.type}`;
             
-            // Badge Logic
+            // Badge Logic for Platform
             const platformClass = item.platform === 'Meta' ? 'meta' : (item.platform === 'LinkedIn' ? 'linkedin' : 'whatsapp');
             
             card.innerHTML = `
                 <div class="badge-container">
                     <span class="badge week">${item.week}</span>
                     <span class="badge ${platformClass}">${item.platform}</span>
-                    ${item.course !== 'N/A' ? `<span class="badge" style="background:#666">${item.course}</span>` : ''}
+                    ${item.mediaType !== 'pause' ? `<span class="badge ${item.mediaType}">${item.mediaLabel}</span>` : ''}
                 </div>
+                ${item.course !== 'N/A' ? `<h4 style="margin:0 0 5px 0; color:#666; font-size:12px;">${item.course}</h4>` : ''}
                 <h3>${item.title}</h3>
                 <div class="copy-block" id="copy-${Math.random().toString(36).substr(2, 9)}">${item.copy}</div>
                 <div class="actions">
