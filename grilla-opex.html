@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grilla de Contenido Orgánico - OPEX</title>
+    <style>
+        :root {
+            --primary: #008080; /* Teal OPEX */
+            --risk: #1e3a8a; /* Azul Oscuro para Risk */
+            --process: #0f766e; /* Verde Azulado para Procesos */
+            --bg: #f3f4f6;
+            --card-bg: #ffffff;
+            --text: #1f2937;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+        }
+
+        header {
+            max-width: 1200px;
+            margin: 0 auto 30px auto;
+            text-align: center;
+        }
+
+        h1 { margin-bottom: 5px; color: var(--risk); }
+        p.subtitle { color: #666; margin-top: 0; }
+
+        .filters {
+            max-width: 1200px;
+            margin: 0 auto 20px auto;
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        select {
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+            background: white;
+            cursor: pointer;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border-left: 5px solid #ccc;
+            transition: transform 0.2s;
+            position: relative;
+        }
+
+        .card:hover { transform: translateY(-3px); }
+
+        .card.risk { border-left-color: var(--risk); }
+        .card.process { border-left-color: var(--process); }
+        .card.pause { border-left-color: #9ca3af; opacity: 0.7; }
+
+        .badge-container { display: flex; gap: 8px; margin-bottom: 15px; flex-wrap: wrap; }
+        
+        .badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .badge.linkedin { background-color: #0077b5; }
+        .badge.meta { background-color: #833AB4; }
+        .badge.whatsapp { background-color: #25D366; }
+        .badge.week { background-color: #4b5563; }
+
+        h3 { margin: 0 0 10px 0; font-size: 18px; }
+
+        .copy-block {
+            background: #f8fafc;
+            padding: 15px;
+            border-radius: 6px;
+            border: 1px dashed #cbd5e1;
+            font-size: 14px;
+            white-space: pre-line;
+            margin-bottom: 15px;
+            color: #334155;
+        }
+
+        .actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: auto;
+        }
+
+        .btn-copy {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+
+        .btn-copy:hover { background-color: #006666; }
+        .btn-copy:active { transform: scale(0.98); }
+
+        .details { font-size: 13px; color: #64748b; }
+
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>📅 Grilla de Contenido OPEX</h1>
+    <p class="subtitle">Gestión de Publicaciones para Risk Manager & Procesos 4.0</p>
+</header>
+
+<div class="filters">
+    <select id="filterPlatform" onchange="renderGrid()">
+        <option value="all">Todas las Plataformas</option>
+        <option value="LinkedIn">LinkedIn</option>
+        <option value="Meta">Meta (FB/IG)</option>
+        <option value="WhatsApp">WhatsApp</option>
+    </select>
+
+    <select id="filterWeek" onchange="renderGrid()">
+        <option value="all">Todas las Semanas</option>
+        <option value="Semana 1">Semana 1</option>
+        <option value="Semana 2">Semana 2</option>
+        <option value="Semana 3">Semana 3</option>
+        <option value="Semana 4">Semana 4</option>
+    </select>
+</div>
+
+<div id="grid" class="grid-container">
+    </div>
+
+<script>
+    // Datos extraídos de los brochures proporcionados
+    const contentData = [
+        // SEMANA 1
+        {
+            week: "Semana 1",
+            platform: "LinkedIn",
+            course: "Risk & Compliance Manager",
+            type: "risk",
+            title: "¿Tu matriz de riesgos es un mapa o solo colores?",
+            copy: "Muchos gestores se quedan en la identificación. El verdadero reto es el diseño de controles y la integración normativa.\n\nEn nuestro curso Risk & Compliance Manager aprenderás a:\n✅ Integrar ISO 31000, ISO 37301 y COSO.\n✅ Diseñar mapas de calor reales.\n✅ Calcular el nivel de riesgo cuantitativo.\n\n👉 Certifícate con SGS y OPEX. Inicia en ENERO.",
+            details: "Formato: Carrusel PDF (Educativo)"
+        },
+        {
+            week: "Semana 1",
+            platform: "Meta",
+            course: "Risk & Compliance Manager",
+            type: "risk",
+            title: "Visión 360° en Riesgos",
+            copy: "🔍 ¿Buscas una certificación que lo tenga todo?\n\nSomos los únicos en LatAm que unimos:\n1️⃣ Estrategia (COSO)\n2️⃣ Cumplimiento (ISO 37301)\n3️⃣ Gestión de Riesgos (ISO 31000)\n\n🎓 Incluye Taller de Liderazgo e Insignia Digital.\n🚀 ¡Inscríbete ahora!",
+            details: "Formato: Imagen del Docente (Gary López) o Insignia"
+        },
+        {
+            week: "Semana 1",
+            platform: "WhatsApp",
+            course: "Risk & Compliance Manager",
+            type: "risk",
+            title: "Recurso Exclusivo",
+            copy: "Hola comunidad 👋.\n\nLes comparto el BROCHURE oficial del curso Risk & Compliance Manager.\n\n🎁 Dato: Al inscribirse reciben plantillas editables y balotarios tipo examen para su certificación. Descárguenlo aquí 👇",
+            details: "Formato: Texto + PDF Adjunto"
+        },
+
+        // SEMANA 2
+        {
+            week: "Semana 2",
+            platform: "LinkedIn",
+            course: "Gerente Procesos 4.0",
+            type: "process",
+            title: "IA en la Gestión de Procesos",
+            copy: "La IA no reemplazará al Gerente de Procesos, pero el Gerente que use IA reemplazará al que no.\n\nEn nuestra certificación 'Gerente de Procesos 4.0' dominamos:\n🤖 Orange Data Mining (Modelos predictivos)\n⚡ Make.com (Automatización)\n📊 Minitab (Analítica avanzada)\n\n¿Tu empresa sigue usando solo Excel? Actualízate hoy.",
+            details: "Formato: Post Texto + Imagen Tech"
+        },
+        {
+            week: "Semana 2",
+            platform: "Meta",
+            course: "N/A",
+            type: "pause",
+            title: "Descanso Estratégico",
+            copy: "(Sin publicación esta semana en Meta - Frecuencia Quincenal)",
+            details: "Estrategia: Foco en LinkedIn esta semana."
+        },
+        {
+            week: "Semana 2",
+            platform: "WhatsApp",
+            course: "Gerente Procesos 4.0",
+            type: "process",
+            title: "Dato Curioso Tech",
+            copy: "💡 ¿Sabían que pueden predecir fallas en sus procesos usando Machine Learning sin saber programar?\n\nEn el Módulo 3 enseñamos a usar Orange Data Mining para esto. Es una de las herramientas favoritas de nuestros alumnos. ¿Les gustaría ver un demo?",
+            details: "Formato: Audio corto + Captura de pantalla"
+        },
+
+        // SEMANA 3
+        {
+            week: "Semana 3",
+            platform: "LinkedIn",
+            course: "Risk & Compliance Manager",
+            type: "risk",
+            title: "Lo que dicen nuestros alumnos",
+            copy: "🗣️ 'Esta certificación aumentó mi visibilidad y me abrió nuevas puertas'. - Celso Concha, Perú.\n\nNo es solo teoría. Es un modelo de gestión robusto y sostenible avalado por SGS.\n\nÚnete a la red de profesionales que lideran el cumplimiento en la región.",
+            details: "Formato: Testimonio (Diseño tipo cita)"
+        },
+        {
+            week: "Semana 3",
+            platform: "Meta",
+            course: "Gerente Procesos 4.0",
+            type: "process",
+            title: "Agilidad + Procesos",
+            copy: "🚀 SCRUM + Design Thinking + Procesos\n\nNo diseñes procesos para papeles, diséñalos para personas. Aprende a integrar metodologías ágiles para mejorar la experiencia del cliente.\n\n✅ Certificación Internacional.\n✅ Doble constancia.\n✅ Docentes Top.\n\nInfo aquí 👇",
+            details: "Formato: Carrusel (Puntos de dolor vs Solución)"
+        },
+        {
+            week: "Semana 3",
+            platform: "WhatsApp",
+            course: "Risk & Compliance Manager",
+            type: "risk",
+            title: "Últimos Cupos Risk",
+            copy: "⚠️ Equipo, quedan pocos cupos para la certificación de Risk & Compliance.\n\nRecuerden: Es el único curso que integra ISO 37301 y COSO. \n\n💳 Inversión: $800 (Consulten por dcto grupal por interno).",
+            details: "Formato: Texto de Urgencia"
+        },
+
+        // SEMANA 4
+        {
+            week: "Semana 4",
+            platform: "LinkedIn",
+            course: "Gerente Procesos 4.0",
+            type: "process",
+            title: "El perfil del Gerente 4.0",
+            copy: "¿Qué buscan las empresas hoy?\n\n1. Gestión Inteligente de Datos.\n2. Arquitectura TI.\n3. Liderazgo en Innovación.\n\nNuestro programa cubre estos pilares con un enfoque práctico. Prepárate para liderar la transformación digital de tu área.",
+            details: "Formato: Infografía Vertical"
+        },
+        {
+            week: "Semana 4",
+            platform: "Meta",
+            course: "N/A",
+            type: "pause",
+            title: "Descanso Estratégico",
+            copy: "(Sin publicación esta semana en Meta - Frecuencia Quincenal)",
+            details: "Estrategia: Foco en LinkedIn esta semana."
+        },
+        {
+            week: "Semana 4",
+            platform: "WhatsApp",
+            course: "Gerente Procesos 4.0",
+            type: "process",
+            title: "Encuesta Interes",
+            copy: "Para nuestra próxima edición de Procesos 4.0, ¿qué tema les interesa más profundizar en los webinars gratuitos?\n\n1️⃣ Automatización con IA (Make.com)\n2️⃣ Modelos de excelencia (Toyota/P&G)\n\nRespondan con el número 👇",
+            details: "Formato: Encuesta nativa de WhatsApp"
+        }
+    ];
+
+    function renderGrid() {
+        const grid = document.getElementById('grid');
+        const platformFilter = document.getElementById('filterPlatform').value;
+        const weekFilter = document.getElementById('filterWeek').value;
+        
+        grid.innerHTML = '';
+
+        const filteredData = contentData.filter(item => {
+            const matchPlatform = platformFilter === 'all' || item.platform === platformFilter;
+            const matchWeek = weekFilter === 'all' || item.week === weekFilter;
+            return matchPlatform && matchWeek;
+        });
+
+        filteredData.forEach(item => {
+            const card = document.createElement('div');
+            card.className = `card ${item.type}`;
+            
+            // Badge Logic
+            const platformClass = item.platform === 'Meta' ? 'meta' : (item.platform === 'LinkedIn' ? 'linkedin' : 'whatsapp');
+            
+            card.innerHTML = `
+                <div class="badge-container">
+                    <span class="badge week">${item.week}</span>
+                    <span class="badge ${platformClass}">${item.platform}</span>
+                    ${item.course !== 'N/A' ? `<span class="badge" style="background:#666">${item.course}</span>` : ''}
+                </div>
+                <h3>${item.title}</h3>
+                <div class="copy-block" id="copy-${Math.random().toString(36).substr(2, 9)}">${item.copy}</div>
+                <div class="actions">
+                    <span class="details">${item.details}</span>
+                    ${item.type !== 'pause' ? `<button class="btn-copy" onclick="copyText(this)">Copiar Texto</button>` : ''}
+                </div>
+            `;
+            grid.appendChild(card);
+        });
+    }
+
+    function copyText(btn) {
+        const textToCopy = btn.parentElement.previousElementSibling.innerText;
+        navigator.clipboard.writeText(textToCopy).then(() => {
+            const originalText = btn.innerText;
+            btn.innerText = "¡Copiado!";
+            btn.style.backgroundColor = "#2f855a";
+            setTimeout(() => {
+                btn.innerText = originalText;
+                btn.style.backgroundColor = "";
+            }, 2000);
+        });
+    }
+
+    // Initial Render
+    renderGrid();
+
+</script>
+
+</body>
+</html>
