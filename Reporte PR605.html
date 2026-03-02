@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard Meta Ads – PR605 Risk Management Toolbox</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  :root {
+    --bg: #0f1117;
+    --card: #1a1d2e;
+    --card2: #1e2235;
+    --accent: #4f8ef7;
+    --accent2: #7c5cbf;
+    --accent3: #e85d75;
+    --accent4: #2dc8a0;
+    --accent5: #f5a623;
+    --text: #e8eaf0;
+    --muted: #8b90a8;
+    --border: #2a2d3e;
+    --positive: #2dc8a0;
+    --negative: #e85d75;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    font-size: 14px;
+    min-height: 100vh;
+  }
+  .header {
+    background: linear-gradient(135deg, #1a1d2e 0%, #0f1117 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 20px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .header-left h1 {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: 0.3px;
+  }
+  .header-left p {
+    color: var(--muted);
+    font-size: 12px;
+    margin-top: 3px;
+  }
+  .header-right {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+  .badge {
+    background: var(--card2);
+    border: 1px solid var(--border);
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .badge span { color: var(--accent); font-weight: 600; }
+  .meta-badge {
+    background: linear-gradient(135deg, #1877f2 0%, #4267b2 100%);
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    color: white;
+  }
+  .container { padding: 24px 32px; max-width: 1600px; margin: 0 auto; }
+
+  /* KPI Cards */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .kpi-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 20px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s, border-color 0.2s;
+  }
+  .kpi-card:hover { transform: translateY(-2px); border-color: var(--accent); }
+  .kpi-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    border-radius: 12px 12px 0 0;
+  }
+  .kpi-card.blue::before { background: var(--accent); }
+  .kpi-card.purple::before { background: var(--accent2); }
+  .kpi-card.red::before { background: var(--accent3); }
+  .kpi-card.green::before { background: var(--accent4); }
+  .kpi-card.orange::before { background: var(--accent5); }
+  .kpi-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.8px; color: var(--muted); margin-bottom: 8px; }
+  .kpi-value { font-size: 26px; font-weight: 700; line-height: 1; }
+  .kpi-value.blue { color: var(--accent); }
+  .kpi-value.purple { color: var(--accent2); }
+  .kpi-value.red { color: var(--accent3); }
+  .kpi-value.green { color: var(--accent4); }
+  .kpi-value.orange { color: var(--accent5); }
+  .kpi-sub { font-size: 11px; color: var(--muted); margin-top: 6px; }
+  .kpi-icon { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); font-size: 28px; opacity: 0.12; }
+
+  /* Section title */
+  .section-title {
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--muted);
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* Chart grid */
+  .chart-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .chart-grid-3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .chart-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+  }
+  .chart-card.full {
+    grid-column: 1 / -1;
+  }
+  .chart-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .chart-title .chart-sub { font-size: 11px; color: var(--muted); font-weight: 400; }
+  .chart-wrapper { position: relative; }
+
+  /* Tables */
+  .table-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 24px;
+  }
+  .table-card-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+    font-weight: 600;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .table-card-header .count {
+    background: var(--card2);
+    padding: 2px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    color: var(--muted);
+  }
+  table { width: 100%; border-collapse: collapse; }
+  thead th {
+    background: var(--card2);
+    padding: 10px 14px;
+    text-align: left;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: var(--muted);
+    font-weight: 600;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  tbody tr { border-bottom: 1px solid var(--border); transition: background 0.15s; }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: var(--card2); }
+  tbody td { padding: 10px 14px; font-size: 13px; }
+  tbody td:first-child { font-weight: 500; }
+
+  .flag {
+    display: inline-block;
+    background: var(--card2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1px 5px;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-right: 4px;
+  }
+
+  /* Donut legend */
+  .donut-legend {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 12px;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+  }
+  .legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .legend-label { flex: 1; color: var(--muted); }
+  .legend-val { font-weight: 600; }
+
+  /* Two-col layout */
+  .two-col { display: grid; grid-template-columns: 1.6fr 1fr; gap: 16px; margin-bottom: 24px; }
+
+  /* Responsive */
+  @media (max-width: 1100px) {
+    .chart-grid, .chart-grid-3, .two-col { grid-template-columns: 1fr; }
+    .chart-card.full { grid-column: 1; }
+  }
+  @media (max-width: 700px) {
+    .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+    .container { padding: 16px; }
+    .header { padding: 16px; flex-direction: column; align-items: flex-start; gap: 10px; }
+  }
+
+  footer {
+    text-align: center;
+    padding: 24px;
+    color: var(--muted);
+    font-size: 11px;
+    border-top: 1px solid var(--border);
+    margin-top: 8px;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <h1>📊 Dashboard de Pautas Meta</h1>
+    <p>Campaña: 23/02 PR605 Risk Management Toolbox Marzo &nbsp;·&nbsp; Feb 28 – Mar 1, 2026</p>
+  </div>
+  <div class="header-right">
+    <div class="badge">Período: <span>28 Feb – 01 Mar</span></div>
+    <div class="badge">Países: <span>9</span></div>
+    <div class="meta-badge">Meta Ads</div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- KPIs -->
+  <div class="section-title">Métricas Globales</div>
+  <div class="kpi-grid">
+    <div class="kpi-card blue">
+      <div class="kpi-icon">💸</div>
+      <div class="kpi-label">Inversión Total</div>
+      <div class="kpi-value blue">$200.19</div>
+      <div class="kpi-sub">USD gastados</div>
+    </div>
+    <div class="kpi-card purple">
+      <div class="kpi-icon">👥</div>
+      <div class="kpi-label">Alcance</div>
+      <div class="kpi-value purple">32,212</div>
+      <div class="kpi-sub">Personas únicas</div>
+    </div>
+    <div class="kpi-card orange">
+      <div class="kpi-icon">👁️</div>
+      <div class="kpi-label">Impresiones</div>
+      <div class="kpi-value orange">40,091</div>
+      <div class="kpi-sub">Total impresiones</div>
+    </div>
+    <div class="kpi-card green">
+      <div class="kpi-icon">🖱️</div>
+      <div class="kpi-label">Clics</div>
+      <div class="kpi-value green">499</div>
+      <div class="kpi-sub">Total clics</div>
+    </div>
+    <div class="kpi-card red">
+      <div class="kpi-icon">🎯</div>
+      <div class="kpi-label">Leads (Registros)</div>
+      <div class="kpi-value red">17</div>
+      <div class="kpi-sub">CPL: $11.78</div>
+    </div>
+    <div class="kpi-card blue">
+      <div class="kpi-icon">📈</div>
+      <div class="kpi-label">CPM</div>
+      <div class="kpi-value blue">$4.99</div>
+      <div class="kpi-sub">Costo por mil imp.</div>
+    </div>
+    <div class="kpi-card green">
+      <div class="kpi-icon">📉</div>
+      <div class="kpi-label">CTR</div>
+      <div class="kpi-value green">1.24%</div>
+      <div class="kpi-sub">Click-through rate</div>
+    </div>
+    <div class="kpi-card orange">
+      <div class="kpi-icon">💰</div>
+      <div class="kpi-label">CPC</div>
+      <div class="kpi-value orange">$0.40</div>
+      <div class="kpi-sub">Costo por clic</div>
+    </div>
+    <div class="kpi-card purple">
+      <div class="kpi-icon">⚡</div>
+      <div class="kpi-label">Total Acciones</div>
+      <div class="kpi-value purple">854</div>
+      <div class="kpi-sub">Todas las acciones</div>
+    </div>
+  </div>
+
+  <!-- Charts Row 1: Spend by Country + Trend -->
+  <div class="section-title">Rendimiento por País y Tendencia</div>
+  <div class="chart-grid">
+    <div class="chart-card">
+      <div class="chart-title">
+        Inversión por País
+        <span class="chart-sub">USD</span>
+      </div>
+      <div class="chart-wrapper"><canvas id="countrySpendChart" height="220"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">
+        Alcance vs Clics por País
+        <span class="chart-sub">Comparativo</span>
+      </div>
+      <div class="chart-wrapper"><canvas id="countryReachClicksChart" height="220"></canvas></div>
+    </div>
+  </div>
+
+  <!-- Charts Row 2: Trend + Actions donut -->
+  <div class="section-title">Evolución Diaria y Distribución de Acciones</div>
+  <div class="two-col">
+    <div class="chart-card">
+      <div class="chart-title">
+        Evolución Diaria: Inversión, Impresiones y Clics
+        <span class="chart-sub">28 Feb – 01 Mar</span>
+      </div>
+      <div class="chart-wrapper"><canvas id="trendChart" height="190"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">
+        Distribución de Acciones
+        <span class="chart-sub">Por tipo</span>
+      </div>
+      <div class="chart-wrapper"><canvas id="actionsDonut" height="180"></canvas></div>
+      <div class="donut-legend" id="donutLegend"></div>
+    </div>
+  </div>
+
+  <!-- Charts Row 3: Adset -->
+  <div class="section-title">Rendimiento por Adset</div>
+  <div class="chart-grid">
+    <div class="chart-card">
+      <div class="chart-title">
+        Inversión por Adset
+        <span class="chart-sub">USD</span>
+      </div>
+      <div class="chart-wrapper"><canvas id="adsetSpendChart" height="220"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">
+        Alcance y Clics por Adset
+        <span class="chart-sub">Comparativo</span>
+      </div>
+      <div class="chart-wrapper"><canvas id="adsetPerformChart" height="220"></canvas></div>
+    </div>
+  </div>
+
+  <!-- Table: By Country -->
+  <div class="section-title">Detalle por País</div>
+  <div class="table-card">
+    <div class="table-card-header">
+      Métricas por País <span class="count">9 países</span>
+    </div>
+    <div style="overflow-x:auto;">
+    <table>
+      <thead><tr>
+        <th>País</th><th>Inversión</th><th>Alcance</th><th>Impresiones</th>
+        <th>Clics</th><th>Acciones</th><th>CPM</th><th>CTR</th>
+      </tr></thead>
+      <tbody><tr>
+        <td><span class="flag">PE</span> Perú</td>
+        <td>$40.68</td>
+        <td>3,872</td>
+        <td>4,681</td>
+        <td>67</td>
+        <td>28</td>
+        <td>$8.69</td>
+        <td>1.43%</td>
+    </tr><tr>
+        <td><span class="flag">DO</span> Rep. Dominicana</td>
+        <td>$31.32</td>
+        <td>7,004</td>
+        <td>8,793</td>
+        <td>109</td>
+        <td>140</td>
+        <td>$3.56</td>
+        <td>1.24%</td>
+    </tr><tr>
+        <td><span class="flag">CO</span> Colombia</td>
+        <td>$28.44</td>
+        <td>4,284</td>
+        <td>4,948</td>
+        <td>45</td>
+        <td>61</td>
+        <td>$5.75</td>
+        <td>0.91%</td>
+    </tr><tr>
+        <td><span class="flag">EC</span> Ecuador</td>
+        <td>$26.13</td>
+        <td>3,486</td>
+        <td>4,278</td>
+        <td>38</td>
+        <td>166</td>
+        <td>$6.11</td>
+        <td>0.89%</td>
+    </tr><tr>
+        <td><span class="flag">MX</span> México</td>
+        <td>$24.42</td>
+        <td>2,395</td>
+        <td>2,921</td>
+        <td>55</td>
+        <td>47</td>
+        <td>$8.36</td>
+        <td>1.88%</td>
+    </tr><tr>
+        <td><span class="flag">NI</span> Nicaragua</td>
+        <td>$15.24</td>
+        <td>4,838</td>
+        <td>6,648</td>
+        <td>116</td>
+        <td>51</td>
+        <td>$2.29</td>
+        <td>1.74%</td>
+    </tr><tr>
+        <td><span class="flag">PA</span> Panamá</td>
+        <td>$13.07</td>
+        <td>1,792</td>
+        <td>2,140</td>
+        <td>15</td>
+        <td>163</td>
+        <td>$6.11</td>
+        <td>0.70%</td>
+    </tr><tr>
+        <td><span class="flag">GT</span> Guatemala</td>
+        <td>$10.62</td>
+        <td>2,203</td>
+        <td>2,730</td>
+        <td>24</td>
+        <td>130</td>
+        <td>$3.89</td>
+        <td>0.88%</td>
+    </tr><tr>
+        <td><span class="flag">SV</span> El Salvador</td>
+        <td>$10.27</td>
+        <td>2,338</td>
+        <td>2,952</td>
+        <td>30</td>
+        <td>68</td>
+        <td>$3.48</td>
+        <td>1.02%</td>
+    </tr></tbody>
+    </table>
+    </div>
+  </div>
+
+  <!-- Table: By Adset -->
+  <div class="section-title">Detalle por Adset</div>
+  <div class="table-card">
+    <div class="table-card-header">
+      Métricas por Conjunto de Anuncios <span class="count">8 adsets</span>
+    </div>
+    <div style="overflow-x:auto;">
+    <table>
+      <thead><tr>
+        <th>Adset</th><th>Inversión</th><th>Alcance</th><th>Impresiones</th>
+        <th>Clics</th><th>Acciones</th><th>CPM</th><th>CTR</th>
+      </tr></thead>
+      <tbody><tr>
+        <td>FORM ADV Imágenes</td>
+        <td>$34.84</td>
+        <td>5,692</td>
+        <td>7,529</td>
+        <td>67</td>
+        <td>27</td>
+        <td>$4.63</td>
+        <td>0.89%</td>
+    </tr><tr>
+        <td>FORM SEG Videos</td>
+        <td>$28.71</td>
+        <td>4,960</td>
+        <td>5,666</td>
+        <td>65</td>
+        <td>144</td>
+        <td>$5.07</td>
+        <td>1.15%</td>
+    </tr><tr>
+        <td>FORM ADV Videos</td>
+        <td>$27.02</td>
+        <td>3,625</td>
+        <td>4,054</td>
+        <td>46</td>
+        <td>264</td>
+        <td>$6.67</td>
+        <td>1.13%</td>
+    </tr><tr>
+        <td>WP ADV Imágenes</td>
+        <td>$24.96</td>
+        <td>7,296</td>
+        <td>9,141</td>
+        <td>146</td>
+        <td>29</td>
+        <td>$2.73</td>
+        <td>1.60%</td>
+    </tr><tr>
+        <td>WP SEG Imágenes</td>
+        <td>$24.74</td>
+        <td>3,609</td>
+        <td>4,358</td>
+        <td>40</td>
+        <td>10</td>
+        <td>$5.68</td>
+        <td>0.92%</td>
+    </tr><tr>
+        <td>FORM SEG Imágenes</td>
+        <td>$22.50</td>
+        <td>2,792</td>
+        <td>3,971</td>
+        <td>42</td>
+        <td>15</td>
+        <td>$5.67</td>
+        <td>1.06%</td>
+    </tr><tr>
+        <td>WP ADV Videos</td>
+        <td>$19.30</td>
+        <td>2,362</td>
+        <td>2,973</td>
+        <td>67</td>
+        <td>115</td>
+        <td>$6.49</td>
+        <td>2.25%</td>
+    </tr><tr>
+        <td>WP SEG Videos</td>
+        <td>$18.12</td>
+        <td>1,876</td>
+        <td>2,399</td>
+        <td>26</td>
+        <td>250</td>
+        <td>$7.55</td>
+        <td>1.08%</td>
+    </tr></tbody>
+    </table>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  Generado para PR605 Risk Management Toolbox Marzo &nbsp;·&nbsp; Meta Ads Dashboard &nbsp;·&nbsp; 2026
+</footer>
+
+<script>
+const colors = ['#4f8ef7','#7c5cbf','#e85d75','#2dc8a0','#f5a623','#a78bfa','#34d399','#fb923c','#f472b6'];
+const gridColor = 'rgba(255,255,255,0.05)';
+const tickColor = '#8b90a8';
+
+Chart.defaults.color = tickColor;
+Chart.defaults.borderColor = gridColor;
+Chart.defaults.font.family = "'Segoe UI', system-ui, sans-serif";
+
+// 1. Country Spend Bar
+new Chart(document.getElementById('countrySpendChart'), {
+  type: 'bar',
+  data: {
+    labels: ["Per\u00fa", "Rep. Dominicana", "Colombia", "Ecuador", "M\u00e9xico", "Nicaragua", "Panam\u00e1", "Guatemala", "El Salvador"],
+    datasets: [{
+      label: 'Inversión (USD)',
+      data: [40.68, 31.32, 28.44, 26.13, 24.42, 15.24, 13.07, 10.62, 10.27],
+      backgroundColor: colors.map(c => c + 'cc'),
+      borderColor: colors,
+      borderWidth: 1.5,
+      borderRadius: 6,
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ' $' + ctx.parsed.y.toFixed(2) } } },
+    scales: {
+      x: { grid: { display: false }, ticks: { color: tickColor } },
+      y: { grid: { color: gridColor }, ticks: { color: tickColor, callback: v => '$'+v } }
+    }
+  }
+});
+
+// 2. Country Reach vs Clicks
+new Chart(document.getElementById('countryReachClicksChart'), {
+  type: 'bar',
+  data: {
+    labels: ["Per\u00fa", "Rep. Dominicana", "Colombia", "Ecuador", "M\u00e9xico", "Nicaragua", "Panam\u00e1", "Guatemala", "El Salvador"],
+    datasets: [
+      { label: 'Alcance', data: [3872, 7004, 4284, 3486, 2395, 4838, 1792, 2203, 2338], backgroundColor: '#4f8ef7aa', borderColor: '#4f8ef7', borderWidth: 1.5, borderRadius: 4 },
+      { label: 'Clics', data: [67, 109, 45, 38, 55, 116, 15, 24, 30], backgroundColor: '#2dc8a0aa', borderColor: '#2dc8a0', borderWidth: 1.5, borderRadius: 4 }
+    ]
+  },
+  options: {
+    responsive: true,
+    plugins: { legend: { labels: { color: tickColor } } },
+    scales: {
+      x: { grid: { display: false }, ticks: { color: tickColor } },
+      y: { grid: { color: gridColor }, ticks: { color: tickColor } }
+    }
+  }
+});
+
+// 3. Trend Line
+const trendCtx = document.getElementById('trendChart');
+new Chart(trendCtx, {
+  type: 'line',
+  data: {
+    labels: ["2026-02-28", "2026-03-01"],
+    datasets: [
+      {
+        label: 'Inversión ($)',
+        data: [19.43, 180.76],
+        borderColor: '#4f8ef7',
+        backgroundColor: 'rgba(79,142,247,0.1)',
+        fill: true,
+        tension: 0.4,
+        pointBackgroundColor: '#4f8ef7',
+        pointRadius: 5,
+        yAxisID: 'y'
+      },
+      {
+        label: 'Impresiones',
+        data: [3867, 36224],
+        borderColor: '#f5a623',
+        backgroundColor: 'rgba(245,166,35,0.1)',
+        fill: false,
+        tension: 0.4,
+        pointBackgroundColor: '#f5a623',
+        pointRadius: 5,
+        yAxisID: 'y1'
+      },
+      {
+        label: 'Clics',
+        data: [53, 446],
+        borderColor: '#2dc8a0',
+        backgroundColor: 'rgba(45,200,160,0.1)',
+        fill: false,
+        tension: 0.4,
+        pointBackgroundColor: '#2dc8a0',
+        pointRadius: 5,
+        yAxisID: 'y1'
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    interaction: { mode: 'index', intersect: false },
+    plugins: { legend: { labels: { color: tickColor } } },
+    scales: {
+      x: { grid: { display: false }, ticks: { color: tickColor } },
+      y: { type: 'linear', position: 'left', grid: { color: gridColor }, ticks: { color: '#4f8ef7', callback: v => '$'+v } },
+      y1: { type: 'linear', position: 'right', grid: { drawOnChartArea: false }, ticks: { color: '#f5a623' } }
+    }
+  }
+});
+
+// 4. Actions Donut
+const donutColors = ['#7c5cbf','#4f8ef7','#2dc8a0','#e85d75'];
+const actionLabels = ["Page Engagement", "Link Click", "Messaging Connection", "Lead (Form)"];
+const actionValues = [715, 84, 38, 17];
+const totalAct = actionValues.reduce((a,b)=>a+b,0);
+
+new Chart(document.getElementById('actionsDonut'), {
+  type: 'doughnut',
+  data: {
+    labels: actionLabels,
+    datasets: [{
+      data: actionValues,
+      backgroundColor: donutColors.map(c => c + 'dd'),
+      borderColor: donutColors,
+      borderWidth: 2,
+      hoverOffset: 8
+    }]
+  },
+  options: {
+    responsive: true,
+    cutout: '65%',
+    plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ' ' + ctx.label + ': ' + ctx.parsed + ' (' + Math.round(ctx.parsed/totalAct*100) + '%)' } } }
+  }
+});
+
+// Build donut legend
+const legendDiv = document.getElementById('donutLegend');
+actionLabels.forEach((label, i) => {
+  const pct = Math.round(actionValues[i]/totalAct*100);
+  legendDiv.innerHTML += `<div class="legend-item">
+    <div class="legend-dot" style="background:${donutColors[i]}"></div>
+    <span class="legend-label">${label}</span>
+    <span class="legend-val">${actionValues[i]} (${pct}%)</span>
+  </div>`;
+});
+
+// 5. Adset Spend
+new Chart(document.getElementById('adsetSpendChart'), {
+  type: 'bar',
+  data: {
+    labels: ["FORM ADV Im\u00e1genes", "FORM SEG Videos", "FORM ADV Videos", "WP ADV Im\u00e1genes", "WP SEG Im\u00e1genes", "FORM SEG Im\u00e1genes", "WP ADV Videos", "WP SEG Videos"],
+    datasets: [{
+      label: 'Inversión (USD)',
+      data: [34.84, 28.71, 27.02, 24.96, 24.74, 22.5, 19.3, 18.12],
+      backgroundColor: colors.map(c => c + 'cc'),
+      borderColor: colors,
+      borderWidth: 1.5,
+      borderRadius: 6,
+    }]
+  },
+  options: {
+    indexAxis: 'y',
+    responsive: true,
+    plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ' $' + ctx.parsed.x.toFixed(2) } } },
+    scales: {
+      x: { grid: { color: gridColor }, ticks: { color: tickColor, callback: v => '$'+v } },
+      y: { grid: { display: false }, ticks: { color: tickColor, font: { size: 11 } } }
+    }
+  }
+});
+
+// 6. Adset Performance
+new Chart(document.getElementById('adsetPerformChart'), {
+  type: 'bar',
+  data: {
+    labels: ["FORM ADV Im\u00e1genes", "FORM SEG Videos", "FORM ADV Videos", "WP ADV Im\u00e1genes", "WP SEG Im\u00e1genes", "FORM SEG Im\u00e1genes", "WP ADV Videos", "WP SEG Videos"],
+    datasets: [
+      { label: 'Alcance', data: [5692, 4960, 3625, 7296, 3609, 2792, 2362, 1876], backgroundColor: '#4f8ef7aa', borderColor: '#4f8ef7', borderWidth: 1.5, borderRadius: 4 },
+      { label: 'Clics', data: [67, 65, 46, 146, 40, 42, 67, 26], backgroundColor: '#e85d75aa', borderColor: '#e85d75', borderWidth: 1.5, borderRadius: 4 }
+    ]
+  },
+  options: {
+    indexAxis: 'y',
+    responsive: true,
+    plugins: { legend: { labels: { color: tickColor } } },
+    scales: {
+      x: { grid: { color: gridColor }, ticks: { color: tickColor } },
+      y: { grid: { display: false }, ticks: { color: tickColor, font: { size: 11 } } }
+    }
+  }
+});
+
+</script>
+</body>
+</html>
