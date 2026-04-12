@@ -1,0 +1,1111 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Área de Marketing — Flujo de Agentes IA</title>
+  <link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,600,700&f[]=cabinet-grotesk@700,800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --text-xs: clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem);
+      --text-sm: clamp(0.875rem, 0.8rem + 0.35vw, 1rem);
+      --text-base: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+      --text-lg: clamp(1.125rem, 1rem + 0.75vw, 1.5rem);
+      --text-xl: clamp(1.5rem, 1.2rem + 1.25vw, 2.25rem);
+      --text-2xl: clamp(2rem, 1.2rem + 2.5vw, 3.5rem);
+      --space-1:.25rem; --space-2:.5rem; --space-3:.75rem; --space-4:1rem;
+      --space-5:1.25rem; --space-6:1.5rem; --space-8:2rem; --space-10:2.5rem;
+      --space-12:3rem; --space-16:4rem;
+      --radius-sm:.375rem; --radius-md:.5rem; --radius-lg:.75rem; --radius-xl:1rem; --radius-full:9999px;
+      --transition:180ms cubic-bezier(0.16,1,0.3,1);
+      --font-display:'Cabinet Grotesk',sans-serif;
+      --font-body:'Satoshi',sans-serif;
+    }
+    :root,[data-theme="light"]{
+      --bg:#f7f6f2; --surface:#f9f8f5; --surface-2:#fbfbf9; --surface-off:#f3f0ec; --surface-dyn:#e6e4df;
+      --border:#d4d1ca; --divider:#dcd9d5;
+      --text:#28251d; --text-muted:#7a7974; --text-faint:#bab9b4; --text-inv:#f9f8f4;
+      --primary:#01696f; --primary-hov:#0c4e54; --primary-hi:#cedcd8;
+      --blue:#006494; --blue-hi:#c6d8e4;
+      --gold:#d19900; --gold-hi:#e9e0c6;
+      --green:#437a22; --green-hi:#d4dfcc;
+      --purple:#7a39bb; --purple-hi:#dacfde;
+      --orange:#da7101; --orange-hi:#e7d7c4;
+      --red:#a13544; --red-hi:#dececb;
+      --shadow-sm:0 1px 2px oklch(0.2 0.01 80/.06);
+      --shadow-md:0 4px 12px oklch(0.2 0.01 80/.08);
+      --shadow-lg:0 12px 32px oklch(0.2 0.01 80/.12);
+    }
+    [data-theme="dark"]{
+      --bg:#171614; --surface:#1c1b19; --surface-2:#201f1d; --surface-off:#1d1c1a; --surface-dyn:#2d2c2a;
+      --border:#393836; --divider:#262523;
+      --text:#cdccca; --text-muted:#797876; --text-faint:#5a5957; --text-inv:#2b2a28;
+      --primary:#4f98a3; --primary-hov:#227f8b; --primary-hi:#313b3b;
+      --blue:#5591c7; --blue-hi:#3a4550;
+      --gold:#e8af34; --gold-hi:#4d4332;
+      --green:#6daa45; --green-hi:#3a4435;
+      --purple:#a86fdf; --purple-hi:#4e4652;
+      --orange:#fdab43; --orange-hi:#564b3e;
+      --red:#dd6974; --red-hi:#574848;
+      --shadow-sm:0 1px 2px oklch(0 0 0/.2);
+      --shadow-md:0 4px 12px oklch(0 0 0/.3);
+      --shadow-lg:0 12px 32px oklch(0 0 0/.4);
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{-webkit-font-smoothing:antialiased;scroll-behavior:smooth}
+    body{min-height:100dvh;font-family:var(--font-body);font-size:var(--text-base);color:var(--text);background:var(--bg);line-height:1.6}
+    img,svg{display:block;max-width:100%}
+    button{cursor:pointer;background:none;border:none;font:inherit;color:inherit}
+    a,button,[role="button"]{transition:color var(--transition),background var(--transition),border-color var(--transition),box-shadow var(--transition),opacity var(--transition)}
+
+    /* ---- LAYOUT ---- */
+    .wrap{max-width:1280px;margin-inline:auto;padding-inline:var(--space-6)}
+
+    /* ---- HEADER ---- */
+    header{
+      position:sticky;top:0;z-index:100;
+      background:color-mix(in oklch,var(--bg) 85%,transparent);
+      backdrop-filter:blur(12px);
+      border-bottom:1px solid var(--divider);
+      padding:var(--space-3) var(--space-6);
+    }
+    .header-inner{max-width:1280px;margin-inline:auto;display:flex;align-items:center;gap:var(--space-4)}
+    .logo{display:flex;align-items:center;gap:var(--space-3);text-decoration:none}
+    .logo-svg{flex-shrink:0}
+    .logo-text{font-family:var(--font-display);font-size:var(--text-lg);font-weight:800;color:var(--text);letter-spacing:-0.02em}
+    .logo-sub{font-size:var(--text-xs);color:var(--text-muted);font-weight:500;margin-top:-2px}
+    .header-badge{
+      margin-left:var(--space-3);
+      padding:2px var(--space-3);
+      background:var(--primary-hi);
+      color:var(--primary);
+      font-size:var(--text-xs);font-weight:600;
+      border-radius:var(--radius-full);
+      letter-spacing:0.04em;
+    }
+    .header-spacer{flex:1}
+    .theme-btn{
+      width:36px;height:36px;border-radius:var(--radius-full);
+      display:flex;align-items:center;justify-content:center;
+      color:var(--text-muted);border:1px solid var(--border);
+    }
+    .theme-btn:hover{color:var(--text);background:var(--surface-off)}
+
+    /* ---- HERO ---- */
+    .hero{
+      padding:var(--space-12) var(--space-6) var(--space-8);
+      max-width:1280px;margin-inline:auto;
+    }
+    .hero-label{
+      display:inline-flex;align-items:center;gap:var(--space-2);
+      font-size:var(--text-xs);font-weight:600;letter-spacing:0.08em;text-transform:uppercase;
+      color:var(--primary);margin-bottom:var(--space-4);
+    }
+    .hero-title{
+      font-family:var(--font-display);font-size:var(--text-2xl);font-weight:800;
+      color:var(--text);letter-spacing:-0.03em;line-height:1.1;
+      max-width:700px;margin-bottom:var(--space-4);
+    }
+    .hero-desc{font-size:var(--text-base);color:var(--text-muted);max-width:600px;margin-bottom:var(--space-8)}
+    .stats-row{display:flex;flex-wrap:wrap;gap:var(--space-4)}
+    .stat-chip{
+      display:flex;align-items:center;gap:var(--space-2);
+      padding:var(--space-2) var(--space-4);
+      background:var(--surface);border:1px solid var(--border);
+      border-radius:var(--radius-full);font-size:var(--text-sm);
+    }
+    .stat-chip strong{color:var(--text);font-weight:700}
+    .stat-chip span{color:var(--text-muted)}
+
+    /* ---- LEGEND ---- */
+    .legend{
+      display:flex;flex-wrap:wrap;gap:var(--space-3);
+      padding:var(--space-4) var(--space-6);
+      max-width:1280px;margin-inline:auto;margin-bottom:var(--space-6);
+    }
+    .legend-item{display:flex;align-items:center;gap:var(--space-2);font-size:var(--text-xs);color:var(--text-muted)}
+    .legend-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+
+    /* ---- MAIN FLOW ---- */
+    .flow-main{max-width:1280px;margin-inline:auto;padding-inline:var(--space-6);padding-bottom:var(--space-16)}
+
+    /* TRIGGER/OUTPUT nodes */
+    .trigger-node,.output-node{
+      display:flex;align-items:center;gap:var(--space-4);
+      padding:var(--space-4) var(--space-6);
+      background:var(--surface);border:1px solid var(--border);
+      border-radius:var(--radius-xl);margin-bottom:var(--space-2);
+      width:fit-content;
+    }
+    .trigger-node{border-color:var(--green);background:color-mix(in oklch,var(--green) 8%,var(--surface))}
+    .output-node{border-color:var(--red);background:color-mix(in oklch,var(--red) 8%,var(--surface))}
+    .node-icon{
+      width:40px;height:40px;border-radius:var(--radius-lg);
+      display:flex;align-items:center;justify-content:center;
+      font-size:1.2rem;flex-shrink:0;
+    }
+    .node-title{font-weight:700;font-size:var(--text-sm);color:var(--text)}
+    .node-sub{font-size:var(--text-xs);color:var(--text-muted)}
+
+    /* CONNECTOR */
+    .connector{
+      width:2px;height:var(--space-6);
+      background:linear-gradient(to bottom,var(--divider),var(--border));
+      margin-left:calc(var(--space-6) + 20px);
+      position:relative;
+    }
+    .connector::after{
+      content:'';position:absolute;bottom:-5px;left:50%;transform:translateX(-50%);
+      width:0;height:0;
+      border-left:5px solid transparent;
+      border-right:5px solid transparent;
+      border-top:7px solid var(--border);
+    }
+    .connector.fork{
+      width:100%;height:auto;background:none;margin-left:0;
+    }
+    .connector.fork::after{display:none}
+    .connector-fork-line{
+      display:flex;gap:0;justify-content:center;
+      height:var(--space-8);position:relative;
+    }
+    .connector-fork-line::before{
+      content:'';position:absolute;
+      top:0;left:calc(16.66% + 20px);right:calc(16.66% + 20px);
+      height:1px;background:var(--border);
+    }
+    .fork-branch{
+      flex:1;display:flex;flex-direction:column;align-items:center;
+      position:relative;
+    }
+    .fork-branch::before{
+      content:'';width:2px;height:100%;background:var(--border);
+    }
+    .fork-branch::after{
+      content:'';position:absolute;bottom:-5px;
+      width:0;height:0;
+      border-left:5px solid transparent;
+      border-right:5px solid transparent;
+      border-top:7px solid var(--border);
+    }
+    .merge-connector{
+      display:flex;gap:0;justify-content:center;
+      height:var(--space-8);position:relative;
+      margin-bottom:var(--space-2);
+    }
+    .merge-connector::after{
+      content:'';position:absolute;
+      bottom:0;left:calc(16.66% + 20px);right:calc(16.66% + 20px);
+      height:1px;background:var(--border);
+    }
+    .merge-branch{flex:1;display:flex;flex-direction:column;align-items:center}
+    .merge-branch::before{content:'';width:2px;height:100%;background:var(--border)}
+    .merge-center{
+      position:absolute;bottom:0;left:50%;transform:translateX(-50%);
+      width:2px;background:var(--border);
+    }
+
+    /* PHASE ---- */
+    .phase{margin-bottom:var(--space-2)}
+    .phase-header{
+      display:flex;align-items:center;gap:var(--space-3);
+      margin-bottom:var(--space-4);padding:var(--space-3) var(--space-4);
+      background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);
+      width:fit-content;
+    }
+    .phase-num{
+      width:28px;height:28px;border-radius:50%;
+      display:flex;align-items:center;justify-content:center;
+      font-size:var(--text-xs);font-weight:700;font-family:var(--font-display);
+      flex-shrink:0;
+    }
+    .phase-name{font-size:var(--text-sm);font-weight:700;letter-spacing:0.02em}
+    .phase-desc{font-size:var(--text-xs);color:var(--text-muted);margin-left:var(--space-2)}
+
+    /* AGENTS GRID ---- */
+    .agents-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:var(--space-4)}
+    .agents-grid.three-col{grid-template-columns:repeat(3,1fr)}
+    @media(max-width:900px){.agents-grid.three-col{grid-template-columns:1fr}}
+
+    /* AGENT CARD ---- */
+    .agent-card{
+      background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-xl);
+      padding:var(--space-5);cursor:pointer;position:relative;overflow:hidden;
+      transition:transform var(--transition),box-shadow var(--transition),border-color var(--transition);
+    }
+    .agent-card:hover{
+      transform:translateY(-2px);box-shadow:var(--shadow-md);
+    }
+    .agent-card.active{box-shadow:var(--shadow-md)}
+    .agent-card::before{
+      content:'';position:absolute;inset:0;opacity:0.04;
+      background:radial-gradient(ellipse at top left,var(--card-accent,var(--primary)),transparent 70%);
+      pointer-events:none;
+    }
+    .card-top{display:flex;align-items:flex-start;gap:var(--space-3);margin-bottom:var(--space-4)}
+    .card-icon{
+      width:44px;height:44px;border-radius:var(--radius-lg);
+      display:flex;align-items:center;justify-content:center;
+      font-size:1.25rem;flex-shrink:0;
+    }
+    .card-meta{flex:1}
+    .card-type-badge{
+      display:inline-flex;align-items:center;gap:4px;
+      font-size:var(--text-xs);font-weight:600;
+      padding:2px var(--space-2);border-radius:var(--radius-full);
+      margin-bottom:var(--space-1);letter-spacing:0.03em;
+    }
+    .badge-ai{background:var(--primary-hi);color:var(--primary)}
+    .badge-ceo{background:var(--gold-hi);color:var(--gold)}
+    .badge-human{background:var(--green-hi);color:var(--green)}
+    .card-name{font-family:var(--font-display);font-size:var(--text-base);font-weight:800;color:var(--text);letter-spacing:-0.01em;line-height:1.2}
+    .card-tagline{font-size:var(--text-xs);color:var(--text-muted);margin-top:2px}
+    .card-functions{list-style:none;display:flex;flex-direction:column;gap:var(--space-1)}
+    .card-functions li{
+      display:flex;align-items:flex-start;gap:var(--space-2);
+      font-size:var(--text-xs);color:var(--text-muted);line-height:1.5;
+    }
+    .card-functions li::before{
+      content:'';width:5px;height:5px;border-radius:50%;
+      background:var(--card-accent,var(--primary));
+      margin-top:6px;flex-shrink:0;
+    }
+    .card-footer{
+      margin-top:var(--space-4);padding-top:var(--space-3);
+      border-top:1px solid var(--divider);
+      display:flex;align-items:center;justify-content:space-between;
+    }
+    .card-tools{display:flex;flex-wrap:wrap;gap:var(--space-1)}
+    .tool-tag{
+      font-size:10px;font-weight:600;letter-spacing:0.03em;
+      padding:2px 6px;border-radius:var(--radius-sm);
+      background:var(--surface-2);border:1px solid var(--divider);
+      color:var(--text-faint);
+    }
+    .card-cta{
+      font-size:var(--text-xs);font-weight:600;color:var(--primary);
+      display:flex;align-items:center;gap:4px;white-space:nowrap;
+    }
+    .card-cta svg{transition:transform var(--transition)}
+    .agent-card:hover .card-cta svg{transform:translateX(3px)}
+
+    /* CEO CHECKPOINT ---- */
+    .checkpoint-card{
+      background:color-mix(in oklch,var(--gold) 8%,var(--surface));
+      border:1px solid color-mix(in oklch,var(--gold) 30%,var(--border));
+      border-radius:var(--radius-xl);padding:var(--space-4) var(--space-5);
+      display:flex;align-items:center;gap:var(--space-4);
+    }
+    .checkpoint-icon{
+      width:44px;height:44px;border-radius:var(--radius-lg);
+      background:var(--gold-hi);display:flex;align-items:center;
+      justify-content:center;font-size:1.3rem;flex-shrink:0;
+    }
+    .checkpoint-label{
+      font-size:var(--text-xs);font-weight:600;text-transform:uppercase;
+      letter-spacing:0.06em;color:var(--gold);margin-bottom:2px;
+    }
+    .checkpoint-title{font-family:var(--font-display);font-size:var(--text-base);font-weight:800;color:var(--text)}
+    .checkpoint-desc{font-size:var(--text-xs);color:var(--text-muted)}
+    .checkpoint-actions{display:flex;flex-direction:column;gap:4px;margin-top:var(--space-2)}
+    .checkpoint-action{
+      display:flex;align-items:center;gap:var(--space-2);
+      font-size:var(--text-xs);color:var(--text-muted);
+    }
+    .action-dot{width:6px;height:6px;border-radius:50%;background:var(--gold);flex-shrink:0}
+
+    /* HUMAN TEAM CARD ---- */
+    .human-card{
+      background:color-mix(in oklch,var(--green) 8%,var(--surface));
+      border:1px solid color-mix(in oklch,var(--green) 30%,var(--border));
+      border-radius:var(--radius-xl);padding:var(--space-4) var(--space-5);
+      display:flex;align-items:center;gap:var(--space-4);
+    }
+    .human-icon{
+      width:44px;height:44px;border-radius:var(--radius-lg);
+      background:var(--green-hi);display:flex;align-items:center;
+      justify-content:center;font-size:1.3rem;flex-shrink:0;
+    }
+    .human-label{font-size:var(--text-xs);font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:var(--green);margin-bottom:2px;}
+    .human-title{font-family:var(--font-display);font-size:var(--text-base);font-weight:800;color:var(--text)}
+    .human-desc{font-size:var(--text-xs);color:var(--text-muted)}
+
+    /* DETAIL PANEL ---- */
+    .panel-overlay{
+      position:fixed;inset:0;z-index:200;
+      background:oklch(0 0 0/.5);
+      opacity:0;pointer-events:none;transition:opacity var(--transition);
+    }
+    .panel-overlay.open{opacity:1;pointer-events:all}
+    .detail-panel{
+      position:fixed;top:0;right:0;bottom:0;z-index:201;
+      width:min(480px,100vw);
+      background:var(--surface);border-left:1px solid var(--border);
+      transform:translateX(100%);transition:transform 280ms cubic-bezier(0.16,1,0.3,1);
+      overflow-y:auto;display:flex;flex-direction:column;
+    }
+    .detail-panel.open{transform:translateX(0)}
+    .panel-header{
+      position:sticky;top:0;z-index:10;
+      background:var(--surface);border-bottom:1px solid var(--divider);
+      padding:var(--space-5);display:flex;align-items:center;gap:var(--space-3);
+    }
+    .panel-close{
+      width:32px;height:32px;border-radius:var(--radius-full);
+      display:flex;align-items:center;justify-content:center;
+      color:var(--text-muted);border:1px solid var(--border);margin-left:auto;
+    }
+    .panel-close:hover{color:var(--text);background:var(--surface-off)}
+    .panel-body{padding:var(--space-5);flex:1}
+    .panel-section{margin-bottom:var(--space-6)}
+    .panel-section-title{
+      font-size:var(--text-xs);font-weight:700;text-transform:uppercase;letter-spacing:0.08em;
+      color:var(--text-faint);margin-bottom:var(--space-3);
+      display:flex;align-items:center;gap:var(--space-2);
+    }
+    .panel-section-title::after{content:'';flex:1;height:1px;background:var(--divider)}
+    .panel-functions{list-style:none;display:flex;flex-direction:column;gap:var(--space-2)}
+    .panel-functions li{
+      display:flex;align-items:flex-start;gap:var(--space-3);
+      font-size:var(--text-sm);color:var(--text-muted);
+      padding:var(--space-2) var(--space-3);
+      background:var(--surface-2);border-radius:var(--radius-md);
+    }
+    .panel-functions li .fn-num{
+      width:20px;height:20px;border-radius:50%;
+      background:var(--surface-off);border:1px solid var(--divider);
+      display:flex;align-items:center;justify-content:center;
+      font-size:10px;font-weight:700;color:var(--text-faint);flex-shrink:0;
+    }
+    .io-grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--space-3)}
+    .io-box{background:var(--surface-2);border-radius:var(--radius-lg);padding:var(--space-3)}
+    .io-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:var(--space-2)}
+    .io-in .io-label{color:var(--blue)}
+    .io-out .io-label{color:var(--orange)}
+    .io-list{list-style:none;display:flex;flex-direction:column;gap:4px}
+    .io-list li{
+      font-size:var(--text-xs);color:var(--text-muted);
+      display:flex;align-items:center;gap:var(--space-2);
+    }
+    .io-list li::before{content:'·';color:var(--text-faint)}
+    .tools-row{display:flex;flex-wrap:wrap;gap:var(--space-2)}
+    .tool-pill{
+      padding:var(--space-1) var(--space-3);border-radius:var(--radius-full);
+      font-size:var(--text-xs);font-weight:600;
+      background:var(--surface-2);border:1px solid var(--divider);
+      color:var(--text-muted);
+    }
+    .feeds-row{display:flex;flex-wrap:wrap;gap:var(--space-2)}
+    .feed-pill{
+      padding:var(--space-1) var(--space-3);border-radius:var(--radius-full);
+      font-size:var(--text-xs);font-weight:600;
+      background:var(--primary-hi);color:var(--primary);
+      display:flex;align-items:center;gap:4px;
+    }
+
+    /* HANDOFF ---- */
+    .handoff-section{
+      margin-top:var(--space-8);
+      padding:var(--space-6) var(--space-6);
+      max-width:1280px;margin-inline:auto;
+    }
+    .handoff-card{
+      background:color-mix(in oklch,var(--red) 8%,var(--surface));
+      border:1px solid color-mix(in oklch,var(--red) 30%,var(--border));
+      border-radius:var(--radius-xl);padding:var(--space-6);
+      display:grid;grid-template-columns:1fr 1fr;gap:var(--space-6);
+      align-items:center;
+    }
+    @media(max-width:600px){.handoff-card{grid-template-columns:1fr}}
+    .handoff-left h2{
+      font-family:var(--font-display);font-size:var(--text-xl);font-weight:800;
+      color:var(--text);letter-spacing:-0.02em;margin-bottom:var(--space-2);
+    }
+    .handoff-left p{font-size:var(--text-sm);color:var(--text-muted)}
+    .handoff-arrow{
+      font-size:2rem;color:var(--red);margin-bottom:var(--space-2);
+    }
+    .handoff-outputs{list-style:none;display:flex;flex-direction:column;gap:var(--space-2)}
+    .handoff-outputs li{
+      display:flex;align-items:center;gap:var(--space-3);
+      font-size:var(--text-sm);color:var(--text-muted);
+    }
+    .ho-dot{width:8px;height:8px;border-radius:50%;background:var(--red);flex-shrink:0}
+
+    /* LOOP ---- */
+    .loop-note{
+      margin-top:var(--space-4);
+      padding:var(--space-3) var(--space-4);
+      background:var(--surface);border:1px solid var(--divider);border-radius:var(--radius-lg);
+      display:flex;align-items:center;gap:var(--space-3);
+      font-size:var(--text-xs);color:var(--text-muted);
+      width:fit-content;
+    }
+    .loop-icon{color:var(--primary);font-size:1rem}
+
+    /* SCROLLBAR ---- */
+    ::-webkit-scrollbar{width:6px}
+    ::-webkit-scrollbar-track{background:var(--bg)}
+    ::-webkit-scrollbar-thumb{background:var(--border);border-radius:var(--radius-full)}
+    ::-webkit-scrollbar-thumb:hover{background:var(--text-faint)}
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <a class="logo" href="#">
+      <svg class="logo-svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-label="Logo Agencia IA">
+        <rect width="32" height="32" rx="8" fill="var(--primary)"/>
+        <path d="M8 16C8 11.582 11.582 8 16 8V8C20.418 8 24 11.582 24 16V16" stroke="var(--bg)" stroke-width="2.5" stroke-linecap="round"/>
+        <circle cx="16" cy="16" r="3" fill="var(--bg)"/>
+        <path d="M16 19V24" stroke="var(--bg)" stroke-width="2.5" stroke-linecap="round"/>
+        <circle cx="10" cy="23" r="1.5" fill="var(--bg)" opacity=".6"/>
+        <circle cx="22" cy="23" r="1.5" fill="var(--bg)" opacity=".6"/>
+      </svg>
+      <div>
+        <div class="logo-text">TradeFlow AI</div>
+        <div class="logo-sub">Agencia Automatizada</div>
+      </div>
+    </a>
+    <div class="header-badge">ÁREA DE MARKETING</div>
+    <div class="header-spacer"></div>
+    <button class="theme-btn" data-theme-toggle aria-label="Cambiar modo">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    </button>
+  </div>
+</header>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-label">
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><circle cx="6" cy="6" r="4"/></svg>
+    Flujo Completo de Agentes IA
+  </div>
+  <h1 class="hero-title">Área de Marketing<br>Automatizada con IA</h1>
+  <p class="hero-desc">7 agentes de IA trabajando en 5 fases, desde la investigación hasta la entrega de leads calificados al Área Comercial. Haz clic en cualquier agente para ver sus funciones completas.</p>
+  <div class="stats-row">
+    <div class="stat-chip"><strong>7</strong><span>Agentes IA</span></div>
+    <div class="stat-chip"><strong>5</strong><span>Fases</span></div>
+    <div class="stat-chip"><strong>2</strong><span>Checkpoints CEO</span></div>
+    <div class="stat-chip"><strong>1</strong><span>Equipo Humano (Diseño)</span></div>
+    <div class="stat-chip"><strong>∞</strong><span>Loop de Optimización</span></div>
+  </div>
+</div>
+
+<!-- LEGEND -->
+<div class="legend">
+  <div class="legend-item"><div class="legend-dot" style="background:var(--primary)"></div>Agente IA (automatizado)</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--gold)"></div>Punto de control CEO</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div>Equipo humano (Diseño/AV)</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--red)"></div>Entrada / Salida del flujo</div>
+</div>
+
+<!-- MAIN FLOW -->
+<div class="flow-main">
+
+  <!-- TRIGGER -->
+  <div class="trigger-node">
+    <div class="node-icon" style="background:var(--green-hi);font-size:1.2rem">📥</div>
+    <div>
+      <div class="node-title">ENTRADA — Nuevo Cliente / Nueva Campaña</div>
+      <div class="node-sub">Brief del cliente recibido · Objetivos definidos · Presupuesto acordado</div>
+    </div>
+  </div>
+  <div class="connector"></div>
+
+  <!-- FASE 1 -->
+  <div class="phase">
+    <div class="phase-header">
+      <div class="phase-num" style="background:var(--blue-hi);color:var(--blue)">1</div>
+      <span class="phase-name" style="color:var(--blue)">INVESTIGACIÓN</span>
+      <span class="phase-desc">Análisis de mercado y audiencias</span>
+    </div>
+    <div class="agents-grid">
+      <div class="agent-card" style="--card-accent:var(--blue)" data-agent="research" onclick="openPanel('research')">
+        <div class="card-top">
+          <div class="card-icon" style="background:var(--blue-hi)">🔍</div>
+          <div class="card-meta">
+            <div class="card-type-badge badge-ai">⚡ AGENTE IA</div>
+            <div class="card-name">Agente de Investigación</div>
+            <div class="card-tagline">Market Intelligence Automatizado</div>
+          </div>
+        </div>
+        <ul class="card-functions">
+          <li>Análisis de mercado y sector del cliente</li>
+          <li>Investigación de competidores directos e indirectos</li>
+          <li>Perfilado de audiencias objetivo (Buyer Persona)</li>
+          <li>Keyword research estratégico inicial</li>
+          <li>Benchmark de métricas de industria</li>
+          <li>Análisis FODA del cliente vs competencia</li>
+        </ul>
+        <div class="card-footer">
+          <div class="card-tools">
+            <span class="tool-tag">Claude API</span>
+            <span class="tool-tag">Perplexity</span>
+            <span class="tool-tag">SEMrush</span>
+            <span class="tool-tag">n8n</span>
+          </div>
+          <span class="card-cta">Ver detalle <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="connector"></div>
+
+  <!-- FASE 2 -->
+  <div class="phase">
+    <div class="phase-header">
+      <div class="phase-num" style="background:var(--orange-hi);color:var(--orange)">2</div>
+      <span class="phase-name" style="color:var(--orange)">ESTRATEGIA</span>
+      <span class="phase-desc">Plan de marketing y aprobación CEO</span>
+    </div>
+    <div class="agents-grid">
+      <div class="agent-card" style="--card-accent:var(--orange)" data-agent="strategy" onclick="openPanel('strategy')">
+        <div class="card-top">
+          <div class="card-icon" style="background:var(--orange-hi)">🧠</div>
+          <div class="card-meta">
+            <div class="card-type-badge badge-ai">⚡ AGENTE IA</div>
+            <div class="card-name">Agente Estratega</div>
+            <div class="card-tagline">Planificación y Propuesta de Valor</div>
+          </div>
+        </div>
+        <ul class="card-functions">
+          <li>Elaboración del Plan de Marketing Digital</li>
+          <li>Definición de objetivos SMART y KPIs por canal</li>
+          <li>Selección del mix de canales (Google, Meta, SEO, Email)</li>
+          <li>Distribución de presupuesto por canal y periodo</li>
+          <li>Propuesta de mensajes clave y posicionamiento</li>
+          <li>Timeline de campaña y plan de medios</li>
+        </ul>
+        <div class="card-footer">
+          <div class="card-tools">
+            <span class="tool-tag">Claude API</span>
+            <span class="tool-tag">Google Sheets</span>
+            <span class="tool-tag">Make</span>
+          </div>
+          <span class="card-cta">Ver detalle <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+        </div>
+      </div>
+      <div class="checkpoint-card">
+        <div class="checkpoint-icon">👤</div>
+        <div>
+          <div class="checkpoint-label">✅ Checkpoint CEO</div>
+          <div class="checkpoint-title">Aprobación de Estrategia</div>
+          <div class="checkpoint-desc">El CEO revisa el plan generado por la IA, ajusta la estrategia y da luz verde para continuar.</div>
+          <div class="checkpoint-actions">
+            <div class="checkpoint-action"><div class="action-dot"></div>Revisar y editar propuesta</div>
+            <div class="checkpoint-action"><div class="action-dot"></div>Ajustar presupuesto por canal</div>
+            <div class="checkpoint-action"><div class="action-dot"></div>Aprobar o iterar estrategia</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="connector"></div>
+
+  <!-- FASE 3 -->
+  <div class="phase">
+    <div class="phase-header">
+      <div class="phase-num" style="background:var(--purple-hi);color:var(--purple)">3</div>
+      <span class="phase-name" style="color:var(--purple)">CONTENIDOS</span>
+      <span class="phase-desc">Copies, briefs y calendario editorial</span>
+    </div>
+    <div class="agents-grid">
+      <div class="agent-card" style="--card-accent:var(--purple)" data-agent="content" onclick="openPanel('content')">
+        <div class="card-top">
+          <div class="card-icon" style="background:var(--purple-hi)">✍️</div>
+          <div class="card-meta">
+            <div class="card-type-badge badge-ai">⚡ AGENTE IA</div>
+            <div class="card-name">Agente de Contenidos</div>
+            <div class="card-tagline">Copywriting y Estrategia Editorial</div>
+          </div>
+        </div>
+        <ul class="card-functions">
+          <li>Calendario editorial mensual (30 días)</li>
+          <li>Copies para anuncios (Google Ads / Meta Ads)</li>
+          <li>Captions y textos para redes sociales</li>
+          <li>Briefs creativos para el equipo de diseño</li>
+          <li>Guiones para Reels y videos cortos</li>
+          <li>Textos para landing pages y email marketing</li>
+        </ul>
+        <div class="card-footer">
+          <div class="card-tools">
+            <span class="tool-tag">Claude API</span>
+            <span class="tool-tag">Notion</span>
+            <span class="tool-tag">Google Docs</span>
+          </div>
+          <span class="card-cta">Ver detalle <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+        </div>
+      </div>
+      <div class="human-card">
+        <div class="human-icon">🎨</div>
+        <div>
+          <div class="human-label">👥 Equipo Humano</div>
+          <div class="human-title">Diseño &amp; Audiovisual</div>
+          <div class="human-desc">Ejecuta las piezas gráficas, videos y Reels basándose en los briefs del Agente de Contenidos. Esta es la etapa manual del flujo.</div>
+          <div style="margin-top:var(--space-2);display:flex;flex-wrap:wrap;gap:4px">
+            <span class="tool-tag" style="color:var(--green);border-color:var(--green-hi)">Figma / Illustrator</span>
+            <span class="tool-tag" style="color:var(--green);border-color:var(--green-hi)">Premiere / CapCut</span>
+            <span class="tool-tag" style="color:var(--green);border-color:var(--green-hi)">Canva Pro</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FORK CONNECTOR -->
+  <div style="margin:var(--space-2) 0;padding:var(--space-4) 0;position:relative">
+    <div style="position:absolute;left:calc(16.5%);width:2px;height:100%;background:var(--divider);top:0"></div>
+    <div style="position:absolute;left:calc(50% - 1px);width:2px;height:100%;background:var(--divider);top:0"></div>
+    <div style="position:absolute;right:calc(16.5%);width:2px;height:100%;background:var(--divider);top:0"></div>
+    <div style="height:1px;background:linear-gradient(to right,transparent 16.5%,var(--divider) 16.5%,var(--divider) 83.5%,transparent 83.5%);margin:auto"></div>
+  </div>
+
+  <!-- FASE 4 -->
+  <div class="phase">
+    <div class="phase-header">
+      <div class="phase-num" style="background:var(--primary-hi);color:var(--primary)">4</div>
+      <span class="phase-name" style="color:var(--primary)">EJECUCIÓN</span>
+      <span class="phase-desc">3 agentes ejecutándose en paralelo</span>
+    </div>
+    <div class="agents-grid three-col">
+
+      <div class="agent-card" style="--card-accent:var(--primary)" data-agent="paid" onclick="openPanel('paid')">
+        <div class="card-top">
+          <div class="card-icon" style="background:var(--primary-hi)">📢</div>
+          <div class="card-meta">
+            <div class="card-type-badge badge-ai">⚡ AGENTE IA</div>
+            <div class="card-name">Agente de Pauta Digital</div>
+            <div class="card-tagline">Google Ads + Meta Ads</div>
+          </div>
+        </div>
+        <ul class="card-functions">
+          <li>Configuración de campañas Google &amp; Meta</li>
+          <li>Estructuración de grupos y segmentaciones</li>
+          <li>Gestión de pujas y presupuestos</li>
+          <li>A/B testing de creatividades</li>
+          <li>Alertas de anomalías en tiempo real</li>
+          <li>Negativos y exclusiones de audiencia</li>
+        </ul>
+        <div class="card-footer">
+          <div class="card-tools">
+            <span class="tool-tag">Google Ads API</span>
+            <span class="tool-tag">Meta API</span>
+            <span class="tool-tag">n8n</span>
+          </div>
+          <span class="card-cta">Ver detalle <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+        </div>
+      </div>
+
+      <div class="agent-card" style="--card-accent:var(--green)" data-agent="seo" onclick="openPanel('seo')">
+        <div class="card-top">
+          <div class="card-icon" style="background:var(--green-hi)">🌱</div>
+          <div class="card-meta">
+            <div class="card-type-badge badge-ai">⚡ AGENTE IA</div>
+            <div class="card-name">Agente SEO / Orgánico</div>
+            <div class="card-tagline">Posicionamiento Orgánico</div>
+          </div>
+        </div>
+        <ul class="card-functions">
+          <li>Auditoría técnica SEO del sitio del cliente</li>
+          <li>Optimización on-page (meta tags, schema)</li>
+          <li>Plan de contenido SEO mensual</li>
+          <li>Monitoreo de posiciones en buscadores</li>
+          <li>Análisis de backlinks y autoridad</li>
+          <li>Reportes de tráfico orgánico</li>
+        </ul>
+        <div class="card-footer">
+          <div class="card-tools">
+            <span class="tool-tag">SEMrush</span>
+            <span class="tool-tag">Ahrefs</span>
+            <span class="tool-tag">GSC API</span>
+          </div>
+          <span class="card-cta">Ver detalle <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+        </div>
+      </div>
+
+      <div class="agent-card" style="--card-accent:var(--blue)" data-agent="social" onclick="openPanel('social')">
+        <div class="card-top">
+          <div class="card-icon" style="background:var(--blue-hi)">📱</div>
+          <div class="card-meta">
+            <div class="card-type-badge badge-ai">⚡ AGENTE IA</div>
+            <div class="card-name">Agente de Redes Sociales</div>
+            <div class="card-tagline">Social Media Automation</div>
+          </div>
+        </div>
+        <ul class="card-functions">
+          <li>Programación automática de publicaciones</li>
+          <li>Monitoreo de menciones y keywords</li>
+          <li>Gestión básica de comunidad (auto-respuestas)</li>
+          <li>Análisis de engagement y alcance</li>
+          <li>Identificación de contenido top performer</li>
+          <li>Alertas de crisis (comentarios negativos)</li>
+        </ul>
+        <div class="card-footer">
+          <div class="card-tools">
+            <span class="tool-tag">Meta API</span>
+            <span class="tool-tag">Buffer</span>
+            <span class="tool-tag">Zapier</span>
+          </div>
+          <span class="card-cta">Ver detalle <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <div class="connector"></div>
+
+  <!-- FASE 5 -->
+  <div class="phase">
+    <div class="phase-header">
+      <div class="phase-num" style="background:var(--gold-hi);color:var(--gold)">5</div>
+      <span class="phase-name" style="color:var(--gold)">ANÁLISIS &amp; OPTIMIZACIÓN</span>
+      <span class="phase-desc">Datos, reportes y decisiones del CEO</span>
+    </div>
+    <div class="agents-grid">
+      <div class="agent-card" style="--card-accent:var(--gold)" data-agent="analytics" onclick="openPanel('analytics')">
+        <div class="card-top">
+          <div class="card-icon" style="background:var(--gold-hi)">📊</div>
+          <div class="card-meta">
+            <div class="card-type-badge badge-ai">⚡ AGENTE IA</div>
+            <div class="card-name">Agente de Analytics y Reportes</div>
+            <div class="card-tagline">Data Hub — Todos los Canales</div>
+          </div>
+        </div>
+        <ul class="card-functions">
+          <li>Consolidación de datos de Google Ads, Meta, SEO y Social</li>
+          <li>Actualización automática de dashboards KPI</li>
+          <li>Reportes semanales y mensuales en PDF/Sheets</li>
+          <li>Análisis del embudo de conversión completo</li>
+          <li>Detección de anomalías y alertas automáticas</li>
+          <li>Cálculo de ROI por canal y recomendaciones</li>
+        </ul>
+        <div class="card-footer">
+          <div class="card-tools">
+            <span class="tool-tag">Looker Studio</span>
+            <span class="tool-tag">PostgreSQL</span>
+            <span class="tool-tag">Python</span>
+            <span class="tool-tag">n8n</span>
+          </div>
+          <span class="card-cta">Ver detalle <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+        </div>
+      </div>
+      <div class="checkpoint-card">
+        <div class="checkpoint-icon">📋</div>
+        <div>
+          <div class="checkpoint-label">✅ Checkpoint CEO</div>
+          <div class="checkpoint-title">Revisión de Resultados</div>
+          <div class="checkpoint-desc">El CEO revisa dashboards y reportes automáticos, toma decisiones de optimización y define el siguiente ciclo.</div>
+          <div class="checkpoint-actions">
+            <div class="checkpoint-action"><div class="action-dot"></div>Revisar KPIs vs objetivos</div>
+            <div class="checkpoint-action"><div class="action-dot"></div>Aprobar optimizaciones sugeridas</div>
+            <div class="checkpoint-action"><div class="action-dot"></div>Presentar reporte al cliente</div>
+            <div class="checkpoint-action"><div class="action-dot"></div>Escalar leads al Área Comercial</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LOOP NOTE -->
+  <div class="loop-note" style="margin-top:var(--space-4)">
+    <span class="loop-icon">🔄</span>
+    <span>Los insights del Agente de Analytics retroalimentan al <strong style="color:var(--text)">Agente Estratega</strong> en el siguiente ciclo, creando un loop de optimización continua.</span>
+  </div>
+
+</div>
+
+<!-- HANDOFF SECTION -->
+<div class="handoff-section">
+  <div class="connector" style="margin-left:var(--space-6)"></div>
+  <div class="handoff-card">
+    <div class="handoff-left">
+      <div class="handoff-arrow">→</div>
+      <h2>Handoff al Área Comercial</h2>
+      <p>El Área de Marketing entrega leads calificados y materiales al Área Comercial para iniciar el seguimiento y cierre de ventas.</p>
+    </div>
+    <div>
+      <div style="font-size:var(--text-xs);font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--red);margin-bottom:var(--space-3)">Entregables al Área Comercial</div>
+      <ul class="handoff-outputs">
+        <li><div class="ho-dot"></div>Leads calificados con datos de contacto</li>
+        <li><div class="ho-dot"></div>Historial de interacciones (anuncios, clicks, formularios)</li>
+        <li><div class="ho-dot"></div>Score de calidad del lead (hot / warm / cold)</li>
+        <li><div class="ho-dot"></div>Material de ventas (presentaciones, one-pagers)</li>
+        <li><div class="ho-dot"></div>Contexto del cliente: qué vio, qué descargó, de dónde viene</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- PANEL OVERLAY -->
+<div class="panel-overlay" id="panelOverlay" onclick="closePanel()"></div>
+
+<!-- DETAIL PANEL -->
+<aside class="detail-panel" id="detailPanel" role="complementary" aria-label="Detalle del agente">
+  <div class="panel-header" id="panelHeader">
+    <div class="card-icon" id="panelIcon" style="width:44px;height:44px;border-radius:var(--radius-lg);display:flex;align-items:center;justify-content:center;font-size:1.25rem">🤖</div>
+    <div>
+      <div id="panelBadge" class="card-type-badge badge-ai">⚡ AGENTE IA</div>
+      <div id="panelName" style="font-family:var(--font-display);font-size:var(--text-lg);font-weight:800;color:var(--text)">Agente</div>
+    </div>
+    <button class="panel-close" onclick="closePanel()" aria-label="Cerrar panel">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
+    </button>
+  </div>
+  <div class="panel-body" id="panelBody"></div>
+</aside>
+
+<script>
+const AGENTS = {
+  research: {
+    name: 'Agente de Investigación', icon: '🔍',
+    color: 'var(--blue)', hiColor: 'var(--blue-hi)',
+    phase: 'Fase 1 — Investigación',
+    tagline: 'Market Intelligence Automatizado',
+    description: 'Analiza el mercado, la competencia y las audiencias del cliente de forma automática antes de cualquier acción estratégica.',
+    functions: [
+      'Análisis profundo del mercado y sector del cliente',
+      'Investigación de competidores directos e indirectos (posicionamiento, creatividades, keywords)',
+      'Identificación y perfilado de audiencias objetivo (Buyer Persona)',
+      'Keyword research estratégico para SEO y pauta',
+      'Benchmark de métricas clave de la industria (CTR promedio, CPC, CPA)',
+      'Análisis FODA: cliente vs competencia',
+      'Detección de tendencias digitales relevantes al sector',
+      'Identificación de estacionalidades y oportunidades de mercado',
+    ],
+    inputs: ['Brief inicial del cliente', 'Industria / sector', 'URL del sitio web del cliente', 'Objetivos de negocio'],
+    outputs: ['Reporte de análisis de mercado', 'Perfil de Buyer Persona', 'Mapa de competencia', 'Lista de keywords estratégicas', 'FODA documentado'],
+    tools: ['Claude API (análisis y síntesis)', 'Perplexity API (búsqueda en tiempo real)', 'Google Trends', 'SEMrush / Ahrefs API', 'n8n (orquestación)', 'Google Sheets (salida)'],
+    feeds: ['Agente Estratega'],
+  },
+  strategy: {
+    name: 'Agente Estratega', icon: '🧠',
+    color: 'var(--orange)', hiColor: 'var(--orange-hi)',
+    phase: 'Fase 2 — Estrategia',
+    tagline: 'Planificación y Propuesta de Valor',
+    description: 'Convierte los datos de investigación en un plan de marketing accionable con objetivos, presupuestos y timelines. Requiere aprobación del CEO.',
+    functions: [
+      'Elaboración completa del Plan de Marketing Digital',
+      'Definición de objetivos SMART y KPIs por canal',
+      'Selección y justificación del mix de canales (Google, Meta, SEO, Email, Social)',
+      'Distribución de presupuesto mensual por canal',
+      'Propuesta de mensajes clave y propuesta de valor',
+      'Elaboración del timeline de campaña y plan de medios',
+      'Generación de propuesta comercial para el cliente',
+      'Definición de métricas de éxito y umbrales de alerta',
+    ],
+    inputs: ['Reporte del Agente de Investigación', 'Objetivos de negocio del cliente', 'Presupuesto disponible', 'Historial de campañas anteriores (si aplica)'],
+    outputs: ['Plan de Marketing Digital (Doc)', 'Estrategia de canales y presupuesto', 'Timeline de campaña', 'Propuesta de valor y mensajes clave', '⚠️ Requiere aprobación CEO'],
+    tools: ['Claude API', 'Google Sheets API (plan de medios)', 'Make / n8n', 'Notion (documentación)'],
+    feeds: ['Agente de Contenidos (tras aprobación CEO)'],
+    checkpoint: '✅ CEO revisa, ajusta y aprueba la estrategia antes de continuar.',
+  },
+  content: {
+    name: 'Agente de Contenidos', icon: '✍️',
+    color: 'var(--purple)', hiColor: 'var(--purple-hi)',
+    phase: 'Fase 3 — Contenidos',
+    tagline: 'Copywriting y Estrategia Editorial',
+    description: 'Genera todo el contenido textual: copies, calendarios, briefs y guiones. El equipo humano de diseño ejecuta las piezas visuales en base a estos briefs.',
+    functions: [
+      'Creación del calendario editorial mensual (30 días)',
+      'Redacción de copies para anuncios Google Ads (RSA, DSA)',
+      'Redacción de creatividades para Meta Ads (headlines, body text)',
+      'Captions y textos para publicaciones orgánicas en redes sociales',
+      'Briefs creativos detallados para el equipo de diseño y audiovisual',
+      'Guiones para Reels, Stories y videos cortos',
+      'Textos para landing pages y páginas de destino',
+      'Secuencias de email marketing y newsletters',
+      'Adaptación de mensajes por audiencia y etapa del funnel',
+    ],
+    inputs: ['Plan de marketing aprobado', 'Mensajes clave y propuesta de valor', 'Buyer Persona', 'Timeline de campaña'],
+    outputs: ['Calendario editorial (Google Sheets/Notion)', 'Copies de anuncios listos para publicar', 'Briefs creativos para diseño', 'Guiones de video', 'Copies de email marketing'],
+    tools: ['Claude API (generación de textos)', 'Notion (calendario)', 'Google Docs (briefs)', 'n8n (automatización de entrega)'],
+    feeds: ['Equipo Diseño/Audiovisual (briefs)', 'Agente de Pauta (copies)', 'Agente de Redes Sociales (captions)'],
+    humanNote: '👥 El equipo humano (diseñadores y audiovisuales) ejecuta las piezas gráficas y videos basándose en los briefs generados.',
+  },
+  paid: {
+    name: 'Agente de Pauta Digital', icon: '📢',
+    color: 'var(--primary)', hiColor: 'var(--primary-hi)',
+    phase: 'Fase 4 — Ejecución (Pauta)',
+    tagline: 'Google Ads + Meta Ads Automation',
+    description: 'Gestiona y optimiza todas las campañas de pago en Google y Meta, desde la configuración hasta la optimización diaria automática.',
+    functions: [
+      'Configuración y lanzamiento de campañas Google Ads (Search, Display, Performance Max)',
+      'Configuración y lanzamiento de campañas Meta Ads (Tráfico, Conversión, Lead Gen)',
+      'Estructuración de grupos de anuncios y sets de audiencia',
+      'Gestión de pujas automáticas (Target CPA, ROAS, Maximize Conversions)',
+      'A/B testing automático de creatividades y copies',
+      'Alertas automáticas de anomalías (caída CTR, gasto excesivo, bajo QS)',
+      'Exclusión de palabras clave negativas y audiencias',
+      'Optimización de extensiones y assets de anuncios',
+      'Reporte diario de performance de pauta',
+    ],
+    inputs: ['Copies de anuncios (Agente de Contenidos)', 'Piezas gráficas (Equipo Diseño)', 'Presupuesto aprobado por canal', 'Audiencias objetivo (Agente de Investigación)'],
+    outputs: ['Campañas activas (Google + Meta)', 'Reporte diario de métricas', 'Alertas de optimización', 'Leads / conversiones generadas'],
+    tools: ['Google Ads API', 'Meta Marketing API', 'n8n / Make (automatización)', 'Python (scripts de optimización)', 'PostgreSQL (almacenamiento)'],
+    feeds: ['Agente de Analytics y Reportes'],
+  },
+  seo: {
+    name: 'Agente SEO / Orgánico', icon: '🌱',
+    color: 'var(--green)', hiColor: 'var(--green-hi)',
+    phase: 'Fase 4 — Ejecución (SEO)',
+    tagline: 'Posicionamiento Orgánico en Buscadores',
+    description: 'Optimiza la presencia orgánica del cliente en buscadores a través de auditorías técnicas, optimizaciones on-page y contenido estratégico.',
+    functions: [
+      'Auditoría técnica SEO completa (velocidad, Core Web Vitals, errores)',
+      'Optimización on-page: meta tags, estructura H1-H6, schema markup',
+      'Plan de contenido SEO mensual con keywords de oportunidad',
+      'Monitoreo semanal de posiciones en Google Search Console',
+      'Análisis de backlinks y perfil de autoridad de dominio',
+      'Identificación de páginas con bajo rendimiento orgánico',
+      'Reporte mensual de tráfico orgánico y evolución de posiciones',
+      'Alertas de penalizaciones o caídas súbitas de tráfico',
+    ],
+    inputs: ['Keywords estratégicas (Agente de Investigación)', 'URL del sitio web del cliente', 'Google Search Console access'],
+    outputs: ['Reporte de auditoría SEO', 'Lista de optimizaciones priorizadas', 'Plan de contenido SEO', 'Ranking report mensual'],
+    tools: ['SEMrush API', 'Ahrefs API', 'Google Search Console API', 'Screaming Frog (auditoría)', 'n8n (reportes automáticos)'],
+    feeds: ['Agente de Analytics y Reportes'],
+  },
+  social: {
+    name: 'Agente de Redes Sociales', icon: '📱',
+    color: 'var(--blue)', hiColor: 'var(--blue-hi)',
+    phase: 'Fase 4 — Ejecución (Social Media)',
+    tagline: 'Social Media Automation & Community',
+    description: 'Gestiona la presencia orgánica en redes sociales: programación, monitoreo, gestión básica de comunidad y análisis de performance.',
+    functions: [
+      'Programación automática de publicaciones según el calendario editorial',
+      'Monitoreo en tiempo real de menciones, hashtags y keywords de marca',
+      'Gestión básica de comunidad (respuestas automáticas a FAQs frecuentes)',
+      'Análisis de engagement, alcance e impresiones por publicación',
+      'Identificación del contenido de mayor rendimiento (top performers)',
+      'Alertas de crisis: comentarios negativos masivos o tendencias adversas',
+      'Seguimiento de métricas de crecimiento (seguidores, shares, saves)',
+      'Reporte semanal de performance por plataforma',
+    ],
+    inputs: ['Calendario editorial (Agente de Contenidos)', 'Piezas publicables aprobadas (Equipo Diseño)', 'Cuentas de RRSS del cliente'],
+    outputs: ['Posts programados y publicados', 'Reporte de engagement semanal', 'Alertas de crisis en tiempo real', 'Insights de contenido top'],
+    tools: ['Meta API (Instagram/Facebook)', 'Buffer / Metricool', 'Zapier / Make', 'Claude API (respuestas automáticas)'],
+    feeds: ['Agente de Analytics y Reportes'],
+  },
+  analytics: {
+    name: 'Agente de Analytics y Reportes', icon: '📊',
+    color: 'var(--gold)', hiColor: 'var(--gold-hi)',
+    phase: 'Fase 5 — Análisis y Optimización',
+    tagline: 'Data Hub — Todos los Canales Unificados',
+    description: 'El cerebro analítico de la agencia. Consolida datos de todos los canales, genera reportes automáticos y produce insights accionables para el CEO y los clientes.',
+    functions: [
+      'Consolidación de datos de Google Ads, Meta Ads, SEO y Social Media',
+      'Actualización automática de dashboards en Looker Studio / Google Sheets',
+      'Generación de reportes semanales y mensuales (PDF + Google Sheets)',
+      'Análisis completo del embudo de conversión (impresión → lead → venta)',
+      'Detección automática de anomalías y envío de alertas al CEO',
+      'Cálculo de ROI, ROAS y CPA por canal y campaña',
+      'Generación de insights y recomendaciones accionables basadas en datos',
+      'Scoring y clasificación de leads (hot / warm / cold)',
+      'Entrega de leads calificados al Área Comercial con contexto completo',
+    ],
+    inputs: ['Datos Agente de Pauta (Google Ads, Meta)', 'Datos Agente SEO (GSC, rankings)', 'Datos Agente Social (engagement, seguidores)', 'CRM / base de datos de leads'],
+    outputs: ['Dashboard KPIs en tiempo real', 'Reporte ejecutivo automático', 'Alertas de optimización al CEO', 'Leads calificados → Área Comercial', 'Insights para siguiente ciclo estratégico'],
+    tools: ['Looker Studio (dashboards)', 'PostgreSQL (data warehouse)', 'Python + pandas (análisis)', 'n8n (automatización)', 'Claude API (interpretación de datos)', 'Google Sheets API'],
+    feeds: ['Área Comercial (leads)', 'Agente Estratega (loop de optimización)'],
+    checkpoint: '✅ CEO revisa resultados, aprueba optimizaciones y escala leads al Área Comercial.',
+  },
+};
+
+function openPanel(id) {
+  const a = AGENTS[id];
+  if (!a) return;
+
+  document.getElementById('panelIcon').textContent = a.icon;
+  document.getElementById('panelIcon').style.background = a.hiColor;
+  document.getElementById('panelName').textContent = a.name;
+  document.getElementById('panelBadge').textContent = '⚡ AGENTE IA';
+
+  let html = '';
+
+  // Description
+  html += `<div class="panel-section">
+    <p style="font-size:var(--text-sm);color:var(--text-muted);line-height:1.7">${a.description}</p>
+    <div style="margin-top:var(--space-3);display:flex;align-items:center;gap:var(--space-2)">
+      <span style="font-size:var(--text-xs);color:var(--text-faint);font-weight:600;text-transform:uppercase;letter-spacing:0.06em">${a.phase}</span>
+    </div>
+  </div>`;
+
+  if (a.checkpoint) {
+    html += `<div style="padding:var(--space-3) var(--space-4);background:var(--gold-hi);border-radius:var(--radius-lg);font-size:var(--text-xs);color:var(--gold);font-weight:600;margin-bottom:var(--space-4)">${a.checkpoint}</div>`;
+  }
+  if (a.humanNote) {
+    html += `<div style="padding:var(--space-3) var(--space-4);background:var(--green-hi);border-radius:var(--radius-lg);font-size:var(--text-xs);color:var(--green);font-weight:600;margin-bottom:var(--space-4)">${a.humanNote}</div>`;
+  }
+
+  // Functions
+  html += `<div class="panel-section">
+    <div class="panel-section-title">Funciones (${a.functions.length})</div>
+    <ul class="panel-functions">
+      ${a.functions.map((f,i)=>`<li><div class="fn-num">${i+1}</div><span>${f}</span></li>`).join('')}
+    </ul>
+  </div>`;
+
+  // I/O
+  html += `<div class="panel-section">
+    <div class="panel-section-title">Entradas y Salidas</div>
+    <div class="io-grid">
+      <div class="io-box io-in">
+        <div class="io-label">📥 Inputs</div>
+        <ul class="io-list">${a.inputs.map(x=>`<li>${x}</li>`).join('')}</ul>
+      </div>
+      <div class="io-box io-out">
+        <div class="io-label">📤 Outputs</div>
+        <ul class="io-list">${a.outputs.map(x=>`<li>${x}</li>`).join('')}</ul>
+      </div>
+    </div>
+  </div>`;
+
+  // Tools
+  html += `<div class="panel-section">
+    <div class="panel-section-title">Herramientas / Stack</div>
+    <div class="tools-row">${a.tools.map(t=>`<span class="tool-pill">${t}</span>`).join('')}</div>
+  </div>`;
+
+  // Feeds
+  html += `<div class="panel-section">
+    <div class="panel-section-title">Alimenta a</div>
+    <div class="feeds-row">${a.feeds.map(f=>`<span class="feed-pill">→ ${f}</span>`).join('')}</div>
+  </div>`;
+
+  document.getElementById('panelBody').innerHTML = html;
+  document.getElementById('panelOverlay').classList.add('open');
+  document.getElementById('detailPanel').classList.add('open');
+  document.querySelectorAll('.agent-card').forEach(c=>c.classList.remove('active'));
+  const card = document.querySelector(`[data-agent="${id}"]`);
+  if (card) card.classList.add('active');
+}
+
+function closePanel() {
+  document.getElementById('panelOverlay').classList.remove('open');
+  document.getElementById('detailPanel').classList.remove('open');
+  document.querySelectorAll('.agent-card').forEach(c=>c.classList.remove('active'));
+}
+
+// Theme toggle
+(function(){
+  const t=document.querySelector('[data-theme-toggle]'),r=document.documentElement;
+  let d=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';
+  r.setAttribute('data-theme',d);
+  const sunSvg='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>';
+  const moonSvg='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+  if(t){
+    t.innerHTML=d==='dark'?sunSvg:moonSvg;
+    t.addEventListener('click',()=>{
+      d=d==='dark'?'light':'dark';
+      r.setAttribute('data-theme',d);
+      t.innerHTML=d==='dark'?sunSvg:moonSvg;
+      t.setAttribute('aria-label','Cambiar a modo '+(d==='dark'?'claro':'oscuro'));
+    });
+  }
+})();
+</script>
+</body>
+</html>
