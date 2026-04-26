@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>📦 Stock de Prendas</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f5f3ef;
+    --surface: #ffffff;
+    --border: #e0dbd2;
+    --text: #1c1a16;
+    --muted: #7a7367;
+    --faint: #c5bfb6;
+    --green: #0e6b49;
+    --green-bg: #e6f5ef;
+    --red: #c0320f;
+    --red-bg: #fff1ed;
+    --amber: #8a5e00;
+    --amber-bg: #fff8e1;
+    --blue: #1a5fa8;
+    --blue-bg: #e8f2ff;
+    --primary: #1c6e75;
+    --primary-bg: #e3f4f5;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100dvh;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: var(--primary);
+    color: white;
+    padding: 20px 20px 16px;
+    position: sticky;
+    top: 0;
+    z-index: 200;
+    box-shadow: 0 2px 12px rgba(0,0,0,.18);
+  }
+  .header-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+  .header-top h1 {
+    font-size: clamp(16px, 4vw, 22px);
+    font-weight: 700;
+    line-height: 1.2;
+  }
+  .header-top h1 span { opacity: .7; font-size: .75em; display: block; font-weight: 400; }
+  .total-badge {
+    background: rgba(255,255,255,.2);
+    border-radius: 999px;
+    padding: 4px 12px;
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  /* ── SEARCH BOX ── */
+  .searchbox {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  .search-wrap {
+    position: relative;
+    flex: 1;
+  }
+  .search-wrap svg {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: rgba(255,255,255,.55);
+    pointer-events: none;
+  }
+  #q {
+    width: 100%;
+    padding: 13px 14px 13px 42px;
+    border: 1.5px solid rgba(255,255,255,.25);
+    border-radius: 14px;
+    background: rgba(255,255,255,.15);
+    color: white;
+    font-size: 15px;
+    outline: none;
+    transition: background .15s, border-color .15s;
+    -webkit-appearance: none;
+  }
+  #q::placeholder { color: rgba(255,255,255,.55); }
+  #q:focus {
+    background: white;
+    color: var(--text);
+    border-color: white;
+  }
+  #q:focus ~ svg { color: var(--muted); }
+  #clearBtn {
+    background: rgba(255,255,255,.2);
+    border: none;
+    color: white;
+    border-radius: 12px;
+    padding: 13px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background .15s;
+  }
+  #clearBtn:hover { background: rgba(255,255,255,.3); }
+
+  /* ── FILTERS ── */
+  .filters {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 12px 20px;
+    scrollbar-width: none;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+  .filters::-webkit-scrollbar { display: none; }
+  .chip {
+    flex-shrink: 0;
+    border: 1.5px solid var(--border);
+    background: var(--bg);
+    color: var(--muted);
+    border-radius: 999px;
+    padding: 6px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all .15s;
+    user-select: none;
+  }
+  .chip.on {
+    border-color: var(--primary);
+    background: var(--primary-bg);
+    color: var(--primary);
+  }
+
+  /* ── STATS BAR ── */
+  .statsbar {
+    display: flex;
+    gap: 10px;
+    padding: 12px 20px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+  }
+  .statsbar::-webkit-scrollbar { display: none; }
+  .stat {
+    flex-shrink: 0;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 10px 16px;
+    text-align: center;
+  }
+  .stat-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .07em; }
+  .stat-value { font-size: 20px; font-weight: 800; color: var(--text); line-height: 1.1; }
+
+  /* ── GRID ── */
+  main {
+    padding: 16px 16px 32px;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  #grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+    gap: 14px;
+  }
+
+  /* ── CARD ── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,.04);
+    transition: box-shadow .15s, transform .15s;
+  }
+  .card:hover {
+    box-shadow: 0 8px 24px rgba(0,0,0,.1);
+    transform: translateY(-2px);
+  }
+  .card-head {
+    padding: 16px 16px 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  .card-name {
+    font-size: 16px;
+    font-weight: 800;
+    line-height: 1.2;
+    margin-bottom: 8px;
+  }
+  .card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+  .badge {
+    font-size: 11px;
+    font-weight: 600;
+    border-radius: 999px;
+    padding: 4px 10px;
+    background: var(--bg);
+    color: var(--muted);
+    border: 1px solid var(--border);
+  }
+  .badge.talla { background: var(--blue-bg); color: var(--blue); border-color: transparent; }
+  .badge.color { background: #f3f0fc; color: #5a3fad; border-color: transparent; }
+  .badge.tela  { background: var(--bg); color: var(--muted); }
+
+  /* ── PRICE BLOCK ── */
+  .card-prices {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    padding: 14px 16px 16px;
+  }
+  .price-block {
+    border-radius: 14px;
+    padding: 12px 10px;
+    text-align: center;
+  }
+  .price-block .pb-label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .07em;
+    margin-bottom: 4px;
+  }
+  .price-block .pb-value {
+    font-size: clamp(22px, 5vw, 28px);
+    font-weight: 900;
+    line-height: 1;
+  }
+  .price-block .pb-sub {
+    font-size: 11px;
+    margin-top: 3px;
+    opacity: .65;
+  }
+  .pb-disc { background: var(--red-bg); color: var(--red); }
+  .pb-disc.high { background: #ffe0d6; color: #b02000; }
+  .pb-disc.med  { background: var(--amber-bg); color: var(--amber); }
+  .pb-disc.low  { background: var(--green-bg); color: var(--green); }
+  .pb-final     { background: var(--primary-bg); color: var(--primary); }
+  .pb-final.no-price { background: var(--bg); color: var(--faint); }
+
+  .card-stock {
+    padding: 0 16px 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .stock-dot {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--muted);
+  }
+  .stock-dot::before {
+    content: '';
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--green);
+    margin-right: 6px;
+    vertical-align: middle;
+  }
+  .orig-price {
+    font-size: 12px;
+    color: var(--faint);
+    text-decoration: line-through;
+  }
+
+  /* ── EMPTY STATE ── */
+  #empty {
+    grid-column: 1/-1;
+    text-align: center;
+    padding: 56px 20px;
+    color: var(--muted);
+  }
+  #empty .emoji { font-size: 52px; margin-bottom: 16px; }
+  #empty h3 { font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+
+  /* ── HIGHLIGHT ── */
+  mark {
+    background: #fff08a;
+    color: inherit;
+    border-radius: 3px;
+    padding: 0 1px;
+  }
+
+  @media (max-width: 480px) {
+    header { padding: 16px 14px 12px; }
+    .statsbar, .filters { padding-left: 14px; padding-right: 14px; }
+    main { padding: 12px 10px 40px; }
+    #grid { gap: 10px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-top">
+    <h1>📦 Stock de Prendas<span>Precios en Soles (S/)</span></h1>
+    <div class="total-badge" id="totalBadge">… prendas</div>
+  </div>
+  <div class="searchbox">
+    <div class="search-wrap">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      </svg>
+      <input id="q" type="search" autocomplete="off" spellcheck="false"
+             placeholder="Buscar por prenda, tela, color…">
+    </div>
+    <button id="clearBtn">Limpiar</button>
+  </div>
+</header>
+
+<div class="filters" id="sizeFilters"></div>
+
+<div class="statsbar">
+  <div class="stat"><div class="stat-label">Resultados</div><div class="stat-value" id="sCount">—</div></div>
+  <div class="stat"><div class="stat-label">Mayor descuento</div><div class="stat-value" id="sBest">—</div></div>
+  <div class="stat"><div class="stat-label">Precio más bajo</div><div class="stat-value" id="sLow">—</div></div>
+  <div class="stat"><div class="stat-label">Precio más alto</div><div class="stat-value" id="sHigh">—</div></div>
+</div>
+
+<main><div id="grid"></div></main>
+
+<script>
+const STOCK = [
+  {p:"BÁSICO",t:"M",c:"NEGRO",f:"FULL LICRA",pr:55,d:15,pv:46.75},
+  {p:"BÁSICO",t:"M",c:"BLANCO",f:"FULL LICRA",pr:55,d:15,pv:46.75},
+  {p:"FALDA ALESSA",t:"M",c:"NEGRO",f:"STONE",pr:80,d:55,pv:36},
+  {p:"MAXICAPA",t:"M",c:"FLOREADO",f:"DEVORÉ",pr:85,d:70,pv:25.5},
+  {p:"PANTALÓN AURORA",t:"M",c:"VERDE JADE",f:"STONE",pr:90,d:30,pv:63},
+  {p:"PANTALÓN AURORA",t:"M",c:"NEGRO",f:"STONE",pr:90,d:30,pv:63},
+  {p:"PANTALÓN AURORA",t:"M",c:"NEGRO",f:"STONE",pr:90,d:30,pv:63},
+  {p:"PANTALÓN AURORA",t:"M",c:"NEGRO",f:"STONE",pr:90,d:30,pv:63},
+  {p:"PANTALÓN AURORA",t:"M",c:"NEGRO",f:"STONE",pr:90,d:30,pv:63},
+  {p:"PANTALÓN AURORA",t:"M",c:"NEGRO",f:"STONE",pr:90,d:30,pv:63},
+  {p:"PANTALÓN AURORA",t:"M",c:"VERDE PERICO",f:"STONE",pr:90,d:30,pv:63},
+  {p:"PANTALÓN OLIVIA",t:"M",c:"NEGRO",f:"CATANIA",pr:95,d:30,pv:66.5},
+  {p:"POLO ANASTASIA",t:"M",c:"NEGRO",f:"VISCOSA NACIONAL",pr:85,d:50,pv:42.5},
+  {p:"BÁSICO",t:"L",c:"BLANCO",f:"FULL LICRA",pr:55,d:15,pv:46.75},
+  {p:"BÁSICO",t:"L",c:"NEGRO",f:"FULL LICRA",pr:55,d:15,pv:46.75},
+  {p:"BLUSA ARMONIA",t:"L",c:"ESTAMPADO",f:"SEDA SATINADA",pr:89,d:54,pv:40.94},
+  {p:"BLUSA ARMONIA",t:"L",c:"ESTAMPADO",f:"SEDA SATINADA",pr:89,d:54,pv:40.94},
+  {p:"BLUSA ELENA",t:"L",c:"NEGRO",f:"PIEL DE DURAZNO / BIPIUR",pr:80,d:50,pv:40},
+  {p:"BLUSA FRESIA",t:"L",c:"AZUL/FUCSIA",f:"PIEL DE DURAZNO",pr:75,d:50,pv:37.5},
+  {p:"BLUSA FRESIA",t:"L",c:"AZUL/VERDE",f:"PIEL DE DURAZNO",pr:75,d:50,pv:37.5},
+  {p:"BLUSA FRESIA",t:"L",c:"AZUL/VERDE",f:"PIEL DE DURAZNO",pr:75,d:50,pv:37.5},
+  {p:"BLUSA GITANA",t:"L",c:"NEGRO/MOSTAZA",f:"PIEL DE DURAZNO",pr:80,d:45,pv:44},
+  {p:"BLUSA GITANA",t:"L",c:"NEGRO/MOSTAZA",f:"PIEL DE DURAZNO",pr:80,d:45,pv:44},
+  {p:"BLUSA GITANA",t:"L",c:"NEGRO/MOSTAZA",f:"PIEL DE DURAZNO",pr:80,d:45,pv:44},
+  {p:"BLUSA GITANA",t:"L",c:"NEGRO/MOSTAZA",f:"PIEL DE DURAZNO",pr:80,d:45,pv:44},
+  {p:"BLUSA GITANA",t:"L",c:"NEGRO/MOSTAZA",f:"PIEL DE DURAZNO",pr:80,d:45,pv:44},
+  {p:"BLUSA MIA",t:"L",c:"ESTAMPADO",f:"PIEL DE DURAZNO",pr:79,d:45,pv:43.45},
+  {p:"BLUSA MIA",t:"L",c:"ESTAMPADO",f:"PIEL DE DURAZNO",pr:79,d:45,pv:43.45},
+  {p:"BLUSA REBECCA",t:"L",c:"NEGRO",f:"VELVET",pr:85,d:60,pv:34},
+  {p:"BLUSA REBECCA",t:"L",c:"PALO ROSA",f:"VELVET",pr:85,d:60,pv:34},
+  {p:"BLUSA REBECCA",t:"L",c:"PALO ROSA",f:"VELVET",pr:85,d:60,pv:34},
+  {p:"BLUSA REBECCA",t:"L",c:"PALO ROSA",f:"VELVET",pr:85,d:60,pv:34},
+  {p:"BVD",t:"L",c:"BLANCO",f:"VISCOSA NACIONAL",pr:55,d:15,pv:46.75},
+  {p:"BVD",t:"L",c:"BLANCO",f:"VISCOSA NACIONAL",pr:55,d:15,pv:46.75},
+  {p:"BVD",t:"L",c:"NEGRO",f:"VISCOSA NACIONAL",pr:55,d:15,pv:46.75},
+  {p:"BVD",t:"L",c:"NEGRO",f:"VISCOSA NACIONAL",pr:55,d:15,pv:46.75},
+  {p:"JOGGER CARGO",t:"L",c:"NEGRO",f:"STONE",pr:85,d:35,pv:55.25},
+  {p:"JOGGER CARGO",t:"L",c:"NEGRO",f:"STONE",pr:85,d:35,pv:55.25},
+  {p:"MAXICAPA",t:"L",c:"ESTAMPADO",f:"DEBORÉ",pr:85,d:70,pv:25.5},
+  {p:"PALAZO",t:"L",c:"NEGRO",f:"CHALIS",pr:85,d:50,pv:42.5},
+  {p:"PANTALÓN AURORA",t:"L",c:"NEGRO",f:"STONE",pr:90,d:30,pv:63},
+  {p:"PANTALÓN AURORA",t:"L",c:"NEGRO",f:"STONE",pr:90,d:30,pv:63},
+  {p:"PANTALÓN AURORA",t:"L",c:"LADRILLO",f:"STONE",pr:90,d:30,pv:63},
+  {p:"PANTALÓN AURORA",t:"L",c:"VERDE JADE",f:"STONE",pr:90,d:30,pv:63},
+  {p:"PANTALÓN AURORA",t:"L",c:"VERDE PERICO",f:"STONE",pr:90,d:30,pv:63},
+  {p:"PANTALÓN AURORA",t:"L",c:"VERDE PERICO",f:"STONE",pr:90,d:30,pv:63},
+  {p:"PANTALÓN AURORA",t:"L",c:"VERDE PERICO",f:"STONE",pr:90,d:30,pv:63},
+  {p:"PANTALÓN AURORA",t:"L",c:"VERDE PERICO",f:"STONE",pr:90,d:30,pv:63},
+  {p:"PANTALÓN AURORA",t:"L",c:"VERDE PERICO",f:"STONE",pr:90,d:30,pv:63},
+  {p:"PANTALÓN AURORA",t:"L",c:"AZUL",f:"STONE",pr:90,d:30,pv:63},
+  {p:"PANTALÓN OLIVIA",t:"L",c:"NEGRO",f:"CATANIA",pr:95,d:30,pv:66.5},
+  {p:"PANTALÓN OLIVIA",t:"L",c:"NEGRO",f:"CATANIA",pr:95,d:30,pv:66.5},
+  {p:"POLO ANASTASIA",t:"L",c:"NEGRO",f:"VISCOSA NACIONAL",pr:85,d:50,pv:42.5},
+  {p:"POLO ANASTASIA",t:"L",c:"NEGRO",f:"VISCOSA NACIONAL",pr:85,d:50,pv:42.5},
+  {p:"POLO DEPORTIVO",t:"L",c:"ROJO",f:"LICRA",pr:80,d:50,pv:40},
+  {p:"POLO DEPORTIVO",t:"L",c:"NEGRO",f:"LICRA",pr:80,d:50,pv:40},
+  {p:"BLUSA ISIDORA BRILLOS",t:"L",c:"PLOMO",f:"RIB BRILLOS",pr:85,d:45,pv:46.75},
+  {p:"SALIDA DE PLAYA",t:"L",c:"ROSADO",f:"BIPIUR",pr:80,d:60,pv:32},
+  {p:"SALIDA DE PLAYA",t:"L",c:"ROSADO BB",f:"BIPIUR",pr:80,d:60,pv:32},
+  {p:"TOBILLERO",t:"L",c:"VERDE PERICO",f:"STONE",pr:95,d:40,pv:57},
+  {p:"TOBILLERO",t:"L",c:"VERDE PERICO",f:"STONE",pr:95,d:40,pv:57},
+  {p:"TOBILLERO",t:"L",c:"VERDE PERICO",f:"STONE",pr:95,d:40,pv:57},
+  {p:"TOBILLERO",t:"L",c:"AZULINO",f:"STONE",pr:95,d:40,pv:57},
+  {p:"POLO SILVANA",t:"L",c:"NEGRO",f:"VISCOSA NACIONAL",pr:80,d:60,pv:32},
+  {p:"VESTIDO MARIANA",t:"L",c:"ROJO",f:"CHALIS STRECH",pr:95,d:20,pv:76},
+  {p:"VESTIDO SAMY",t:"L",c:"ESTAMPADO",f:"LINO",pr:85,d:20,pv:68},
+  {p:"BLUSA FRESIA",t:"XL",c:"ROSADO/AZUL",f:"PIEL DE DURAZNO",pr:75,d:50,pv:37.5},
+  {p:"BLUSA FRESIA",t:"XL",c:"AZUL/VERDE",f:"PIEL DE DURAZNO",pr:75,d:50,pv:37.5},
+  {p:"BLUSA FRESIA",t:"XL",c:"AZUL/VERDE",f:"PIEL DE DURAZNO",pr:75,d:50,pv:37.5},
+  {p:"BLUSA GITANA",t:"XL",c:"NEGRO/MOSTAZA",f:"PIEL DE DURAZNO",pr:80,d:45,pv:44},
+  {p:"BLUSA GITANA",t:"XL",c:"NEGRO/MOSTAZA",f:"PIEL DE DURAZNO",pr:80,d:45,pv:44},
+  {p:"BLUSA GITANA",t:"XL",c:"NEGRO/MOSTAZA",f:"PIEL DE DURAZNO",pr:80,d:45,pv:44},
+  {p:"BLUSA GITANA",t:"XL",c:"NEGRO/MOSTAZA",f:"PIEL DE DURAZNO",pr:80,d:45,pv:44},
+  {p:"BLUSA GITANA",t:"XL",c:"NEGRO/MOSTAZA",f:"PIEL DE DURAZNO",pr:80,d:45,pv:44},
+  {p:"BLUSA REBECCA",t:"XL",c:"ROSADO",f:"PLUSH",pr:85,d:60,pv:34},
+  {p:"BLUSA REBECCA",t:"XL",c:"ROSADO",f:"PLUSH",pr:85,d:60,pv:34},
+  {p:"BLUSA REBECCA",t:"XL",c:"ROSADO",f:"PLUSH",pr:85,d:60,pv:34},
+  {p:"BLUSA REBECCA",t:"XL",c:"NEGRO",f:"PLUSH",pr:85,d:60,pv:34},
+  {p:"BVD DEPORTIVO",t:"XL",c:"AZUL",f:"LICRA",pr:65,d:40,pv:39},
+  {p:"BVD DEPORTIVO",t:"XL",c:"AZUL",f:"LICRA",pr:65,d:40,pv:39},
+  {p:"FALDA CARGO",t:"XL",c:"ESTAMPADO CUADROS",f:"TELA STONE",pr:85,d:50,pv:42.5},
+  {p:"PALAZO",t:"XL",c:"ESTAMPADO",f:"—",pr:85,d:50,pv:42.5},
+  {p:"PANTALÓN OLIVIA",t:"XL",c:"NEGRO",f:"CATANIA",pr:95,d:30,pv:66.5},
+  {p:"PANTALÓN DEPORTIVO",t:"XL",c:"AZUL",f:"LICRA",pr:88,d:55,pv:39.6},
+  {p:"PANTALÓN DEPORTIVO",t:"XL",c:"AZUL",f:"LICRA",pr:88,d:55,pv:39.6},
+  {p:"PANTALÓN AURORA",t:"XL",c:"NEGRO",f:"STONE",pr:90,d:30,pv:63},
+  {p:"PANTALÓN AURORA",t:"XL",c:"VERDE BOTELLA",f:"STONE",pr:90,d:30,pv:63},
+  {p:"PANTALÓN AURORA",t:"XL",c:"VERDE BOTELLA",f:"STONE",pr:90,d:30,pv:63},
+  {p:"PANTALÓN AURORA",t:"XL",c:"VERDE JADE",f:"STONE",pr:90,d:30,pv:63},
+  {p:"PANTALÓN AURORA",t:"XL",c:"VERDE JADE",f:"STONE",pr:90,d:30,pv:63},
+  {p:"PANTALÓN AURORA",t:"XL",c:"LADRILLO",f:"STONE",pr:90,d:30,pv:63},
+  {p:"PANTALÓN AURORA",t:"XL",c:"VERDE PERICO",f:"STONE",pr:90,d:30,pv:63},
+  {p:"PANTALÓN AURORA",t:"XL",c:"VERDE PERICO",f:"STONE",pr:90,d:30,pv:63},
+  {p:"POLO ANASTASIA",t:"XL",c:"NEGRO",f:"VISCOSA NACIONAL",pr:85,d:50,pv:42.5},
+  {p:"POLO ROSIO",t:"XL",c:"PRINT",f:"PIEL DE DURAZNO",pr:75,d:50,pv:37.5},
+  {p:"POLO SILVANA",t:"XL",c:"AZULINO/BLANCO/ROSADO",f:"RIB",pr:80,d:60,pv:32},
+  {p:"POLO SILVANA",t:"XL",c:"AZULINO/BLANCO/ROSADO",f:"RIB",pr:80,d:60,pv:32},
+  {p:"POLO SILVANA",t:"XL",c:"NEGRO",f:"VISCOSA NACIONAL",pr:80,d:60,pv:32},
+  {p:"RUMBERA ESENCIA",t:"XL",c:"NEGRO",f:"CHALIS",pr:85,d:50,pv:42.5},
+  {p:"TOBILLERO",t:"XL",c:"NEGRO",f:"STONE",pr:95,d:40,pv:57},
+  {p:"TOBILLERO",t:"XL",c:"AZULINO",f:"STONE",pr:95,d:40,pv:57},
+  {p:"TOBILLERO",t:"XL",c:"VERDE PERICO",f:"STONE",pr:95,d:40,pv:57},
+  {p:"VESTIDO PRINCESA",t:"XL",c:"NEGRO",f:"CATANIA",pr:0,d:0,pv:0},
+  {p:"CAPA ENCAJE ESENCIA",t:"XL",c:"NEGRO",f:"MAYA",pr:95,d:50,pv:47.5},
+  {p:"VESTIDO MARIANA",t:"XL",c:"ROJO",f:"CHALIS STRECH",pr:95,d:20,pv:76},
+  {p:"VESTIDO SAMY",t:"XL",c:"ESTAMPADO",f:"LINO",pr:85,d:20,pv:68},
+  {p:"BLUSA ARMONIA",t:"2XL",c:"ESTAMPADO",f:"SEDA SATINADA",pr:89,d:54,pv:40.94},
+  {p:"BLUSA ARMONIA",t:"2XL",c:"ESTAMPADO",f:"SEDA SATINADA",pr:89,d:54,pv:40.94},
+  {p:"BLUSA ARMONIA",t:"2XL",c:"ESTAMPADO",f:"SEDA SATINADA",pr:89,d:54,pv:40.94},
+  {p:"BLUSA ARMONIA",t:"2XL",c:"BLANCO",f:"PIEL DE DURAZNO",pr:89,d:54,pv:40.94},
+  {p:"BLUSA GITANA",t:"2XL",c:"NEGRO/MOSTAZA",f:"PIEL DE DURAZNO",pr:80,d:45,pv:44},
+  {p:"BLUSA GITANA",t:"2XL",c:"NEGRO/MOSTAZA",f:"PIEL DE DURAZNO",pr:80,d:45,pv:44},
+  {p:"BLUSA GITANA",t:"2XL",c:"NEGRO/MOSTAZA",f:"PIEL DE DURAZNO",pr:80,d:45,pv:44},
+  {p:"BLUSA ISIDORA BRILLOS",t:"2XL",c:"PLOMO",f:"RIB",pr:85,d:45,pv:46.75},
+  {p:"BLUSA ISIDORA BRILLOS",t:"2XL",c:"PLOMO",f:"RIB",pr:85,d:45,pv:46.75},
+  {p:"BLUSA PIERINA",t:"2XL",c:"NEGRO",f:"LABRADO",pr:95,d:50,pv:47.5},
+  {p:"BLUSA REBECCA",t:"2XL",c:"PALO ROSA",f:"PLUSH/VELVET",pr:85,d:60,pv:34},
+  {p:"BVD DEPORTIVO",t:"2XL",c:"AZUL",f:"LICRA",pr:65,d:40,pv:39},
+  {p:"BVD DEPORTIVO",t:"2XL",c:"AZUL",f:"LICRA",pr:65,d:40,pv:39},
+  {p:"CAPA VIVIANA",t:"2XL",c:"MOSTAZA",f:"RIB",pr:85,d:50,pv:42.5},
+  {p:"FALDA ALESSA",t:"2XL",c:"VERDE PERICO",f:"STONE",pr:80,d:55,pv:36},
+  {p:"JOGGER CARGO",t:"2XL",c:"NEGRO",f:"STONE",pr:85,d:35,pv:55.25},
+  {p:"JOGGER CARGO",t:"2XL",c:"NEGRO",f:"STONE",pr:85,d:35,pv:55.25},
+  {p:"CAPA ENCAJE ESENCIA",t:"2XL",c:"NEGRO",f:"MAYA",pr:95,d:50,pv:47.5},
+  {p:"PALAZO",t:"2XL",c:"ESTAMPADO",f:"—",pr:85,d:50,pv:42.5},
+  {p:"PALAZO",t:"2XL",c:"ESTAMPADO",f:"—",pr:85,d:50,pv:42.5},
+  {p:"PALAZO",t:"2XL",c:"ESTAMPADO",f:"—",pr:85,d:50,pv:42.5},
+  {p:"PANTALÓN AURORA",t:"2XL",c:"GRIS",f:"STONE",pr:90,d:30,pv:63},
+  {p:"PANTALÓN AURORA",t:"2XL",c:"VERDE PERICO",f:"STONE",pr:90,d:30,pv:63},
+  {p:"PANTALÓN AURORA",t:"2XL",c:"VERDE PERICO",f:"STONE",pr:90,d:30,pv:63},
+  {p:"PANTALÓN AURORA",t:"2XL",c:"VERDE PERICO",f:"STONE",pr:90,d:30,pv:63},
+  {p:"PANTALÓN AURORA",t:"2XL",c:"AZUL",f:"STONE",pr:90,d:30,pv:63},
+  {p:"PANTALÓN AURORA",t:"2XL",c:"CORAL",f:"STONE",pr:90,d:30,pv:63},
+  {p:"PANTALÓN AURORA",t:"2XL",c:"VINO",f:"STONE",pr:90,d:30,pv:63},
+  {p:"PANTALÓN AURORA",t:"2XL",c:"LADRILLO",f:"STONE",pr:90,d:30,pv:63},
+  {p:"PANTALÓN OLIVIA",t:"2XL",c:"AZUL",f:"CATANIA",pr:95,d:30,pv:66.5},
+  {p:"PANTALÓN OLIVIA",t:"2XL",c:"AZUL",f:"CATANIA",pr:95,d:30,pv:66.5},
+  {p:"PANTALÓN OLIVIA",t:"2XL",c:"NEGRO",f:"CATANIA",pr:95,d:30,pv:66.5},
+  {p:"PANTALÓN OLIVIA",t:"2XL",c:"NEGRO",f:"CATANIA",pr:95,d:30,pv:66.5},
+  {p:"PANTALÓN OLIVIA",t:"2XL",c:"NEGRO",f:"CATANIA",pr:95,d:30,pv:66.5},
+  {p:"PANTALÓN OLIVIA",t:"2XL",c:"NEGRO",f:"CATANIA",pr:95,d:30,pv:66.5},
+  {p:"POLO ANASTASIA",t:"2XL",c:"MARRÓN",f:"VISCOSA NACIONAL",pr:85,d:50,pv:42.5},
+  {p:"POLO DEPORTIVO",t:"2XL",c:"ROJO",f:"LICRA",pr:80,d:50,pv:40},
+  {p:"POLO ISIDORA",t:"2XL",c:"NEGRO/CELESTE",f:"RIB",pr:75,d:50,pv:37.5},
+  {p:"POLO SILVANA",t:"2XL",c:"VERDE NEON",f:"RIB",pr:80,d:60,pv:32},
+  {p:"POLO SILVANA",t:"2XL",c:"VERDE NEON",f:"RIB",pr:80,d:60,pv:32},
+  {p:"RUMBERA ESENCIA",t:"2XL",c:"NEGRO",f:"CHALIS",pr:85,d:50,pv:42.5},
+  {p:"VESTIDO SAMY",t:"2XL",c:"ESTAMPADO",f:"LINO",pr:85,d:20,pv:68},
+  {p:"KIMONO",t:"2XL",c:"ESTAMPADO",f:"RÍGIDA",pr:85,d:50,pv:42.5},
+  {p:"BLUSA MIA",t:"2XL",c:"ESTAMPADO",f:"PIEL DE DURAZNO",pr:79,d:45,pv:43.45},
+  {p:"VESTIDO MARIANA",t:"2XL",c:"ROJO",f:"CHALIS STRECH",pr:95,d:20,pv:76},
+  {p:"BLUSA GITANA",t:"3XL",c:"NEGRO/MOSTAZA",f:"PIEL DE DURAZNO",pr:80,d:45,pv:44},
+  {p:"BLUSA GITANA",t:"3XL",c:"NEGRO/MOSTAZA",f:"PIEL DE DURAZNO",pr:80,d:45,pv:44},
+  {p:"BLUSA GITANA",t:"3XL",c:"NEGRO/MOSTAZA",f:"PIEL DE DURAZNO",pr:80,d:45,pv:44},
+  {p:"BLUSA GITANA",t:"3XL",c:"NEGRO/MOSTAZA",f:"PIEL DE DURAZNO",pr:80,d:45,pv:44},
+  {p:"BLUSA TATIANA",t:"3XL",c:"ESTAMPADO",f:"—",pr:0,d:0,pv:0},
+  {p:"VESTIDO DANIELA",t:"3XL",c:"NEGRO",f:"CATANIA",pr:110,d:25,pv:82.5},
+  {p:"BLUSA ARMONIA",t:"3XL",c:"ESTAMPADO",f:"SEDA SATINADA",pr:89,d:54,pv:40.94},
+  {p:"BLUSA ARMONIA",t:"3XL",c:"BLANCO",f:"PIEL DE DURAZNO",pr:89,d:54,pv:40.94},
+  {p:"KIMONO",t:"3XL",c:"ESTAMPADO",f:"SEDA FRANCESA",pr:85,d:50,pv:42.5},
+  {p:"RUMBERA ESENCIA",t:"3XL",c:"NEGRO",f:"CHALIS",pr:85,d:50,pv:42.5},
+  {p:"POLO ISIDORA",t:"3XL",c:"NEGRO/CELESTE",f:"RIB",pr:75,d:50,pv:37.5},
+  {p:"POLO AMANDA",t:"3XL",c:"BLANCO",f:"VISCOSA NACIONAL",pr:85,d:45,pv:46.75},
+  {p:"POLO AMANDA",t:"3XL",c:"BLANCO",f:"VISCOSA NACIONAL",pr:85,d:45,pv:46.75},
+  {p:"POLO AMANDA",t:"3XL",c:"NEGRO",f:"VISCOSA NACIONAL",pr:85,d:45,pv:46.75},
+  {p:"VESTIDO ANTONELLA",t:"3XL",c:"NEGRO",f:"RIB",pr:90,d:50,pv:45},
+  {p:"FALDA ALESSA",t:"3XL",c:"MOSTAZA",f:"STONE",pr:80,d:55,pv:36},
+  {p:"FALDA ALESSA",t:"3XL",c:"MOSTAZA",f:"STONE",pr:80,d:55,pv:36},
+  {p:"FALDA ALESSA",t:"3XL",c:"NEGRO",f:"STONE",pr:80,d:55,pv:36},
+  {p:"FALDA ALESSA",t:"3XL",c:"NEGRO",f:"STONE",pr:80,d:55,pv:36},
+  {p:"FALDA ALESSA",t:"3XL",c:"ROJO",f:"STONE",pr:80,d:55,pv:36},
+  {p:"FALDA ALESSA",t:"3XL",c:"FUCCIA",f:"STONE",pr:80,d:55,pv:36},
+  {p:"PANTALÓN AURORA",t:"3XL",c:"NEGRO",f:"STONE",pr:90,d:30,pv:63},
+  {p:"PANTALÓN OLIVIA",t:"3XL",c:"NEGRO",f:"CATANIA",pr:95,d:30,pv:66.5},
+  {p:"PANTALÓN OLIVIA",t:"3XL",c:"NEGRO",f:"CATANIA",pr:95,d:30,pv:66.5},
+  {p:"PANTALÓN OLIVIA",t:"4XL",c:"AZUL",f:"CATANIA",pr:95,d:30,pv:66.5}
+];
+
+// ── normalise for search ──────────────────────────────────────
+const norm = s => (s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+                         .replace(/[^a-z0-9 ]/gi,'').toLowerCase().trim();
+STOCK.forEach(x => x._idx = norm([x.p,x.t,x.c,x.f].join(' ')));
+
+// ── money ──────────────────────────────────────────────────────
+const sol = v => v > 0
+  ? `S/ ${v.toFixed(2).replace(/\.00$/,'')}`
+  : 'Sin precio';
+
+// ── DOM refs ──────────────────────────────────────────────────
+const $q       = document.getElementById('q');
+const $grid    = document.getElementById('grid');
+const $sCount  = document.getElementById('sCount');
+const $sBest   = document.getElementById('sBest');
+const $sLow    = document.getElementById('sLow');
+const $sHigh   = document.getElementById('sHigh');
+const $total   = document.getElementById('totalBadge');
+const $sizes   = document.getElementById('sizeFilters');
+
+$total.textContent = `${STOCK.length} unidades`;
+
+// ── size chips ────────────────────────────────────────────────
+const sizes = [...new Set(STOCK.map(x => x.t))].sort((a,b) => {
+  const order = ['M','L','XL','2XL','3XL','4XL'];
+  return (order.indexOf(a)+1||99) - (order.indexOf(b)+1||99);
+});
+let activeSize = '';
+const chips = {};
+sizes.forEach(sz => {
+  const btn = document.createElement('button');
+  btn.className = 'chip';
+  btn.textContent = sz;
+  btn.addEventListener('click', () => {
+    activeSize = activeSize === sz ? '' : sz;
+    Object.entries(chips).forEach(([k,el]) => el.classList.toggle('on', k === activeSize));
+    render();
+  });
+  chips[sz] = btn;
+  $sizes.appendChild(btn);
+});
+
+// ── highlight helper ──────────────────────────────────────────
+function hl(text, words) {
+  if (!words.length) return text;
+  const safe = words.map(w => w.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'));
+  return text.replace(new RegExp(`(${safe.join('|')})`, 'gi'),
+    m => `<mark>${m}</mark>`);
+}
+
+// ── discount colour class ──────────────────────────────────────
+function discClass(d) {
+  if (d >= 50) return 'high';
+  if (d >= 30) return 'med';
+  return 'low';
+}
+
+// ── build card HTML ───────────────────────────────────────────
+function cardHTML(item, words) {
+  const hasPrice = item.pv > 0;
+  const hlP = t => hl(t, words);
+
+  return `
+  <article class="card">
+    <div class="card-head">
+      <div class="card-name">${hlP(item.p)}</div>
+      <div class="card-tags">
+        <span class="badge talla">Talla ${hlP(item.t)}</span>
+        <span class="badge color">${hlP(item.c)}</span>
+        <span class="badge tela">${hlP(item.f)}</span>
+      </div>
+    </div>
+    <div class="card-prices">
+      <div class="price-block pb-disc ${hasPrice ? discClass(item.d) : ''}">
+        <div class="pb-label">Descuento</div>
+        <div class="pb-value">${hasPrice && item.d > 0 ? item.d + '%' : '—'}</div>
+        <div class="pb-sub">sobre precio normal</div>
+      </div>
+      <div class="price-block pb-final ${hasPrice ? '' : 'no-price'}">
+        <div class="pb-label">Precio final</div>
+        <div class="pb-value">${sol(item.pv)}</div>
+        <div class="pb-sub">precio de venta</div>
+      </div>
+    </div>
+    <div class="card-stock">
+      <span class="stock-dot">En stock</span>
+      <span class="orig-price">${item.pr > 0 ? 'Normal: '+sol(item.pr) : ''}</span>
+    </div>
+  </article>`;
+}
+
+// ── main render ───────────────────────────────────────────────
+function render() {
+  const raw   = $q.value.trim();
+  const words = norm(raw).split(/\s+/).filter(Boolean);
+  const filtered = STOCK.filter(item => {
+    const matchQ    = words.length === 0 || words.every(w => item._idx.includes(w));
+    const matchSize = !activeSize || item.t === activeSize;
+    return matchQ && matchSize;
+  });
+
+  $sCount.textContent = filtered.length;
+  const pvs = filtered.filter(x => x.pv > 0).map(x => x.pv);
+  const ds  = filtered.filter(x => x.d  > 0).map(x => x.d);
+  $sBest.textContent = ds.length  ? Math.max(...ds)  + '%'            : '—';
+  $sLow.textContent  = pvs.length ? sol(Math.min(...pvs))             : '—';
+  $sHigh.textContent = pvs.length ? sol(Math.max(...pvs))             : '—';
+
+  if (!filtered.length) {
+    $grid.innerHTML = `<div id="empty">
+      <div class="emoji">🔍</div>
+      <h3>Sin resultados</h3>
+      <p>Prueba con otro nombre, tela o color.</p>
+    </div>`;
+    return;
+  }
+
+  $grid.innerHTML = filtered.map(item => cardHTML(item, words)).join('');
+}
+
+// ── events ────────────────────────────────────────────────────
+$q.addEventListener('input', render);
+document.getElementById('clearBtn').addEventListener('click', () => {
+  $q.value = '';
+  activeSize = '';
+  Object.values(chips).forEach(el => el.classList.remove('on'));
+  render();
+  $q.focus();
+});
+
+render();
+</script>
+</body>
+</html>
