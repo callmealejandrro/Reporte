@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Calendario AURUS 2026</title>
+<link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,600,700&f[]=cabinet-grotesk@700,800,900&display=swap" rel="stylesheet">
+<style>
+:root,[data-theme=light]{--bg:#f5f4f0;--sf:#faf9f6;--sf3:#edeae3;--bd:#dcd9d3;--dv:#e6e3dc;--tx:#26231c;--mu:#78766f;--fa:#b5b2ab;--pr:#01696f;--pr-hl:#cfe0de;--fd:'Cabinet Grotesk',sans-serif;--fb:'Satoshi',sans-serif;--sh-sm:0 1px 4px rgba(30,26,18,.07);--sh-md:0 4px 18px rgba(30,26,18,.10);}
+[data-theme=dark]{--bg:#131211;--sf:#191816;--sf3:#232120;--bd:#302e2b;--dv:#252320;--tx:#cac8c3;--mu:#716e68;--fa:#4e4b45;--pr:#4a9aa6;--pr-hl:#1d3434;--sh-sm:0 1px 4px rgba(0,0,0,.25);--sh-md:0 4px 18px rgba(0,0,0,.38);}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{-webkit-font-smoothing:antialiased;scroll-behavior:smooth;}
+body{font-family:var(--fb);background:var(--bg);color:var(--tx);line-height:1.6;min-height:100dvh;}
+/* HEADER */
+.hdr{background:var(--sf);border-bottom:1px solid var(--bd);padding:13px 22px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;box-shadow:var(--sh-sm);}
+.hl{display:flex;align-items:center;gap:11px;}
+.ln{font-family:var(--fd);font-size:1.18rem;font-weight:900;letter-spacing:-.03em;}
+.ls{font-size:.66rem;color:var(--mu);font-weight:600;letter-spacing:.06em;text-transform:uppercase;}
+.pill{background:var(--pr);color:#fff;font-size:.67rem;font-weight:700;padding:3px 11px;border-radius:99px;}
+.tog{background:var(--sf3);border:1px solid var(--bd);border-radius:99px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--mu);transition:color .18s,border-color .18s;}
+.tog:hover{color:var(--pr);border-color:var(--pr);}
+/* HERO */
+.hero{max-width:820px;margin:0 auto;padding:50px 22px 34px;text-align:center;}
+.eye{font-size:.7rem;font-weight:700;color:var(--pr);letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px;}
+.ht{font-family:var(--fd);font-size:clamp(1.8rem,5vw,2.9rem);font-weight:900;letter-spacing:-.04em;line-height:1.05;margin-bottom:12px;}
+.ht em{color:var(--pr);font-style:normal;}
+.hd{color:var(--mu);font-size:.88rem;max-width:48ch;margin:0 auto 22px;}
+.leg{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;margin-bottom:4px;}
+.li{display:flex;align-items:center;gap:5px;font-size:.69rem;color:var(--mu);}
+.ld{width:8px;height:8px;border-radius:99px;}
+/* GRID */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(370px,100%),1fr));gap:20px;max-width:1200px;margin:0 auto;padding:6px 22px 70px;}
+/* CARD */
+.card{background:var(--sf);border:1px solid var(--bd);border-radius:15px;overflow:hidden;box-shadow:var(--sh-sm);transition:box-shadow .18s,transform .18s;}
+.card:hover{box-shadow:var(--sh-md);transform:translateY(-2px);}
+.card.wide{grid-column:1/-1;max-width:750px;margin-inline:auto;width:100%;}
+.card-hdr{padding:16px 20px 9px;display:flex;align-items:flex-start;justify-content:space-between;gap:10px;}
+.card-month{font-family:var(--fd);font-size:clamp(1.3rem,3vw,1.8rem);font-weight:900;letter-spacing:-.03em;line-height:1;}
+.card-num{font-size:.63rem;color:var(--fa);font-weight:700;letter-spacing:.07em;text-transform:uppercase;background:var(--sf3);padding:3px 9px;border-radius:99px;margin-top:4px;}
+.card-theme{font-size:.78rem;color:var(--mu);padding:0 20px 12px;border-bottom:1px solid var(--dv);}
+.events{padding:12px 20px;display:flex;flex-direction:column;gap:10px;}
+.ev{display:flex;align-items:flex-start;gap:10px;}
+.ev-box{min-width:42px;height:42px;border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0;}
+.ev-d{font-family:var(--fd);font-size:.9rem;font-weight:900;line-height:1;}
+.ev-m{font-size:8px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;opacity:.72;}
+.ev-name{font-size:.81rem;font-weight:700;line-height:1.25;}
+.ev-type{font-size:.69rem;color:var(--mu);margin-top:2px;}
+.sep{height:1px;background:var(--dv);margin:2px 20px;}
+.vz-block{padding:10px 20px 16px;display:flex;flex-direction:column;gap:8px;}
+.note{font-size:.73rem;color:#bf4e00;background:rgba(191,78,0,.08);border:1px solid rgba(191,78,0,.17);border-radius:7px;padding:7px 10px;}
+.vz-row{border-radius:9px;padding:10px 12px;display:flex;align-items:center;gap:9px;}
+.vz-visit{background:var(--pr-hl);border:1px solid rgba(1,105,111,.17);}
+.vz-zoom{background:rgba(26,26,220,.055);border:1px solid rgba(26,26,220,.12);}
+[data-theme=dark] .vz-zoom{background:rgba(80,120,255,.07);border-color:rgba(80,120,255,.14);}
+.vz-icon{width:32px;height:32px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+/* SUMMARY */
+.sum{background:var(--sf);border-top:1px solid var(--bd);padding:52px 22px 68px;}
+.sum-in{max-width:960px;margin:0 auto;}
+.sum-h{font-family:var(--fd);font-size:clamp(1.15rem,3vw,1.65rem);font-weight:900;letter-spacing:-.03em;text-align:center;margin-bottom:26px;}
+.tbl{width:100%;border-collapse:collapse;font-size:.8rem;}
+.tbl thead th{background:var(--sf3);padding:9px 12px;text-align:left;font-weight:700;font-size:.64rem;letter-spacing:.06em;text-transform:uppercase;color:var(--mu);}
+.tbl thead th:first-child{border-radius:7px 0 0 7px;}
+.tbl thead th:last-child{border-radius:0 7px 7px 0;}
+.tbl tbody tr{border-bottom:1px solid var(--dv);}
+.tbl tbody tr:last-child{border-bottom:none;}
+.tbl tbody td{padding:10px 12px;vertical-align:middle;}
+.mc{font-weight:700;}
+.dc{font-family:'Courier New',monospace;color:var(--pr);font-weight:700;font-size:.78rem;}
+.zc{font-family:'Courier New',monospace;color:#1a1adc;font-size:.75rem;}
+[data-theme=dark] .zc{color:#7090ff;}
+.tc{color:var(--mu);font-size:.78rem;}
+.ftr{text-align:center;font-size:.7rem;color:var(--fa);padding:16px;background:var(--sf3);border-top:1px solid var(--bd);}
+@media(max-width:560px){.grid,.hero,.sum{padding-left:12px;padding-right:12px;}.hdr{padding:10px 12px;}.tbl{font-size:.7rem;}}
+</style>
+</head>
+<body>
+<header class="hdr">
+  <div class="hl">
+    <svg width="33" height="33" viewBox="0 0 36 36" fill="none"><rect width="36" height="36" rx="8" fill="#01696f"/><path d="M10 26L18 10L26 26" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M13.5 20.5H22.5" stroke="white" stroke-width="2.5" stroke-linecap="round"/></svg>
+    <div><div class="ln">AURUS</div><div class="ls">Calendario de Marketing 2026</div></div>
+  </div>
+  <div style="display:flex;align-items:center;gap:9px;">
+    <span class="pill">2026</span>
+    <button class="tog" data-tog aria-label="Cambiar tema">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+    </button>
+  </div>
+</header>
+<section class="hero">
+  <p class="eye">Planificación Mayo → Diciembre</p>
+  <h1 class="ht">Calendario Comercial<br><em>AURUS 2026</em></h1>
+  <p class="hd">Temáticas fijas por mes, Zoom + Live cada viernes previo (8:00–9:30 pm) y visita a proyecto cada 3er domingo.</p>
+  <div class="leg">
+    <div class="li"><div class="ld" style="background:#b5186e"></div>Campaña principal del mes</div>
+    <div class="li"><div class="ld" style="background:#01696f"></div>Visita a Proyecto (3er Dom)</div>
+    <div class="li"><div class="ld" style="background:#1a1adc"></div>Zoom + Live TikTok (8–9:30 pm)</div>
+  </div>
+</section>
+<div class="grid">
+<div class="card">
+  <div class="card-hdr">
+    <div class="card-month" style="color:#b5186e">Mayo</div>
+    <span class="card-num">Mes 05</span>
+  </div>
+  <div class="card-theme"><strong>Temática:</strong> 👩‍👧 Día de la Madre &nbsp;·&nbsp; <em>"El mejor regalo es su futuro"</em></div>
+  <div class="events"><div class="ev">
+          <div class="ev-box" style="background:rgba(181,24,110,.11);color:#b5186e"><span class="ev-d">10</span><span class="ev-m">May</span></div>
+          <div><div class="ev-name">👩‍👧 Día de la Madre</div><div class="ev-type">Campaña principal del mes · Pauta especial Meta Ads</div><span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:2px 8px;border-radius:99px;background:rgba(1,105,111,.13);color:#01696f;">● Campaña principal</span></div>
+        </div></div>
+  <div class="sep"></div>
+  <div class="vz-block">
+    
+    <div class="vz-row vz-zoom">
+      <div class="vz-icon" style="background:#1a1adc"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><rect x="2" y="7" width="15" height="10" rx="2"/><path d="M17 9l5-3v12l-5-3"/></svg></div>
+      <div><div style="font-size:.8rem;font-weight:700;color:#1a1adc;">📱 Zoom + Live TikTok &nbsp;— Vie 15 de Mayo</div><div style="font-size:.68rem;color:var(--mu)">⏰ 8:00 pm – 9:30 pm &nbsp;·&nbsp; Recorrido virtual + dudas + CTA</div></div>
+    </div>
+    <div class="vz-row vz-visit">
+      <div class="vz-icon" style="background:var(--pr)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+      <div><div style="font-size:.8rem;font-weight:700;color:var(--pr)">🚍 Visita a Proyecto &nbsp;— Dom 17 de Mayo</div><div style="font-size:.68rem;color:var(--mu)">3er domingo del mes &nbsp;·&nbsp; Traslado, recorrido y cierre comercial</div></div>
+    </div>
+  </div>
+</div><div class="card">
+  <div class="card-hdr">
+    <div class="card-month" style="color:#1565c0">Junio</div>
+    <span class="card-num">Mes 06</span>
+  </div>
+  <div class="card-theme"><strong>Temática:</strong> 👨‍👧 Día del Padre + ⚽ Copa Mundial FIFA 2026 &nbsp;·&nbsp; <em>"Juega en grande, invierte en tu familia"</em></div>
+  <div class="events"><div class="ev">
+          <div class="ev-box" style="background:rgba(181,24,110,.11);color:#b5186e"><span class="ev-d">11</span><span class="ev-m">Jun</span></div>
+          <div><div class="ev-name">⚽ Inicio Copa Mundial FIFA 2026</div><div class="ev-type">Campaña creativa · Jun–Jul</div><span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:2px 8px;border-radius:99px;background:rgba(1,105,111,.13);color:#01696f;">● Campaña principal</span></div>
+        </div><div class="ev">
+          <div class="ev-box" style="background:rgba(21,101,192,.11);color:#1565c0"><span class="ev-d">21</span><span class="ev-m">Jun</span></div>
+          <div><div class="ev-name">👨‍👧 Día del Padre</div><div class="ev-type">Campaña principal del mes · Pauta especial</div><span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:2px 8px;border-radius:99px;background:rgba(1,105,111,.13);color:#01696f;">● Campaña principal</span></div>
+        </div></div>
+  <div class="sep"></div>
+  <div class="vz-block">
+    <div class="note">⚠️ La visita coincide con el Día del Padre — experiencia especial para papás</div>
+    <div class="vz-row vz-zoom">
+      <div class="vz-icon" style="background:#1a1adc"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><rect x="2" y="7" width="15" height="10" rx="2"/><path d="M17 9l5-3v12l-5-3"/></svg></div>
+      <div><div style="font-size:.8rem;font-weight:700;color:#1a1adc;">📱 Zoom + Live TikTok &nbsp;— Vie 19 de Junio</div><div style="font-size:.68rem;color:var(--mu)">⏰ 8:00 pm – 9:30 pm &nbsp;·&nbsp; Recorrido virtual + dudas + CTA</div></div>
+    </div>
+    <div class="vz-row vz-visit">
+      <div class="vz-icon" style="background:var(--pr)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+      <div><div style="font-size:.8rem;font-weight:700;color:var(--pr)">🚍 Visita a Proyecto &nbsp;— Dom 21 de Junio</div><div style="font-size:.68rem;color:var(--mu)">3er domingo del mes &nbsp;·&nbsp; Traslado, recorrido y cierre comercial</div></div>
+    </div>
+  </div>
+</div><div class="card">
+  <div class="card-hdr">
+    <div class="card-month" style="color:#c62828">Julio</div>
+    <span class="card-num">Mes 07</span>
+  </div>
+  <div class="card-theme"><strong>Temática:</strong> 🇵🇪 Fiestas Patrias &nbsp;·&nbsp; <em>"Orgullo peruano, inversión segura"</em></div>
+  <div class="events"><div class="ev">
+          <div class="ev-box" style="background:rgba(181,24,110,.11);color:#b5186e"><span class="ev-d">28</span><span class="ev-m">Jul</span></div>
+          <div><div class="ev-name">🇵🇪 Fiestas Patrias</div><div class="ev-type">Campaña principal del mes · Pauta patriótica fuerte</div><span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:2px 8px;border-radius:99px;background:rgba(1,105,111,.13);color:#01696f;">● Campaña principal</span></div>
+        </div></div>
+  <div class="sep"></div>
+  <div class="vz-block">
+    
+    <div class="vz-row vz-zoom">
+      <div class="vz-icon" style="background:#1a1adc"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><rect x="2" y="7" width="15" height="10" rx="2"/><path d="M17 9l5-3v12l-5-3"/></svg></div>
+      <div><div style="font-size:.8rem;font-weight:700;color:#1a1adc;">📱 Zoom + Live TikTok &nbsp;— Vie 17 de Julio</div><div style="font-size:.68rem;color:var(--mu)">⏰ 8:00 pm – 9:30 pm &nbsp;·&nbsp; Recorrido virtual + dudas + CTA</div></div>
+    </div>
+    <div class="vz-row vz-visit">
+      <div class="vz-icon" style="background:var(--pr)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+      <div><div style="font-size:.8rem;font-weight:700;color:var(--pr)">🚍 Visita a Proyecto &nbsp;— Dom 19 de Julio</div><div style="font-size:.68rem;color:var(--mu)">3er domingo del mes &nbsp;·&nbsp; Traslado, recorrido y cierre comercial</div></div>
+    </div>
+  </div>
+</div><div class="card">
+  <div class="card-hdr">
+    <div class="card-month" style="color:#e65100">Agosto</div>
+    <span class="card-num">Mes 08</span>
+  </div>
+  <div class="card-theme"><strong>Temática:</strong> 👴 Día de los Abuelos + 👦 Día del Niño &nbsp;·&nbsp; <em>"Construye el futuro de tu familia"</em></div>
+  <div class="events"><div class="ev">
+          <div class="ev-box" style="background:rgba(181,24,110,.11);color:#b5186e"><span class="ev-d">17</span><span class="ev-m">Ago</span></div>
+          <div><div class="ev-name">👦 Día del Niño</div><div class="ev-type">Campaña familiar · Pauta especial</div><span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:2px 8px;border-radius:99px;background:rgba(1,105,111,.13);color:#01696f;">● Campaña principal</span></div>
+        </div><div class="ev">
+          <div class="ev-box" style="background:rgba(21,101,192,.11);color:#1565c0"><span class="ev-d">26</span><span class="ev-m">Ago</span></div>
+          <div><div class="ev-name">👴 Día de los Abuelos</div><div class="ev-type">Post emocional · Historia + carrusel</div><span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:2px 8px;border-radius:99px;background:rgba(1,105,111,.13);color:#01696f;">● Campaña principal</span></div>
+        </div></div>
+  <div class="sep"></div>
+  <div class="vz-block">
+    
+    <div class="vz-row vz-zoom">
+      <div class="vz-icon" style="background:#1a1adc"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><rect x="2" y="7" width="15" height="10" rx="2"/><path d="M17 9l5-3v12l-5-3"/></svg></div>
+      <div><div style="font-size:.8rem;font-weight:700;color:#1a1adc;">📱 Zoom + Live TikTok &nbsp;— Vie 14 de Agosto</div><div style="font-size:.68rem;color:var(--mu)">⏰ 8:00 pm – 9:30 pm &nbsp;·&nbsp; Recorrido virtual + dudas + CTA</div></div>
+    </div>
+    <div class="vz-row vz-visit">
+      <div class="vz-icon" style="background:var(--pr)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+      <div><div style="font-size:.8rem;font-weight:700;color:var(--pr)">🚍 Visita a Proyecto &nbsp;— Dom 16 de Agosto</div><div style="font-size:.68rem;color:var(--mu)">3er domingo del mes &nbsp;·&nbsp; Traslado, recorrido y cierre comercial</div></div>
+    </div>
+  </div>
+</div><div class="card">
+  <div class="card-hdr">
+    <div class="card-month" style="color:#5a1f8a">Setiembre</div>
+    <span class="card-num">Mes 09</span>
+  </div>
+  <div class="card-theme"><strong>Temática:</strong> 🛍️ Día del Shopping + 🌸 Día de la Primavera &nbsp;·&nbsp; <em>"Nueva temporada, nueva inversión"</em></div>
+  <div class="events"><div class="ev">
+          <div class="ev-box" style="background:rgba(181,24,110,.11);color:#b5186e"><span class="ev-d">23</span><span class="ev-m">Set</span></div>
+          <div><div class="ev-name">🌸 Día de la Primavera</div><div class="ev-type">Campaña estacional · Post creativo</div><span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:2px 8px;border-radius:99px;background:rgba(1,105,111,.13);color:#01696f;">● Campaña principal</span></div>
+        </div><div class="ev">
+          <div class="ev-box" style="background:rgba(21,101,192,.11);color:#1565c0"><span class="ev-d">27</span><span class="ev-m">Set</span></div>
+          <div><div class="ev-name">🛍️ Día del Shopping</div><div class="ev-type">27–28 Set · Promo lotes · Pauta fuerte</div><span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:2px 8px;border-radius:99px;background:rgba(1,105,111,.13);color:#01696f;">● Campaña principal</span></div>
+        </div></div>
+  <div class="sep"></div>
+  <div class="vz-block">
+    
+    <div class="vz-row vz-zoom">
+      <div class="vz-icon" style="background:#1a1adc"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><rect x="2" y="7" width="15" height="10" rx="2"/><path d="M17 9l5-3v12l-5-3"/></svg></div>
+      <div><div style="font-size:.8rem;font-weight:700;color:#1a1adc;">📱 Zoom + Live TikTok &nbsp;— Vie 18 de Setiembre</div><div style="font-size:.68rem;color:var(--mu)">⏰ 8:00 pm – 9:30 pm &nbsp;·&nbsp; Recorrido virtual + dudas + CTA</div></div>
+    </div>
+    <div class="vz-row vz-visit">
+      <div class="vz-icon" style="background:var(--pr)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+      <div><div style="font-size:.8rem;font-weight:700;color:var(--pr)">🚍 Visita a Proyecto &nbsp;— Dom 20 de Setiembre</div><div style="font-size:.68rem;color:var(--mu)">3er domingo del mes &nbsp;·&nbsp; Traslado, recorrido y cierre comercial</div></div>
+    </div>
+  </div>
+</div><div class="card">
+  <div class="card-hdr">
+    <div class="card-month" style="color:#bf4e00">Octubre</div>
+    <span class="card-num">Mes 10</span>
+  </div>
+  <div class="card-theme"><strong>Temática:</strong> 🎃 Halloween &nbsp;·&nbsp; <em>"No le temas al futuro, invierte hoy"</em></div>
+  <div class="events"><div class="ev">
+          <div class="ev-box" style="background:rgba(181,24,110,.11);color:#b5186e"><span class="ev-d">31</span><span class="ev-m">Oct</span></div>
+          <div><div class="ev-name">🎃 Halloween</div><div class="ev-type">Campaña creativa · Post temático · Concurso</div><span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:2px 8px;border-radius:99px;background:rgba(1,105,111,.13);color:#01696f;">● Campaña principal</span></div>
+        </div></div>
+  <div class="sep"></div>
+  <div class="vz-block">
+    
+    <div class="vz-row vz-zoom">
+      <div class="vz-icon" style="background:#1a1adc"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><rect x="2" y="7" width="15" height="10" rx="2"/><path d="M17 9l5-3v12l-5-3"/></svg></div>
+      <div><div style="font-size:.8rem;font-weight:700;color:#1a1adc;">📱 Zoom + Live TikTok &nbsp;— Vie 16 de Octubre</div><div style="font-size:.68rem;color:var(--mu)">⏰ 8:00 pm – 9:30 pm &nbsp;·&nbsp; Recorrido virtual + dudas + CTA</div></div>
+    </div>
+    <div class="vz-row vz-visit">
+      <div class="vz-icon" style="background:var(--pr)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+      <div><div style="font-size:.8rem;font-weight:700;color:var(--pr)">🚍 Visita a Proyecto &nbsp;— Dom 18 de Octubre</div><div style="font-size:.68rem;color:var(--mu)">3er domingo del mes &nbsp;·&nbsp; Traslado, recorrido y cierre comercial</div></div>
+    </div>
+  </div>
+</div><div class="card wide">
+  <div class="card-hdr">
+    <div class="card-month" style="color:#1a1a1a">Noviembre</div>
+    <span class="card-num">Mes 11</span>
+  </div>
+  <div class="card-theme"><strong>Temática:</strong> 🖤 Black Friday &nbsp;·&nbsp; <em>"La mejor oferta del año es tu terreno"</em></div>
+  <div class="events"><div class="ev">
+          <div class="ev-box" style="background:rgba(181,24,110,.11);color:#b5186e"><span class="ev-d">27</span><span class="ev-m">Nov</span></div>
+          <div><div class="ev-name">🖤 Black Friday</div><div class="ev-type">Campaña principal · Descuentos · Pauta fuerte</div><span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:2px 8px;border-radius:99px;background:rgba(1,105,111,.13);color:#01696f;">● Campaña principal</span></div>
+        </div><div class="ev">
+          <div class="ev-box" style="background:rgba(21,101,192,.11);color:#1565c0"><span class="ev-d">30</span><span class="ev-m">Nov</span></div>
+          <div><div class="ev-name">💻 Cyber Monday</div><div class="ev-type">Extensión Black Friday · CTA urgencia</div><span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:2px 8px;border-radius:99px;background:rgba(1,105,111,.13);color:#01696f;">● Campaña principal</span></div>
+        </div></div>
+  <div class="sep"></div>
+  <div class="vz-block">
+    <div class="note">🔥 Mes más fuerte del año — planificar con 3 semanas de anticipación</div>
+    <div class="vz-row vz-zoom">
+      <div class="vz-icon" style="background:#1a1adc"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><rect x="2" y="7" width="15" height="10" rx="2"/><path d="M17 9l5-3v12l-5-3"/></svg></div>
+      <div><div style="font-size:.8rem;font-weight:700;color:#1a1adc;">📱 Zoom + Live TikTok &nbsp;— Vie 13 de Noviembre</div><div style="font-size:.68rem;color:var(--mu)">⏰ 8:00 pm – 9:30 pm &nbsp;·&nbsp; Recorrido virtual + dudas + CTA</div></div>
+    </div>
+    <div class="vz-row vz-visit">
+      <div class="vz-icon" style="background:var(--pr)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+      <div><div style="font-size:.8rem;font-weight:700;color:var(--pr)">🚍 Visita a Proyecto &nbsp;— Dom 15 de Noviembre</div><div style="font-size:.68rem;color:var(--mu)">3er domingo del mes &nbsp;·&nbsp; Traslado, recorrido y cierre comercial</div></div>
+    </div>
+  </div>
+</div><div class="card wide">
+  <div class="card-hdr">
+    <div class="card-month" style="color:#c62828">Diciembre</div>
+    <span class="card-num">Mes 12</span>
+  </div>
+  <div class="card-theme"><strong>Temática:</strong> 🎄 Navidad &nbsp;·&nbsp; <em>"El mejor regalo de Navidad, tu propio terreno"</em></div>
+  <div class="events"><div class="ev">
+          <div class="ev-box" style="background:rgba(181,24,110,.11);color:#b5186e"><span class="ev-d">24</span><span class="ev-m">Dic</span></div>
+          <div><div class="ev-name">🎄 Navidad</div><div class="ev-type">Campaña principal del mes · Video emocional · Pauta</div><span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:2px 8px;border-radius:99px;background:rgba(1,105,111,.13);color:#01696f;">● Campaña principal</span></div>
+        </div><div class="ev">
+          <div class="ev-box" style="background:rgba(21,101,192,.11);color:#1565c0"><span class="ev-d">31</span><span class="ev-m">Dic</span></div>
+          <div><div class="ev-name">🎆 Fin de Año</div><div class="ev-type">Video balance anual AURUS · Campaña enero 2027</div><span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:2px 8px;border-radius:99px;background:rgba(1,105,111,.13);color:#01696f;">● Campaña principal</span></div>
+        </div></div>
+  <div class="sep"></div>
+  <div class="vz-block">
+    <div class="note">Última visita del año · Experiencia especial de cierre · Sorteo</div>
+    <div class="vz-row vz-zoom">
+      <div class="vz-icon" style="background:#1a1adc"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><rect x="2" y="7" width="15" height="10" rx="2"/><path d="M17 9l5-3v12l-5-3"/></svg></div>
+      <div><div style="font-size:.8rem;font-weight:700;color:#1a1adc;">📱 Zoom + Live TikTok &nbsp;— Vie 18 de Diciembre</div><div style="font-size:.68rem;color:var(--mu)">⏰ 8:00 pm – 9:30 pm &nbsp;·&nbsp; Recorrido virtual + dudas + CTA</div></div>
+    </div>
+    <div class="vz-row vz-visit">
+      <div class="vz-icon" style="background:var(--pr)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+      <div><div style="font-size:.8rem;font-weight:700;color:var(--pr)">🚍 Visita a Proyecto &nbsp;— Dom 20 de Diciembre</div><div style="font-size:.68rem;color:var(--mu)">3er domingo del mes &nbsp;·&nbsp; Traslado, recorrido y cierre comercial</div></div>
+    </div>
+  </div>
+</div>
+</div>
+<section class="sum">
+  <div class="sum-in">
+    <h2 class="sum-h">📋 Resumen — Visitas + Zoom/Live 2026</h2>
+    <table class="tbl">
+      <thead><tr><th>Mes</th><th>Temática / Campaña Principal</th><th>Zoom + Live (Viernes previo)</th><th>Visita a Proyecto (3er Domingo)</th></tr></thead>
+      <tbody><tr><td class='mc'>Mayo</td><td class='tc'>👩‍👧 Día de la Madre</td><td class='zc'>Vie 15 May &nbsp;·&nbsp; 8:00–9:30 pm</td><td class='dc'>Dom 17 May</td></tr>
+<tr><td class='mc'>Junio</td><td class='tc'>👨‍👧 Día del Padre + ⚽ Copa Mundial FIFA 2026</td><td class='zc'>Vie 19 Jun &nbsp;·&nbsp; 8:00–9:30 pm</td><td class='dc'>Dom 21 Jun</td></tr>
+<tr><td class='mc'>Julio</td><td class='tc'>🇵🇪 Fiestas Patrias</td><td class='zc'>Vie 17 Jul &nbsp;·&nbsp; 8:00–9:30 pm</td><td class='dc'>Dom 19 Jul</td></tr>
+<tr><td class='mc'>Agosto</td><td class='tc'>👴 Día de los Abuelos + 👦 Día del Niño</td><td class='zc'>Vie 14 Ago &nbsp;·&nbsp; 8:00–9:30 pm</td><td class='dc'>Dom 16 Ago</td></tr>
+<tr><td class='mc'>Setiembre</td><td class='tc'>🛍️ Día del Shopping + 🌸 Día de la Primavera</td><td class='zc'>Vie 18 Set &nbsp;·&nbsp; 8:00–9:30 pm</td><td class='dc'>Dom 20 Set</td></tr>
+<tr><td class='mc'>Octubre</td><td class='tc'>🎃 Halloween</td><td class='zc'>Vie 16 Oct &nbsp;·&nbsp; 8:00–9:30 pm</td><td class='dc'>Dom 18 Oct</td></tr>
+<tr><td class='mc'>Noviembre</td><td class='tc'>🖤 Black Friday</td><td class='zc'>Vie 13 Nov &nbsp;·&nbsp; 8:00–9:30 pm</td><td class='dc'>Dom 15 Nov</td></tr>
+<tr><td class='mc'>Diciembre</td><td class='tc'>🎄 Navidad</td><td class='zc'>Vie 18 Dic &nbsp;·&nbsp; 8:00–9:30 pm</td><td class='dc'>Dom 20 Dic</td></tr>
+</tbody>
+    </table>
+  </div>
+</section>
+<footer class="ftr">AURUS · Calendario de Marketing 2026 · Uso interno del equipo</footer>
+<script>
+(function(){var t=document.querySelector('[data-tog]'),r=document.documentElement,d=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';r.setAttribute('data-theme',d);if(t){t.addEventListener('click',function(){d=d==='dark'?'light':'dark';r.setAttribute('data-theme',d);});}})();
+</script>
+</body></html>
