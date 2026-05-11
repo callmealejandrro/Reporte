@@ -1,0 +1,175 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Reporte de Campaña - Mamá Merece su Lote</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background-color: #fcfdf8; 
+            color: #333; 
+            margin: 0; 
+            padding: 20px; 
+        }
+        .container { 
+            max-width: 900px; 
+            margin: 0 auto; 
+            background-color: #fff; 
+            padding: 40px; 
+            border-radius: 8px; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05); 
+        }
+        h1 { 
+            color: #2e7d32; 
+            text-align: center; 
+            border-bottom: 2px solid #e0e0e0; 
+            padding-bottom: 15px; 
+            margin-bottom: 30px;
+        }
+        h2 { 
+            color: #202124; 
+            margin-top: 35px; 
+            border-left: 4px solid #2e7d32;
+            padding-left: 10px;
+        }
+        .subtitle {
+            text-align: center; 
+            color: #5f6368;
+            font-size: 1.1em;
+            margin-top: -20px;
+            margin-bottom: 30px;
+        }
+        .kpi-container { 
+            display: flex; 
+            justify-content: space-between; 
+            flex-wrap: wrap; 
+            gap: 15px;
+        }
+        .kpi-card { 
+            background-color: #e8f5e9; 
+            border: 1px solid #c8e6c9; 
+            border-radius: 8px; 
+            padding: 20px; 
+            width: calc(33.333% - 10px); 
+            text-align: center; 
+            box-sizing: border-box;
+        }
+        .kpi-value { 
+            font-size: 26px; 
+            font-weight: bold; 
+            color: #2e7d32; 
+        }
+        .kpi-label { 
+            font-size: 13px; 
+            color: #5f6368; 
+            text-transform: uppercase; 
+            margin-top: 8px; 
+            font-weight: 600;
+        }
+        .alert { 
+            background-color: #fff3cd; 
+            border-left: 5px solid #ffc107; 
+            padding: 15px 20px; 
+            margin-top: 20px; 
+            border-radius: 4px; 
+            line-height: 1.5;
+            color: #856404;
+        }
+        .alert strong { 
+            color: #856404; 
+        }
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin-top: 15px; 
+        }
+        th, td { 
+            border: 1px solid #e0e0e0; 
+            padding: 12px 15px; 
+            text-align: left; 
+        }
+        th { 
+            background-color: #f8f9fa; 
+            font-weight: bold; 
+            color: #202124; 
+        }
+        .context-note {
+            background-color: #e3f2fd;
+            border-left: 5px solid #1976d2;
+            padding: 15px 20px;
+            margin-top: 20px;
+            border-radius: 4px;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Reporte de Campaña: Mamá merece su lote - Invitacion evento 1704</h1>
+        <div class="subtitle">Análisis del periodo: 7 de Mayo 2026 al 11 de Mayo 2026</div>
+
+        <h2>📊 Resumen General (KPIs)</h2>
+        <div class="kpi-container">
+            <div class="kpi-card">
+                <div class="kpi-value">S/ 446.81</div>
+                <div class="kpi-label">Inversión (PEN)</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-value">60</div>
+                <div class="kpi-label">Resultados (Mensajes)</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-value">S/ 7.45</div>
+                <div class="kpi-label">CPA Promedio (PEN)</div>
+            </div>
+        </div>
+
+        <div class="context-note">
+            <strong>Nota Estratégica:</strong> Dado que el modelo de negocio está centrado en la comercialización de lotes (y no en la construcción de los mismos), nuestro objetivo principal es maximizar el volumen de leads calificados interesados directamente en la compra para el evento del 17 de abril.
+        </div>
+
+        <h2>🏆 Rendimiento por Conjunto de Anuncios</h2>
+        <table>
+            <tr>
+                <th>Conjunto de Anuncios</th>
+                <th>Inversión (PEN)</th>
+                <th>Resultados</th>
+                <th>CPA (PEN)</th>
+            </tr>
+            <tr>
+                <td>Invitacion evento 1704 - Lima Norte</td>
+                <td>S/ 47.60</td>
+                <td>10</td>
+                <td>S/ 4.76</td>
+            </tr>
+            <tr>
+                <td>Invitacion evento 1704 - Videos</td>
+                <td>S/ 377.32</td>
+                <td>48</td>
+                <td>S/ 7.86</td>
+            </tr>
+            <tr>
+                <td>Invitacion evento 1704 - Imagenes</td>
+                <td>S/ 21.89</td>
+                <td>2</td>
+                <td>S/ 10.95</td>
+            </tr>
+        </table>
+
+        <h2>⚠️ Observaciones y Alertas</h2>
+        <div class="alert">
+            <strong>1. Potencial en Audiencia Específica:</strong><br>
+            El conjunto de anuncios enfocado en <strong>Lima Norte</strong> tiene el mejor costo por adquisición (CPA de S/ 4.76), muy por debajo del promedio. Es altamente recomendable escalar el presupuesto en esta segmentación para atraer más interesados a la venta de lotes.
+        </div>
+        <div class="alert">
+            <strong>2. Gasto Elevado en Videos:</strong><br>
+            El conjunto <em>"Videos"</em> está consumiendo la mayor parte del presupuesto (S/ 377.32) con un CPA de S/ 7.86. Aunque trae volumen, es un poco menos eficiente que la segmentación por zona (Lima Norte). 
+        </div>
+        <div class="alert">
+            <strong>3. Ineficiencia en Formato Imagen:</strong><br>
+            Las imágenes estáticas están rindiendo muy por debajo de lo esperado, con un CPA de casi S/ 11.00. Sugiero pausar los anuncios de imágenes menos efectivos para proteger el presupuesto de cara al evento.
+        </div>
+    </div>
+</body>
+</html>
