@@ -1,0 +1,186 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Reporte de Rendimiento - Meta Ads</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background-color: #f4f6f9; 
+            color: #333; 
+            margin: 0; 
+            padding: 20px; 
+        }
+        .container { 
+            max-width: 900px; 
+            margin: 0 auto; 
+            background-color: #fff; 
+            padding: 40px; 
+            border-radius: 8px; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05); 
+        }
+        h1 { 
+            color: #1a73e8; 
+            text-align: center; 
+            border-bottom: 2px solid #e0e0e0; 
+            padding-bottom: 15px; 
+            margin-bottom: 30px;
+        }
+        h2 { 
+            color: #202124; 
+            margin-top: 35px; 
+            border-left: 4px solid #1a73e8;
+            padding-left: 10px;
+        }
+        .subtitle {
+            text-align: center; 
+            color: #5f6368;
+            font-size: 1.1em;
+            margin-top: -20px;
+            margin-bottom: 30px;
+        }
+        .kpi-container { 
+            display: flex; 
+            justify-content: space-between; 
+            flex-wrap: wrap; 
+            gap: 15px;
+        }
+        .kpi-card { 
+            background-color: #e8f0fe; 
+            border: 1px solid #cce0ff; 
+            border-radius: 8px; 
+            padding: 20px; 
+            width: calc(33.333% - 10px); 
+            text-align: center; 
+            box-sizing: border-box;
+        }
+        .kpi-value { 
+            font-size: 26px; 
+            font-weight: bold; 
+            color: #1a73e8; 
+        }
+        .kpi-label { 
+            font-size: 13px; 
+            color: #5f6368; 
+            text-transform: uppercase; 
+            margin-top: 8px; 
+            font-weight: 600;
+        }
+        .alert { 
+            background-color: #fce8e6; 
+            border-left: 5px solid #d93025; 
+            padding: 15px 20px; 
+            margin-top: 20px; 
+            border-radius: 4px; 
+            line-height: 1.5;
+        }
+        .alert strong { 
+            color: #d93025; 
+        }
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin-top: 15px; 
+        }
+        th, td { 
+            border: 1px solid #e0e0e0; 
+            padding: 12px 15px; 
+            text-align: left; 
+        }
+        th { 
+            background-color: #f8f9fa; 
+            font-weight: bold; 
+            color: #202124; 
+        }
+        .projection { 
+            background-color: #e6f4ea; 
+            border-left: 5px solid #1e8e3e; 
+            padding: 15px 20px; 
+            margin-top: 20px; 
+            border-radius: 4px; 
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Reporte de Rendimiento - Meta Ads</h1>
+        <div class="subtitle">Análisis del periodo: 1 de Mayo 2026 al 11 de Mayo 2026</div>
+
+        <h2>📊 Estudio General (KPIs)</h2>
+        <div class="kpi-container">
+            <div class="kpi-card">
+                <div class="kpi-value">S/ 1,466.71</div>
+                <div class="kpi-label">Inversión Total (PEN)</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-value">253</div>
+                <div class="kpi-label">Resultados Totales</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-value">S/ 5.80</div>
+                <div class="kpi-label">CPA Promedio (PEN)</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-value">3.73%</div>
+                <div class="kpi-label">CTR Promedio</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-value">153,573</div>
+                <div class="kpi-label">Impresiones</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-value">132,712</div>
+                <div class="kpi-label">Alcance Único</div>
+            </div>
+        </div>
+
+        <h2>🏆 Hallazgos por Campaña</h2>
+        <p><strong>Campañas "Estrella" (Mejor Rendimiento):</strong></p>
+        <table>
+            <tr>
+                <th>Campaña</th>
+                <th>Resultados</th>
+                <th>CPA (PEN)</th>
+            </tr>
+            <tr>
+                <td>30/4/26 Nuevas Imagenes - Elizabeth</td>
+                <td>54</td>
+                <td>S/ 3.83</td>
+            </tr>
+            <tr>
+                <td>30/4/26 Nuevas Imagenes - Junior</td>
+                <td>44</td>
+                <td>S/ 4.73</td>
+            </tr>
+        </table>
+
+        <p style="margin-top:20px;"><strong>Campañas Costosas (Requieren revisión):</strong></p>
+        <ul>
+            <li><strong>Nueva campaña de Clientes potenciales:</strong> Generando un CPA de S/ 7.34.</li>
+            <li><strong>23/4/26 Elizabeth nuevos videos:</strong> Generando un CPA de S/ 6.47.</li>
+        </ul>
+
+        <h2>⚠️ Alertas Críticas</h2>
+        <div class="alert">
+            <strong>1. Incremento Severo en los Costos de Adquisición:</strong><br>
+            El rendimiento general ha caído bruscamente en la última semana. Del 1 al 5 de mayo se lograba un CPA aproximado de <strong>S/ 4.00</strong>. Sin embargo, a partir del 8 de mayo, el costo por resultado se disparó, alcanzando picos de <strong>S/ 15.13</strong>. Es fundamental renovar las piezas creativas o rotar audiencias para combatir la fatiga publicitaria.
+        </div>
+        <div class="alert">
+            <strong>2. Fuga de Presupuesto en Campaña Ineficiente:</strong><br>
+            La <em>"05/08/26 - Campaña General de Mensajes"</em> está consumiendo saldo con muy poco retorno. Ha logrado apenas 14 resultados con un costo unitario excesivo de <strong>S/ 13.35</strong>. Se recomienda apagarla o reestructurarla inmediatamente.
+        </div>
+
+        <h2>📈 Proyección al 31 de Mayo</h2>
+        <div class="projection">
+            <p>Utilizando los promedios de gasto y rendimiento de estos primeros 11 días, la proyección para el cierre del mes (31 días en total) asumiendo que no se realicen cambios es la siguiente:</p>
+            <ul>
+                <li><strong>Inversión Total Estimada:</strong> S/ 4,133.45 PEN</li>
+                <li><strong>Resultados Totales Estimados:</strong> 713 prospectos/mensajes</li>
+            </ul>
+            <p><em>Nota Estratégica:</em> Dado que los costos han ido en aumento (ver Alerta 1), es muy probable que no se alcancen los 713 resultados a menos que se optimicen las campañas activas o se reasigne el presupuesto a los conjuntos ganadores.</p>
+        </div>
+    </div>
+</body>
+</html>
