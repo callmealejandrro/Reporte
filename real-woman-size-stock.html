@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Stock – Real Woman Sie</title>
+  <style>
+    :root {
+      --rose: #c0485a;
+      --rose-light: #f9e8eb;
+      --rose-mid: #e8a0a8;
+      --dark: #2b1c1f;
+      --gray: #f5f0f1;
+      --border: #e0d0d3;
+      --text: #3a2426;
+      --badge-bg: #fff0f2;
+      --badge-border: #f0b8c0;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #fdf7f8;
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* HEADER */
+    header {
+      background: linear-gradient(135deg, var(--rose) 0%, #9b2d3e 100%);
+      color: white;
+      padding: 18px 24px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      box-shadow: 0 2px 10px rgba(192,72,90,0.3);
+    }
+    header .logo-icon {
+      font-size: 2rem;
+      background: rgba(255,255,255,0.2);
+      border-radius: 50%;
+      width: 48px; height: 48px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    header h1 { font-size: 1.4rem; font-weight: 700; letter-spacing: 0.5px; }
+    header p { font-size: 0.82rem; opacity: 0.85; margin-top: 2px; }
+
+    /* LAYOUT */
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 20px 16px;
+    }
+
+    /* SEARCH BAR */
+    .search-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: white;
+      border: 2px solid var(--rose-mid);
+      border-radius: 12px;
+      padding: 10px 16px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 8px rgba(192,72,90,0.1);
+    }
+    .search-bar input {
+      flex: 1;
+      border: none;
+      outline: none;
+      font-size: 1rem;
+      color: var(--text);
+      background: transparent;
+    }
+    .search-bar .icon { font-size: 1.2rem; color: var(--rose); }
+
+    /* FILTERS ROW */
+    .filters {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 18px;
+      margin-bottom: 20px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    }
+    .filters-title {
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--rose);
+      margin-bottom: 10px;
+    }
+    .filters-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: flex-start;
+    }
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      min-width: 160px;
+    }
+    .filter-group label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* TALLA CHIPS */
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .chip {
+      padding: 5px 13px;
+      border-radius: 20px;
+      border: 1.5px solid var(--border);
+      background: white;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+      color: var(--text);
+    }
+    .chip:hover { border-color: var(--rose); color: var(--rose); }
+    .chip.active {
+      background: var(--rose);
+      border-color: var(--rose);
+      color: white;
+    }
+
+    /* SELECT */
+    select {
+      padding: 6px 10px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.88rem;
+      color: var(--text);
+      background: white;
+      cursor: pointer;
+      outline: none;
+      min-width: 150px;
+    }
+    select:focus { border-color: var(--rose); }
+
+    /* TEMPORADA TOGGLE */
+    .toggle-group {
+      display: flex;
+      gap: 6px;
+    }
+    .toggle-btn {
+      padding: 5px 14px;
+      border-radius: 20px;
+      border: 1.5px solid var(--border);
+      background: white;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+      color: var(--text);
+    }
+    .toggle-btn:hover { border-color: var(--rose); color: var(--rose); }
+    .toggle-btn.active {
+      background: var(--rose);
+      border-color: var(--rose);
+      color: white;
+    }
+
+    /* CLEAR BUTTON */
+    .btn-clear {
+      padding: 6px 16px;
+      border-radius: 8px;
+      border: 1.5px solid var(--rose);
+      background: white;
+      color: var(--rose);
+      font-size: 0.83rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: auto;
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+    .btn-clear:hover { background: var(--rose); color: white; }
+
+    /* RESULTS INFO */
+    .results-info {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      font-size: 0.85rem;
+      color: #888;
+    }
+    .results-info strong { color: var(--rose); }
+
+    /* GRID */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 14px;
+    }
+
+    /* CARD */
+    .card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px;
+      transition: box-shadow 0.2s, transform 0.2s;
+      position: relative;
+    }
+    .card:hover {
+      box-shadow: 0 6px 20px rgba(192,72,90,0.15);
+      transform: translateY(-2px);
+    }
+    .card-prenda {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--dark);
+      margin-bottom: 10px;
+      line-height: 1.3;
+    }
+    .card-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-bottom: 8px;
+    }
+    .badge {
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 3px 9px;
+      border-radius: 20px;
+      background: var(--badge-bg);
+      border: 1px solid var(--badge-border);
+      color: var(--rose);
+    }
+    .badge.talla {
+      background: #e8f4ff;
+      border-color: #a8d0f0;
+      color: #1a6fa8;
+    }
+    .badge.color {
+      background: #f0fff4;
+      border-color: #a0d4b0;
+      color: #1a7a40;
+    }
+    .badge.temporada {
+      background: #fffbe8;
+      border-color: #f0d880;
+      color: #8a6800;
+    }
+    .card-stock {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid var(--border);
+      font-size: 0.83rem;
+    }
+    .stock-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: #4caf50;
+    }
+    .stock-dot.low { background: #ff9800; }
+    .stock-dot.out { background: #e53935; }
+    .card-stock span { color: #666; }
+    .card-stock strong { color: var(--text); }
+
+    /* EMPTY STATE */
+    .empty {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 60px 20px;
+      color: #aaa;
+    }
+    .empty .icon { font-size: 3rem; margin-bottom: 12px; }
+    .empty p { font-size: 1rem; }
+
+    @media (max-width: 600px) {
+      .filters-row { flex-direction: column; }
+      .grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo-icon">👗</div>
+  <div>
+    <h1>Real Woman Sie</h1>
+    <p>Gestión de Stock · Tienda Virtual</p>
+  </div>
+</header>
+
+<div class="container">
+  <!-- BÚSQUEDA -->
+  <div class="search-bar">
+    <span class="icon">🔍</span>
+    <input type="text" id="searchInput" placeholder="Buscar prenda, color, tela..." autocomplete="off" />
+    <span id="clearSearch" style="cursor:pointer;font-size:1.1rem;color:#ccc;display:none;">✕</span>
+  </div>
+
+  <!-- FILTROS -->
+  <div class="filters">
+    <div class="filters-title">🎯 Filtros</div>
+    <div class="filters-row">
+
+      <div class="filter-group">
+        <label>Talla</label>
+        <div class="chips" id="tallasChips"></div>
+      </div>
+
+      <div class="filter-group">
+        <label>Tela</label>
+        <select id="telaSelect">
+          <option value="">Todas las telas</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label>Temporada</label>
+        <div class="toggle-group" id="temporadaToggle">
+          <button class="toggle-btn active" data-val="">Todas</button>
+          <button class="toggle-btn" data-val="VERANO">☀️ Verano</button>
+          <button class="toggle-btn" data-val="INVIERNO">🧥 Invierno</button>
+        </div>
+      </div>
+
+      <div class="filter-group">
+        <label>Ordenar por</label>
+        <select id="sortSelect">
+          <option value="prenda">Prenda (A-Z)</option>
+          <option value="stock-desc">Mayor stock</option>
+          <option value="stock-asc">Menor stock</option>
+          <option value="talla">Talla</option>
+        </select>
+      </div>
+
+      <button class="btn-clear" onclick="clearFilters()">✕ Limpiar filtros</button>
+    </div>
+  </div>
+
+  <!-- RESULTS INFO -->
+  <div class="results-info">
+    <span>Mostrando <strong id="countShown">0</strong> prendas encontradas</span>
+    <span id="totalStock">Stock total: <strong>0</strong> unidades</span>
+  </div>
+
+  <!-- GRID -->
+  <div class="grid" id="grid"></div>
+</div>
+
+<script>
+const DATA = [{"PRENDA": "BLUSA BAHÍA", "TALLA": "2XL", "COLOR": "BLANCO", "TELA": "PIEL DE DURAZNO", "TEMPORADA": "VERANO", "STOCK": 1}, {"PRENDA": "BLUSA BAHÍA", "TALLA": "2XL", "COLOR": "ESTAMPADO", "TELA": "SEDA SATINADA", "TEMPORADA": "VERANO", "STOCK": 3}, {"PRENDA": "BLUSA BAHÍA", "TALLA": "3XL", "COLOR": "BLANCO", "TELA": "PIEL DE DURAZNO", "TEMPORADA": "VERANO", "STOCK": 1}, {"PRENDA": "BLUSA BAHÍA", "TALLA": "3XL", "COLOR": "ESTAMPADO", "TELA": "SEDA SATINADA", "TEMPORADA": "VERANO", "STOCK": 1}, {"PRENDA": "BLUSA BAHÍA", "TALLA": "L", "COLOR": "ESTAMPADO", "TELA": "SEDA SATINADA", "TEMPORADA": "VERANO", "STOCK": 2}, {"PRENDA": "BLUSA DANIELA", "TALLA": "2XL", "COLOR": "AZULINO", "TELA": "VENEZIA", "TEMPORADA": "INVIERNO", "STOCK": 1}, {"PRENDA": "BLUSA DANIELA", "TALLA": "2XL", "COLOR": "NEGRO", "TELA": "VENEZIA", "TEMPORADA": "INVIERNO", "STOCK": 1}, {"PRENDA": "BLUSA DANIELA", "TALLA": "L", "COLOR": "AZULINO", "TELA": "VENEZIA", "TEMPORADA": "INVIERNO", "STOCK": 2}, {"PRENDA": "BLUSA DANIELA", "TALLA": "L", "COLOR": "NEGRO", "TELA": "VENEZIA", "TEMPORADA": "INVIERNO", "STOCK": 1}, {"PRENDA": "BLUSA DANIELA", "TALLA": "M", "COLOR": "AZULINO", "TELA": "VENEZIA", "TEMPORADA": "INVIERNO", "STOCK": 1}, {"PRENDA": "BLUSA DANIELA", "TALLA": "M", "COLOR": "NEGRO", "TELA": "VENEZIA", "TEMPORADA": "INVIERNO", "STOCK": 1}, {"PRENDA": "BLUSA DANIELA", "TALLA": "S", "COLOR": "AZULINO", "TELA": "VENEZIA", "TEMPORADA": "INVIERNO", "STOCK": 1}, {"PRENDA": "BLUSA DANIELA", "TALLA": "S", "COLOR": "NEGRO", "TELA": "VENEZIA", "TEMPORADA": "INVIERNO", "STOCK": 1}, {"PRENDA": "BLUSA DANIELA", "TALLA": "XL", "COLOR": "NEGRO", "TELA": "VENEZIA", "TEMPORADA": "INVIERNO", "STOCK": 1}, {"PRENDA": "BLUSA ELENA", "TALLA": "L", "COLOR": "NEGRO", "TELA": "PIEL DE DURAZNO/ BIPIUR", "TEMPORADA": "VERANO", "STOCK": 1}, {"PRENDA": "BLUSA FRESIA", "TALLA": "L", "COLOR": "AZUL/FUCSIA", "TELA": "PIEL DE DURAZNO", "TEMPORADA": "VERANO", "STOCK": 1}, {"PRENDA": "BLUSA FRESIA", "TALLA": "L", "COLOR": "AZUL/VERDE", "TELA": "PIEL DE DURAZNO", "TEMPORADA": "VERANO", "STOCK": 2}, {"PRENDA": "BLUSA FRESIA", "TALLA": "XL", "COLOR": "AZUL/ VERDE", "TELA": "PIEL DE DURAZNO", "TEMPORADA": "VERANO", "STOCK": 2}, {"PRENDA": "BLUSA FRESIA", "TALLA": "XL", "COLOR": "ROSADO/ AZUL", "TELA": "PIEL DE DURAZNO", "TEMPORADA": "VERANO", "STOCK": 1}, {"PRENDA": "BLUSA GITANA", "TALLA": "2XL", "COLOR": "NEGRO/ MOSTAZA", "TELA": "PIEL DE DURAZNO", "TEMPORADA": "VERANO", "STOCK": 3}, {"PRENDA": "BLUSA GITANA", "TALLA": "3XL", "COLOR": "NEGRO/ MOSTAZA", "TELA": "PIEL DE DURAZNO", "TEMPORADA": "VERANO", "STOCK": 4}, {"PRENDA": "BLUSA GITANA", "TALLA": "L", "COLOR": "NEGRO/ MOSTAZA", "TELA": "PIEL DE DURAZNO", "TEMPORADA": "VERANO", "STOCK": 5}, {"PRENDA": "BLUSA GITANA", "TALLA": "XL", "COLOR": "NEGRO/ MOSTAZA", "TELA": "PIEL DE DURAZNO", "TEMPORADA": "VERANO", "STOCK": 5}, {"PRENDA": "BLUSA ISIDORA BRILLOS", "TALLA": "2XL", "COLOR": "PLOMO", "TELA": "RIB", "TEMPORADA": "VERANO", "STOCK": 2}, {"PRENDA": "BLUSA ISIDORA BRILLOS", "TALLA": "L", "COLOR": "PLOMO", "TELA": "RIB BRILLOS", "TEMPORADA": "VERANO", "STOCK": 1}, {"PRENDA": "BLUSA LAZO", "TALLA": "L", "COLOR": "ESTAMPADO", "TELA": "PIEL DE DURAZNO", "TEMPORADA": "VERANO", "STOCK": 2}, {"PRENDA": "BLUSA PIERINA", "TALLA": "2XL", "COLOR": "NEGRO", "TELA": "LABRADO", "TEMPORADA": "VERANO", "STOCK": 1}, {"PRENDA": "BLUSA PRINCESA", "TALLA": "3XL", "COLOR": "VINO", "TELA": "JACKAR LABRADA", "TEMPORADA": "INVIERNO", "STOCK": 1}, {"PRENDA": "BLUSA REBECCA", "TALLA": "2XL", "COLOR": "PALO ROSA", "TELA": "PLUSH/ VELVET", "TEMPORADA": "VERANO", "STOCK": 1}, {"PRENDA": "BLUSA REBECCA", "TALLA": "L", "COLOR": "NEGRO", "TELA": "VELVET", "TEMPORADA": "VERANO", "STOCK": 1}, {"PRENDA": "BLUSA REBECCA", "TALLA": "L", "COLOR": "PALO ROSA", "TELA": "VELVET", "TEMPORADA": "VERANO", "STOCK": 3}, {"PRENDA": "BLUSA REBECCA", "TALLA": "XL", "COLOR": "NEGRO", "TELA": "PLUSH", "TEMPORADA": "VERANO", "STOCK": 1}, {"PRENDA": "BLUSA REBECCA", "TALLA": "XL", "COLOR": "ROSADO", "TELA": "PLUSH", "TEMPORADA": "VERANO", "STOCK": 3}, {"PRENDA": "BVD", "TALLA": "L", "COLOR": "BLANCO", "TELA": "VISCONSA NACIONAL", "TEMPORADA": "VERANO", "STOCK": 2}, {"PRENDA": "BVD", "TALLA": "L", "COLOR": "NEGRO", "TELA": "VISCONSA NACIONAL", "TEMPORADA": "VERANO", "STOCK": 2}, {"PRENDA": "BVD DEPORTIVO", "TALLA": "2XL", "COLOR": "AZUL", "TELA": "LICRA", "TEMPORADA": "VERANO", "STOCK": 2}, {"PRENDA": "BVD DEPORTIVO", "TALLA": "XL", "COLOR": "AZUL", "TELA": "LICRA", "TEMPORADA": "VERANO", "STOCK": 2}, {"PRENDA": "BÁSICO", "TALLA": "L", "COLOR": "BLANCO", "TELA": "FULL LICRA", "TEMPORADA": "VERANO", "STOCK": 1}, {"PRENDA": "BÁSICO", "TALLA": "L", "COLOR": "NEGRO", "TELA": "FULL LICRA", "TEMPORADA": "VERANO", "STOCK": 1}, {"PRENDA": "BÁSICO", "TALLA": "M", "COLOR": "BLANCO", "TELA": "FULL LICRA", "TEMPORADA": "VERANO", "STOCK": 1}, {"PRENDA": "BÁSICO", "TALLA": "M", "COLOR": "NEGRO", "TELA": "FULL LICRA", "TEMPORADA": "VERANO", "STOCK": 1}, {"PRENDA": "CAPA IVA", "TALLA": "XL", "COLOR": "MORADO", "TELA": "ANGORA", "TEMPORADA": "INVIERNO", "STOCK": 2}, {"PRENDA": "CAPA VIVIANA", "TALLA": "2XL", "COLOR": "MOSTAZA", "TELA": "RIB", "TEMPORADA": "VERANO", "STOCK": 1}, {"PRENDA": "CHAECO EMILIA", "TALLA": "L", "COLOR": "MOSTAZA", "TELA": "ANGORA", "TEMPORADA": "INVIERNO", "STOCK": 3}, {"PRENDA": "CHALECO IVA", "TALLA": "2XL", "COLOR": "MORADO", "TELA": "ANGORA", "TEMPORADA": "INVIERNO", "STOCK": 1}, {"PRENDA": "CHALECO IVA", "TALLA": "3XL", "COLOR": "MORADO", "TELA": "ANGORA", "TEMPORADA": "INVIERNO", "STOCK": 1}, {"PRENDA": "CHALECO IVA", "TALLA": "L", "COLOR": "MORADO", "TELA": "ANGORA", "TEMPORADA": "INVIERNO", "STOCK": 5}, {"PRENDA": "CHALECO IVA", "TALLA": "XL", "COLOR": "MORADO", "TELA": "ANGORA", "TEMPORADA": "INVIERNO", "STOCK": 2}, {"PRENDA": "CHOMBA ROSALVA", "TALLA": "L", "COLOR": "NEGRO", "TELA": "ANGORA", "TEMPORADA": "INVIERNO", "STOCK": 2}, {"PRENDA": "CHOMPA CAMISERO", "TALLA": "XL", "COLOR": "AZUL", "TELA": "ANGORA", "TEMPORADA": "INVIERNO", "STOCK": 1}, {"PRENDA": "CHOMPA GELIO", "TALLA": "2XL", "COLOR": "NEGRO", "TELA": "ANGORA", "TEMPORADA": "INVIERNO", "STOCK": 1}, {"PRENDA": "CHOMPA GELIO", "TALLA": "XL", "COLOR": "NEGRO", "TELA": "ANGORA", "TEMPORADA": "INVIERNO", "STOCK": 2}, {"PRENDA": "CHOMPA ROSALIA", "TALLA": "XL", "COLOR": "NEGRO", "TELA": "ANGORA", "TEMPORADA": "INVIERNO", "STOCK": 2}, {"PRENDA": "CHOMPA ROSALVA", "TALLA": "2XL", "COLOR": "VERDE BOTELLA", "TELA": "ANGORA", "TEMPORADA": "INVIERNO", "STOCK": 1}, {"PRENDA": "CHOMPA ROSALVA", "TALLA": "3XL", "COLOR": "GRIS", "TELA": "ANGORA", "TEMPORADA": "INVIERNO", "STOCK": 1}, {"PRENDA": "CHOMPA ROSALVA", "TALLA": "3XL", "COLOR": "VERDE BOTELLA", "TELA": "ANGORA", "TEMPORADA": "INVIERNO", "STOCK": 1}, {"PRENDA": "CÁRDIGAN", "TALLA": "2XL", "COLOR": "MOSTAZA", "TELA": "ANGORA", "TEMPORADA": "INVIERNO", "STOCK": 1}, {"PRENDA": "CÁRDIGAN", "TALLA": "3XL", "COLOR": "MOSTAZA", "TELA": "ANGORA", "TEMPORADA": "INVIERNO", "STOCK": 4}, {"PRENDA": "CÁRDIGAN", "TALLA": "3XL", "COLOR": "NEGRO", "TELA": "ANGORA", "TEMPORADA": "INVIERNO", "STOCK": 1}, {"PRENDA": "CÁRDIGAN", "TALLA": "L", "COLOR": "AZUL", "TELA": "ANGORA", "TEMPORADA": "INVIERNO", "STOCK": 2}, {"PRENDA": "CÁRDIGAN", "TALLA": "L", "COLOR": "MOSTAZA", "TELA": "ANGORA", "TEMPORADA": "INVIERNO", "STOCK": 2}, {"PRENDA": "CÁRDIGAN", "TALLA": "L", "COLOR": "NEGRO", "TELA": "ANGORA", "TEMPORADA": "INVIERNO", "STOCK": 1}, {"PRENDA": "CÁRDIGAN", "TALLA": "M", "COLOR": "MOSTAZA", "TELA": "ANGORA", "TEMPORADA": "INVIERNO", "STOCK": 1}, {"PRENDA": "FALDA ALESSA", "TALLA": "2XL", "COLOR": "VERDE PERICO", "TELA": "STONE", "TEMPORADA": "VERANO", "STOCK": 1}, {"PRENDA": "FALDA ALESSA", "TALLA": "3XL", "COLOR": "FUCCIA", "TELA": "STONE", "TEMPORADA": "VERANO", "STOCK": 1}, {"PRENDA": "FALDA ALESSA", "TALLA": "3XL", "COLOR": "MOSTAZA", "TELA": "STONE", "TEMPORADA": "VERANO", "STOCK": 2}, {"PRENDA": "FALDA ALESSA", "TALLA": "3XL", "COLOR": "NEGRO", "TELA": "STONE", "TEMPORADA": "VERANO", "STOCK": 2}, {"PRENDA": "FALDA ALESSA", "TALLA": "3XL", "COLOR": "ROJO", "TELA": "STONE", "TEMPORADA": "VERANO", "STOCK": 1}, {"PRENDA": "FALDA ALESSA", "TALLA": "M", "COLOR": "NEGRO", "TELA": "STONE", "TEMPORADA": "VERANO", "STOCK": 1}, {"PRENDA": "FALDA CARGO", "TALLA": "XL", "COLOR": "ESTAMPADO CUADROS", "TELA": "STONE", "TEMPORADA": "VERANO", "STOCK": 1}, {"PRENDA": "JOGGER CARGO", "TALLA": "2XL", "COLOR": "NEGRO", "TELA": "STONE", "TEMPORADA": "VERANO", "STOCK": 2}, {"PRENDA": "JOGGER CARGO", "TALLA": "L", "COLOR": "NEGRO", "TELA": "STONE", "TEMPORADA": "VERANO", "STOCK": 2}, {"PRENDA": "KIMONO", "TALLA": "3XL", "COLOR": "ESTAMPADO", "TELA": "SEDA FRANCESA", "TEMPORADA": "VERANO", "STOCK": 1}, {"PRENDA": "LEGGIN GABRIELA", "TALLA": "2XL", "COLOR": "NEGRO", "TELA": "JACKAR", "TEMPORADA": "INVIERNO", "STOCK": 1}, {"PRENDA": "LEGGIN GABRIELA", "TALLA": "3XL", "COLOR": "NEGRO", "TELA": "JACKAR", "TEMPORADA": "INVIERNO", "STOCK": 2}, {"PRENDA": "LEGGIN GABRIELA", "TALLA": "L", "COLOR": "AZUL", "TELA": "JACKAR", "TEMPORADA": "INVIERNO", "STOCK": 2}, {"PRENDA": "LEGGIN GABRIELA", "TALLA": "L", "COLOR": "NEGRO", "TELA": "JACKAR", "TEMPORADA": "INVIERNO", "STOCK": 1}, {"PRENDA": "LEGGIN GABRIELA", "TALLA": "XL", "COLOR": "AZUL", "TELA": "JACKAR", "TEMPORADA": "INVIERNO", "STOCK": 1}, {"PRENDA": "LEGGIN GABRIELA", "TALLA": "XL", "COLOR": "NEGRO", "TELA": "JACKAR", "TEMPORADA": "INVIERNO", "STOCK": 2}, {"PRENDA": "MAXICAPA", "TALLA": "L", "COLOR": "ESTAMPADO", "TELA": "DEVORÉ", "TEMPORADA": "VERANO", "STOCK": 1}, {"PRENDA": "MAXICAPA", "TALLA": "M", "COLOR": "FLOREADO", "TELA": "DEVORÉ", "TEMPORADA": "VERANO", "STOCK": 1}, {"PRENDA": "MAXICHOMPA", "TALLA": "2XL", "COLOR": "NEGRO", "TELA": "MAYA", "TEMPORADA": "VERANO", "STOCK": 1}, {"PRENDA": "PALAZO", "TALLA": "L", "COLOR": "NEGRO", "TELA": "CHALIS", "TEMPORADA": "VERANO", "STOCK": 1}, {"PRENDA": "PANTALÓN AURELIA", "TALLA": "2XL", "COLOR": "NEGRO", "TELA": "CUERINA", "TEMPORADA": "INVIERNO", "STOCK": 2}, {"PRENDA": "PANTALÓN AURELIA", "TALLA": "3XL", "COLOR": "NEGRO", "TELA": "CUERINA", "TEMPORADA": "INVIERNO", "STOCK": 2}, {"PRENDA": "PANTALÓN AURELIA", "TALLA": "L", "COLOR": "NEGRO", "TELA": "CUERINA", "TEMPORADA": "INVIERNO", "STOCK": 1}, {"PRENDA": "PANTALÓN AURELIA", "TALLA": "M", "COLOR": "NEGRO", "TELA": "CUERINA", "TEMPORADA": "INVIERNO", "STOCK": 1}, {"PRENDA": "PANTALÓN AURORA", "TALLA": "2XL", "COLOR": "AZUL", "TELA": "STONE", "TEMPORADA": "VERANO", "STOCK": 1}, {"PRENDA": "PANTALÓN AURORA", "TALLA": "2XL", "COLOR": "CORAL", "TELA": "STONE", "TEMPORADA": "VERANO", "STOCK": 1}, {"PRENDA": "PANTALÓN AURORA", "TALLA": "2XL", "COLOR": "GRIS", "TELA": "STONE", "TEMPORADA": "VERANO", "STOCK": 1}, {"PRENDA": "PANTALÓN AURORA", "TALLA": "2XL", "COLOR": "LADRILO", "TELA": "STONE", "TEMPORADA": "VERANO", "STOCK": 1}, {"PRENDA": "PANTALÓN AURORA", "TALLA": "2XL", "COLOR": "VERDE PERICO", "TELA": "STONE", "TEMPORADA": "VERANO", "STOCK": 3}, {"PRENDA": "PANTALÓN AURORA", "TALLA": "2XL", "COLOR": "VINO", "TELA": "STONE", "TEMPORADA": "VERANO", "STOCK": 1}, {"PRENDA": "PANTALÓN AURORA", "TALLA": "3XL", "COLOR": "NEGRO", "TELA": "STONE", "TEMPORADA": "VERANO", "STOCK": 1}, {"PRENDA": "PANTALÓN AURORA", "TALLA": "L", "COLOR": "AZUL", "TELA": "STONE", "TEMPORADA": "VERANO", "STOCK": 1}, {"PRENDA": "PANTALÓN AURORA", "TALLA": "L", "COLOR": "LADRILLO", "TELA": "STONE", "TEMPORADA": "VERANO", "STOCK": 1}, {"PRENDA": "PANTALÓN AURORA", "TALLA": "L", "COLOR": "NEGRO", "TELA": "STONE", "TEMPORADA": "VERANO", "STOCK": 2}, {"PRENDA": "PANTALÓN AURORA", "TALLA": "L", "COLOR": "VERDE JADE", "TELA": "STONE", "TEMPORADA": "VERANO", "STOCK": 1}, {"PRENDA": "PANTALÓN AURORA", "TALLA": "L", "COLOR": "VERDE PERICO", "TELA": "STONE", "TEMPORADA": "VERANO", "STOCK": 5}, {"PRENDA": "PANTALÓN AURORA", "TALLA": "M", "COLOR": "NEGRO", "TELA": "STONE", "TEMPORADA": "VERANO", "STOCK": 5}, {"PRENDA": "PANTALÓN AURORA", "TALLA": "M", "COLOR": "VERDE JADE", "TELA": "STONE", "TEMPORADA": "VERANO", "STOCK": 1}, {"PRENDA": "PANTALÓN AURORA", "TALLA": "M", "COLOR": "VERDE PERICO", "TELA": "STONE", "TEMPORADA": "VERANO", "STOCK": 1}, {"PRENDA": "PANTALÓN AURORA", "TALLA": "XL", "COLOR": "LADRILLO", "TELA": "STONE", "TEMPORADA": "VERANO", "STOCK": 1}, {"PRENDA": "PANTALÓN AURORA", "TALLA": "XL", "COLOR": "NEGRO", "TELA": "STONE", "TEMPORADA": "VERANO", "STOCK": 1}, {"PRENDA": "PANTALÓN AURORA", "TALLA": "XL", "COLOR": "VERDE BOTELLA", "TELA": "STONE", "TEMPORADA": "VERANO", "STOCK": 2}, {"PRENDA": "PANTALÓN AURORA", "TALLA": "XL", "COLOR": "VERDE JADE", "TELA": "STONE", "TEMPORADA": "VERANO", "STOCK": 2}, {"PRENDA": "PANTALÓN AURORA", "TALLA": "XL", "COLOR": "VERDE PERICO", "TELA": "STONE", "TEMPORADA": "VERANO", "STOCK": 2}, {"PRENDA": "PANTALÓN DEPORTIVO", "TALLA": "XL", "COLOR": "AZUL", "TELA": "LICRA", "TEMPORADA": "VERANO", "STOCK": 2}, {"PRENDA": "PANTALÓN LISETH", "TALLA": "M", "COLOR": "NEGRO", "TELA": "CUERINA", "TEMPORADA": "INVIERNO", "STOCK": 1}, {"PRENDA": "PANTALÓN LISETH", "TALLA": "S", "COLOR": "NEGRO", "TELA": "CUERINA", "TEMPORADA": "INVIERNO", "STOCK": 2}, {"PRENDA": "PANTALÓN OLIVIA", "TALLA": "2XL", "COLOR": "AZUL", "TELA": "CATANIA", "TEMPORADA": "VERANO", "STOCK": 2}, {"PRENDA": "PANTALÓN OLIVIA", "TALLA": "2XL", "COLOR": "NEGRO", "TELA": "CATANIA", "TEMPORADA": "VERANO", "STOCK": 4}, {"PRENDA": "PANTALÓN OLIVIA", "TALLA": "3XL", "COLOR": "NEGRO", "TELA": "CATANIA", "TEMPORADA": "VERANO", "STOCK": 2}, {"PRENDA": "PANTALÓN OLIVIA", "TALLA": "4XL", "COLOR": "AZUL", "TELA": "CATANIA", "TEMPORADA": "VERANO", "STOCK": 1}, {"PRENDA": "PANTALÓN OLIVIA", "TALLA": "L", "COLOR": "NEGRO", "TELA": "CATANIA", "TEMPORADA": "VERANO", "STOCK": 2}, {"PRENDA": "PANTALÓN OLIVIA", "TALLA": "M", "COLOR": "NEGRO", "TELA": "CATANIA", "TEMPORADA": "VERANO", "STOCK": 1}, {"PRENDA": "PANTALÓN OLIVIA", "TALLA": "XL", "COLOR": "NEGRO", "TELA": "CATANIA", "TEMPORADA": "VERANO", "STOCK": 1}, {"PRENDA": "POLIVESTIDO DARIA", "TALLA": "3XL", "COLOR": "MOSTAZA", "TELA": "ANGORA", "TEMPORADA": "INVIERNO", "STOCK": 1}, {"PRENDA": "POLIVESTIDO DARIA", "TALLA": "3XL", "COLOR": "NEGRO", "TELA": "ANGORA", "TEMPORADA": "INVIERNO", "STOCK": 1}, {"PRENDA": "POLIVESTIDO DARIA", "TALLA": "L", "COLOR": "NEGRO", "TELA": "ANGORA", "TEMPORADA": "INVIERNO", "STOCK": 1}, {"PRENDA": "POLIVESTIDO DARIA", "TALLA": "L", "COLOR": "VERDE BOTETLLA", "TELA": "ANGORA", "TEMPORADA": "INVIERNO", "STOCK": 1}, {"PRENDA": "POLIVESTIDO DARIA", "TALLA": "XL", "COLOR": "FUCCIA", "TELA": "ANGORA", "TEMPORADA": "INVIERNO", "STOCK": 2}, {"PRENDA": "POLO AMANDA", "TALLA": "3XL", "COLOR": "BLANCO", "TELA": "VISCONSA NACIONAL", "TEMPORADA": "VERANO", "STOCK": 2}, {"PRENDA": "POLO AMANDA", "TALLA": "3XL", "COLOR": "NEGRO", "TELA": "VISCONSA NACIONAL", "TEMPORADA": "VERANO", "STOCK": 1}, {"PRENDA": "POLO ANASTASIA", "TALLA": "2XL", "COLOR": "MARRÓN", "TELA": "VISCONSA NACIONAL", "TEMPORADA": "VERANO", "STOCK": 1}, {"PRENDA": "POLO ANASTASIA", "TALLA": "L", "COLOR": "NEGRO", "TELA": "VISCONSA NACIONAL", "TEMPORADA": "VERANO", "STOCK": 2}, {"PRENDA": "POLO ANASTASIA", "TALLA": "M", "COLOR": "NEGRO", "TELA": "VISCONSA NACIONAL", "TEMPORADA": "VERANO", "STOCK": 1}, {"PRENDA": "POLO ANASTASIA", "TALLA": "XL", "COLOR": "NEGRO", "TELA": "VISCONSA NACIONAL", "TEMPORADA": "VERANO", "STOCK": 1}, {"PRENDA": "POLO DEPORTIVO", "TALLA": "2XL", "COLOR": "ROJO", "TELA": "LICRA", "TEMPORADA": "VERANO", "STOCK": 1}, {"PRENDA": "POLO DEPORTIVO", "TALLA": "L", "COLOR": "NEGRO", "TELA": "LICRA", "TEMPORADA": "VERANO", "STOCK": 1}, {"PRENDA": "POLO DEPORTIVO", "TALLA": "L", "COLOR": "ROJO", "TELA": "LICRA", "TEMPORADA": "VERANO", "STOCK": 1}, {"PRENDA": "POLO GABRIELA", "TALLA": "L", "COLOR": "AZUL/ FUCCIA", "TELA": "JACKAR", "TEMPORADA": "INVIERNO", "STOCK": 1}, {"PRENDA": "POLO GABRIELA", "TALLA": "L", "COLOR": "NEGRO/ FUCCIA", "TELA": "JACKAR", "TEMPORADA": "INVIERNO", "STOCK": 2}, {"PRENDA": "POLO GABRIELA", "TALLA": "XL", "COLOR": "AZUL/ FUCCIA", "TELA": "JACKAR", "TEMPORADA": "INVIERNO", "STOCK": 1}, {"PRENDA": "POLO GABRIELA", "TALLA": "XL", "COLOR": "NEGRO/ FUCCIA", "TELA": "JACKAR", "TEMPORADA": "INVIERNO", "STOCK": 1}, {"PRENDA": "POLO ISIDORA", "TALLA": "2XL", "COLOR": "NEGRO/ CELESTE", "TELA": "RIB", "TEMPORADA": "VERANO", "STOCK": 1}, {"PRENDA": "POLO ISIDORA", "TALLA": "3XL", "COLOR": "NEGRO/ CELESTE", "TELA": "RIB", "TEMPORADA": "VERANO", "STOCK": 1}, {"PRENDA": "POLO MIA", "TALLA": "XL", "COLOR": "PALO ROSA", "TELA": "RIB", "TEMPORADA": "INVIERNO", "STOCK": 1}, {"PRENDA": "POLO ROSIO", "TALLA": "XL", "COLOR": "PRINT", "TELA": "PIEL DE DURAZNO", "TEMPORADA": "VERANO", "STOCK": 1}, {"PRENDA": "POLO SILVANA", "TALLA": "2XL", "COLOR": "VERDE NEON", "TELA": "RIB", "TEMPORADA": "VERANO", "STOCK": 2}, {"PRENDA": "POLO SILVANA", "TALLA": "XL", "COLOR": "AZULINO/BLANCO/ ROSADO", "TELA": "RIB", "TEMPORADA": "VERANO", "STOCK": 2}, {"PRENDA": "RUMBERA", "TALLA": "2XL", "COLOR": "NEGRO", "TELA": "CHALIS", "TEMPORADA": "VERANO", "STOCK": 1}, {"PRENDA": "RUMBERA", "TALLA": "3XL", "COLOR": "NEGRO", "TELA": "CHALIS", "TEMPORADA": "VERANO", "STOCK": 1}, {"PRENDA": "RUMBERA", "TALLA": "XL", "COLOR": "NEGRO", "TELA": "CHALIS", "TEMPORADA": "VERANO", "STOCK": 1}, {"PRENDA": "SALIDA DE PLAYA", "TALLA": "L", "COLOR": "ROSADO", "TELA": "BIPIUR", "TEMPORADA": "VERANO", "STOCK": 1}, {"PRENDA": "SALIDA DE PLAYA", "TALLA": "L", "COLOR": "ROSADO BB", "TELA": "BIPIUR", "TEMPORADA": "VERANO", "STOCK": 1}, {"PRENDA": "TOBILLERO", "TALLA": "L", "COLOR": "AZULINO", "TELA": "STONE", "TEMPORADA": "VERANO", "STOCK": 1}, {"PRENDA": "TOBILLERO", "TALLA": "L", "COLOR": "VERDE PERICO", "TELA": "STONE", "TEMPORADA": "VERANO", "STOCK": 3}, {"PRENDA": "TOBILLERO", "TALLA": "XL", "COLOR": "AZULINO", "TELA": "STONE", "TEMPORADA": "VERANO", "STOCK": 1}, {"PRENDA": "TOBILLERO", "TALLA": "XL", "COLOR": "NEGRO", "TELA": "STONE", "TEMPORADA": "VERANO", "STOCK": 1}, {"PRENDA": "TOBILLERO", "TALLA": "XL", "COLOR": "VERDE PERICO", "TELA": "STONE", "TEMPORADA": "VERANO", "STOCK": 1}, {"PRENDA": "VESTIDO ANTONELLA", "TALLA": "3XL", "COLOR": "NEGRO", "TELA": "RIB", "TEMPORADA": "VERANO", "STOCK": 1}, {"PRENDA": "VESTIDO DANIELA", "TALLA": "3XL", "COLOR": "NEGRO", "TELA": "CATANIA", "TEMPORADA": "VERANO", "STOCK": 1}, {"PRENDA": "VESTIDO FIORELLA", "TALLA": "2XL", "COLOR": "AZUL", "TELA": "ANGORA", "TEMPORADA": "INVIERNO", "STOCK": 2}, {"PRENDA": "VESTIDO FIORELLA", "TALLA": "2XL", "COLOR": "MELÓN", "TELA": "ANGORA", "TEMPORADA": "INVIERNO", "STOCK": 1}, {"PRENDA": "VESTIDO FIORELLA", "TALLA": "2XL", "COLOR": "NEGRO", "TELA": "ANGORA", "TEMPORADA": "INVIERNO", "STOCK": 1}, {"PRENDA": "VESTIDO FIORELLA", "TALLA": "2XL", "COLOR": "ROJO", "TELA": "ANGORA", "TEMPORADA": "INVIERNO", "STOCK": 1}, {"PRENDA": "VESTIDO FIORELLA", "TALLA": "3XL", "COLOR": "AZUL", "TELA": "ANGORA", "TEMPORADA": "INVIERNO", "STOCK": 1}, {"PRENDA": "VESTIDO FIORELLA", "TALLA": "3XL", "COLOR": "MELÓN", "TELA": "ANGORA", "TEMPORADA": "INVIERNO", "STOCK": 1}, {"PRENDA": "VESTIDO FIORELLA", "TALLA": "L", "COLOR": "ROJO", "TELA": "ANGORA", "TEMPORADA": "INVIERNO", "STOCK": 1}, {"PRENDA": "VESTIDO FIORELLA", "TALLA": "XL", "COLOR": "AZUL", "TELA": "ANGORA", "TEMPORADA": "INVIERNO", "STOCK": 1}, {"PRENDA": "VESTIDO FIORELLA", "TALLA": "XL", "COLOR": "MELÓN", "TELA": "ANGORA", "TEMPORADA": "INVIERNO", "STOCK": 1}, {"PRENDA": "VESTIDO FIORELLA", "TALLA": "XL", "COLOR": "NEGRO", "TELA": "ANGORA", "TEMPORADA": "INVIERNO", "STOCK": 1}, {"PRENDA": "VESTIDO FIORELLA", "TALLA": "XL", "COLOR": "VERDE BOTELLA", "TELA": "ANGORA", "TEMPORADA": "INVIERNO", "STOCK": 2}, {"PRENDA": "VESTIDO PAOLA", "TALLA": "3XL", "COLOR": "ESTAMPADO", "TELA": "JACKAR", "TEMPORADA": "INVIERNO", "STOCK": 1}, {"PRENDA": "VESTIDO PRINCESA", "TALLA": "XL", "COLOR": "NEGRO", "TELA": "CATANIA", "TEMPORADA": "VERANO", "STOCK": 1}];
+
+const TALLA_ORDER = ['S','M','L','XL','2XL','3XL','4XL'];
+const tallas = ['S','M','L','XL','2XL','3XL','4XL'];
+const telas = ["ANGORA", "BIPIUR", "CATANIA", "CHALIS", "CUERINA", "DEVORÉ", "FULL LICRA", "JACKAR", "JACKAR LABRADA", "LABRADO", "LICRA", "MAYA", "PIEL DE DURAZNO", "PIEL DE DURAZNO/ BIPIUR", "PLUSH", "PLUSH/ VELVET", "RIB", "RIB BRILLOS", "SEDA FRANCESA", "SEDA SATINADA", "STONE", "VELVET", "VENEZIA", "VISCONSA NACIONAL"];
+
+let activeFilters = {
+  search: '',
+  talla: '',
+  tela: '',
+  temporada: '',
+  sort: 'prenda'
+};
+
+// Build talla chips
+const tallasContainer = document.getElementById('tallasChips');
+tallas.forEach(t => {
+  const btn = document.createElement('button');
+  btn.className = 'chip';
+  btn.textContent = t;
+  btn.dataset.val = t;
+  btn.onclick = () => {
+    activeFilters.talla = activeFilters.talla === t ? '' : t;
+    document.querySelectorAll('#tallasChips .chip').forEach(c => c.classList.toggle('active', c.dataset.val === activeFilters.talla));
+    render();
+  };
+  tallasContainer.appendChild(btn);
+});
+
+// Build tela select
+const telaSelect = document.getElementById('telaSelect');
+telas.forEach(t => {
+  const opt = document.createElement('option');
+  opt.value = t; opt.textContent = t;
+  telaSelect.appendChild(opt);
+});
+telaSelect.onchange = () => { activeFilters.tela = telaSelect.value; render(); };
+
+// Sort
+document.getElementById('sortSelect').onchange = e => { activeFilters.sort = e.target.value; render(); };
+
+// Temporada toggle
+document.querySelectorAll('#temporadaToggle .toggle-btn').forEach(btn => {
+  btn.onclick = () => {
+    document.querySelectorAll('#temporadaToggle .toggle-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeFilters.temporada = btn.dataset.val;
+    render();
+  };
+});
+
+// Search
+const searchInput = document.getElementById('searchInput');
+const clearSearchBtn = document.getElementById('clearSearch');
+searchInput.oninput = () => {
+  activeFilters.search = searchInput.value.toLowerCase().trim();
+  clearSearchBtn.style.display = activeFilters.search ? 'block' : 'none';
+  render();
+};
+clearSearchBtn.onclick = () => {
+  searchInput.value = '';
+  activeFilters.search = '';
+  clearSearchBtn.style.display = 'none';
+  render();
+};
+
+function clearFilters() {
+  activeFilters = { search: '', talla: '', tela: '', temporada: '', sort: 'prenda' };
+  searchInput.value = '';
+  clearSearchBtn.style.display = 'none';
+  document.querySelectorAll('#tallasChips .chip').forEach(c => c.classList.remove('active'));
+  document.getElementById('telaSelect').value = '';
+  document.getElementById('sortSelect').value = 'prenda';
+  document.querySelectorAll('#temporadaToggle .toggle-btn').forEach((b,i) => b.classList.toggle('active', i===0));
+  render();
+}
+
+function getFiltered() {
+  let results = DATA.filter(item => {
+    if (activeFilters.talla && item.TALLA !== activeFilters.talla) return false;
+    if (activeFilters.tela && item.TELA !== activeFilters.tela) return false;
+    if (activeFilters.temporada && item.TEMPORADA !== activeFilters.temporada) return false;
+    if (activeFilters.search) {
+      const hay = (item.PRENDA + ' ' + item.COLOR + ' ' + item.TELA + ' ' + item.TALLA).toLowerCase();
+      if (!hay.includes(activeFilters.search)) return false;
+    }
+    return true;
+  });
+
+  // Sort
+  results.sort((a, b) => {
+    if (activeFilters.sort === 'prenda') return a.PRENDA.localeCompare(b.PRENDA);
+    if (activeFilters.sort === 'stock-desc') return b.STOCK - a.STOCK;
+    if (activeFilters.sort === 'stock-asc') return a.STOCK - b.STOCK;
+    if (activeFilters.sort === 'talla') return TALLA_ORDER.indexOf(a.TALLA) - TALLA_ORDER.indexOf(b.TALLA);
+    return 0;
+  });
+
+  return results;
+}
+
+function stockColor(n) {
+  if (n >= 3) return '';
+  if (n === 2) return 'low';
+  return 'out';
+}
+
+function render() {
+  const filtered = getFiltered();
+  const grid = document.getElementById('grid');
+  document.getElementById('countShown').textContent = filtered.length;
+  const totalUnits = filtered.reduce((s, i) => s + i.STOCK, 0);
+  document.getElementById('totalStock').innerHTML = `Stock total: <strong>${totalUnits}</strong> unidades`;
+
+  if (filtered.length === 0) {
+    grid.innerHTML = `<div class="empty"><div class="icon">🔍</div><p>No se encontraron prendas con esos filtros.</p></div>`;
+    return;
+  }
+
+  grid.innerHTML = filtered.map(item => `
+    <div class="card">
+      <div class="card-prenda">${item.PRENDA}</div>
+      <div class="card-badges">
+        <span class="badge talla">📏 ${item.TALLA}</span>
+        <span class="badge">${item.TELA}</span>
+        <span class="badge color">🎨 ${item.COLOR}</span>
+        <span class="badge temporada">${item.TEMPORADA === 'VERANO' ? '☀️' : '🧥'} ${item.TEMPORADA}</span>
+      </div>
+      <div class="card-stock">
+        <div class="stock-dot ${stockColor(item.STOCK)}"></div>
+        <span>Stock:</span>
+        <strong>${item.STOCK} unid.</strong>
+      </div>
+    </div>
+  `).join('');
+}
+
+render();
+</script>
+</body>
+</html>
