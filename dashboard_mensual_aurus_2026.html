@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Dashboard Pauta Digital – Aurus 2026</title>
+  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+  <style>
+    :root{--bg:#060c18;--card:#0d1526;--card2:#131f35;--text:#f0f4ff;--muted:#94a3b8;--accent:#facc15;--green:#22c55e;--red:#ef4444;--orange:#f97316;--blue:#38bdf8;--violet:#a78bfa;--border:#1e2d4a;}
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:'Inter',Arial,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+    .page{max-width:1380px;margin:0 auto;padding:28px 20px;}
+
+    /* HEADER */
+    .header{background:linear-gradient(135deg,#0d1a2e 0%,#111f3a 60%,#172040 100%);border:1px solid var(--border);border-top:4px solid var(--accent);border-radius:20px;padding:28px 36px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center;}
+    .header h1{font-size:28px;font-weight:800;color:var(--accent);margin-bottom:4px;}
+    .header p{color:var(--muted);font-size:14px;line-height:1.6;}
+    .header-right .periodo{font-size:18px;font-weight:700;color:var(--text);}
+    .header-right .empresa{font-size:13px;color:var(--muted);margin-top:4px;}
+
+    /* TABS NAV */
+    .tabs-nav{display:flex;gap:8px;margin-bottom:20px;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:8px;}
+    .tab-btn{flex:1;padding:12px 8px;border:none;background:transparent;color:var(--muted);font-size:14px;font-weight:600;border-radius:10px;cursor:pointer;transition:all .2s;}
+    .tab-btn:hover{background:var(--card2);color:var(--text);}
+    .tab-btn.active{background:var(--accent);color:#0d1526;font-weight:800;}
+    .tab-panel{display:none;}
+    .tab-panel.active{display:block;}
+
+    /* KPI GRID */
+    .kpi-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:18px;}
+    .kpi{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:18px 16px;position:relative;overflow:hidden;transition:transform .2s;}
+    .kpi:hover{transform:translateY(-3px);}
+    .kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+    .kpi.ok::before{background:var(--green);}
+    .kpi.warn::before{background:var(--red);}
+    .kpi.info::before{background:var(--blue);}
+    .kpi.pend::before{background:var(--orange);}
+    .kpi label{font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--muted);}
+    .kpi .val{font-size:30px;font-weight:800;margin:8px 0 5px;line-height:1;}
+    .ok-val{color:var(--green)!important;} .warn-val{color:var(--red)!important;} .info-val{color:var(--blue)!important;} .pend-val{color:var(--orange)!important;}
+    .kpi .sub{font-size:12px;color:var(--muted);line-height:1.4;}
+    .badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:999px;font-size:11px;font-weight:700;margin-top:7px;}
+    .badge-ok{background:rgba(34,197,94,.12);color:#86efac;}
+    .badge-warn{background:rgba(239,68,68,.12);color:#fca5a5;}
+    .badge-pend{background:rgba(249,115,22,.12);color:#fdba74;}
+
+    /* LAYOUT */
+    .grid-3{display:grid;grid-template-columns:2fr 1fr;gap:16px;margin-bottom:16px;}
+    .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:20px;}
+    .card h2{font-size:16px;font-weight:700;color:var(--accent);margin-bottom:4px;}
+    .card-desc{font-size:13px;color:var(--muted);margin-bottom:14px;line-height:1.45;}
+
+    /* TABLA */
+    .table-wrap{overflow-x:auto;margin-top:6px;}
+    table{width:100%;border-collapse:collapse;font-size:13px;}
+    th{padding:10px 12px;text-align:left;color:var(--accent);font-weight:700;border-bottom:2px solid var(--border);white-space:nowrap;}
+    td{padding:10px 12px;border-bottom:1px solid var(--border);}
+    tr:last-child td{border-bottom:none;}
+    tr:hover td{background:rgba(255,255,255,.02);}
+    .ok-text{color:var(--green);font-weight:700;} .warn-text{color:var(--red);font-weight:700;} .pend-text{color:var(--orange);font-weight:700;}
+
+    /* INSIGHTS */
+    .insights{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:4px;}
+    .note{background:var(--card2);border:1px solid var(--border);border-radius:14px;padding:14px;font-size:13px;line-height:1.55;}
+    .note strong{color:var(--accent);}
+
+    /* ALERTA */
+    .alerta{background:rgba(239,68,68,.05);border:1px solid rgba(239,68,68,.2);border-radius:14px;padding:14px 18px;margin-bottom:16px;font-size:13px;line-height:1.7;}
+
+    .footer{margin-top:22px;text-align:center;color:#475569;font-size:12px;padding:14px 0;border-top:1px solid var(--border);}
+    @media(max-width:1100px){.kpi-grid{grid-template-columns:repeat(3,1fr);}.grid-3,.grid-2{grid-template-columns:1fr;}.insights{grid-template-columns:1fr;}}
+    @media(max-width:640px){.kpi-grid{grid-template-columns:repeat(2,1fr);}.header{flex-direction:column;gap:14px;}.tabs-nav{flex-wrap:wrap;}.tab-btn{flex:none;width:calc(50% - 4px);}}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="header">
+    <div class="header-left">
+      <h1>📊 Dashboard de Pauta Digital</h1>
+      <p>Plataformas: Meta Ads · TikTok Ads &nbsp;|&nbsp; Proyectos: FLORENCIA · CALIPSO · Cieneguilla<br>
+         KPIs: Leads generados · CPL · ROAS · Tasa de calificación</p>
+    </div>
+    <div class="header-right">
+      <div class="periodo">Enero – Mayo 2026</div>
+      <div class="empresa">Aurus Consultora Inmobiliaria</div>
+    </div>
+  </div>
+
+  <div class="tabs-nav">
+    <button class="tab-btn active" onclick="showTab(1)" id="btn-1">Enero</button>
+<button class="tab-btn " onclick="showTab(2)" id="btn-2">Febrero</button>
+<button class="tab-btn " onclick="showTab(3)" id="btn-3">Marzo</button>
+<button class="tab-btn " onclick="showTab(4)" id="btn-4">Abril</button>
+<button class="tab-btn " onclick="showTab(5)" id="btn-5">Mayo</button>
+
+  </div>
+
+  
+<div class="tab-panel active" id="tab-1">
+  <div class="alerta"><ul style="margin:0;padding-left:18px;"><li>⚠️ <strong>Leads por debajo de la meta:</strong> Se generaron 1,950 leads de los 2,000 requeridos.</li></ul></div>
+  <div class="kpi-grid">
+    <div class="kpi warn">
+      <label>TOTAL LEADS</label>
+      <div class="val warn-val">1,950</div>
+      <div class="sub">Meta: 292 &nbsp;|&nbsp; TikTok: 1,658</div>
+      <span class="badge badge-warn">❌ 1,950 de 2,000</span>
+    </div>
+    <div class="kpi info">
+      <label>GASTO TOTAL</label>
+      <div class="val info-val">S/ 7,945</div>
+      <div class="sub">Meta: S/ 342<br>TikTok: S/ 7,604</div>
+    </div>
+    <div class="kpi ok">
+      <label>CPL GLOBAL</label>
+      <div class="val ok-val">S/ 4.07</div>
+      <div class="sub">Meta: S/ 1.17 &nbsp;|&nbsp; TikTok: S/ 4.59</div>
+      <span class="badge badge-ok">✅ Objetivo &lt; S/6.68 cumplido</span>
+    </div>
+    <div class="kpi pend">
+      <label>ROAS</label>
+      <div class="val pend-val">—</div><div class="sub">Sin datos de ventas</div><span class="badge badge-pend">⏳ Dato pendiente</span>
+    </div>
+    <div class="kpi pend">
+      <label>TASA CALIFICACIÓN</label>
+      <div class="val pend-val">—</div>
+      <div class="sub">Requiere datos del CRM</div>
+      <span class="badge badge-pend">⏳ Pendiente</span>
+    </div>
+  </div>
+
+  <div class="grid-3">
+    <div class="card">
+      <h2>Leads por semana – TikTok Ads</h2>
+      <p class="card-desc">Evolución semanal de conversiones durante Enero.</p>
+      <div id="chart_sem_1" style="height:300px;"></div>
+    </div>
+    <div class="card">
+      <h2>Gasto por plataforma</h2>
+      <p class="card-desc">Distribución de la inversión total del mes.</p>
+      <div id="chart_dona_1" style="height:300px;"></div>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <h2>Campañas TikTok activas</h2>
+      <p class="card-desc">Leads generados y CPL por campaña en Enero.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Campaña</th><th>Leads</th><th>CPL</th></tr></thead>
+          <tbody><tr>
+          <td>FLORENCIA | FORMS-REELS 01/01</td>
+          <td><div style="display:flex;align-items:center;gap:8px;">
+            <div style="background:#1e2d4a;border-radius:4px;height:8px;width:80px;"><div style="background:#a78bfa;height:8px;border-radius:4px;width:100%;"></div></div>
+            <span>499</span></div></td>
+          <td class="ok-text">S/ 4.57</td>
+        </tr><tr>
+          <td>CALIPSO| WSP-CALIPSO (09/02)</td>
+          <td><div style="display:flex;align-items:center;gap:8px;">
+            <div style="background:#1e2d4a;border-radius:4px;height:8px;width:80px;"><div style="background:#a78bfa;height:8px;border-radius:4px;width:88%;"></div></div>
+            <span>442</span></div></td>
+          <td class="ok-text">S/ 2.71</td>
+        </tr><tr>
+          <td>FLORENCIA | FORMS-VENTAS 26/08</td>
+          <td><div style="display:flex;align-items:center;gap:8px;">
+            <div style="background:#1e2d4a;border-radius:4px;height:8px;width:80px;"><div style="background:#a78bfa;height:8px;border-radius:4px;width:57%;"></div></div>
+            <span>287</span></div></td>
+          <td class="ok-text">S/ 5.22</td>
+        </tr><tr>
+          <td>FLORENCIA | FORMS-VENTAS 02/09</td>
+          <td><div style="display:flex;align-items:center;gap:8px;">
+            <div style="background:#1e2d4a;border-radius:4px;height:8px;width:80px;"><div style="background:#a78bfa;height:8px;border-radius:4px;width:38%;"></div></div>
+            <span>192</span></div></td>
+          <td class="ok-text">S/ 5.72</td>
+        </tr><tr>
+          <td>FLORENCIA | FORMS-VENTAS 24/11</td>
+          <td><div style="display:flex;align-items:center;gap:8px;">
+            <div style="background:#1e2d4a;border-radius:4px;height:8px;width:80px;"><div style="background:#a78bfa;height:8px;border-radius:4px;width:27%;"></div></div>
+            <span>135</span></div></td>
+          <td class="ok-text">S/ 6.39</td>
+        </tr><tr>
+          <td>CALIPSO/WSP-CALIPSO (08/11)</td>
+          <td><div style="display:flex;align-items:center;gap:8px;">
+            <div style="background:#1e2d4a;border-radius:4px;height:8px;width:80px;"><div style="background:#a78bfa;height:8px;border-radius:4px;width:20%;"></div></div>
+            <span>101</span></div></td>
+          <td class="ok-text">S/ 5.94</td>
+        </tr><tr>
+          <td>CONVOCATORIA | FORMS-AFTER OFFICE PPT CA</td>
+          <td><div style="display:flex;align-items:center;gap:8px;">
+            <div style="background:#1e2d4a;border-radius:4px;height:8px;width:80px;"><div style="background:#a78bfa;height:8px;border-radius:4px;width:0%;"></div></div>
+            <span>2</span></div></td>
+          <td class="warn-text">S/ 34.67</td>
+        </tr></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Proyectos TikTok</h2>
+      <p class="card-desc">FLORENCIA vs CALIPSO – volumen y eficiencia.</p>
+      <div id="chart_proj_1" style="height:300px;"></div>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <h2>Lectura ejecutiva – Enero 2026</h2>
+      <p class="card-desc">Hallazgos clave del mes.</p>
+      <div class="insights">
+        <div class="note"><strong>📊 Volumen de leads:</strong><br>1,950 leads totales. Por debajo de la meta de 2,000. Brecha de 50 leads.</div>
+        <div class="note"><strong>💰 Eficiencia del gasto:</strong><br>CPL global de S/ 4.07. Ambas plataformas dentro del objetivo.</div>
+        <div class="note"><strong>📋 ROAS:</strong><br>No se registraron ventas o no se recibieron datos comerciales para este mes.</div>
+        <div class="note"><strong>🏗 Proyectos:</strong><br>FLORENCIA: 1,113 leads (CPL S/ 5.16). CALIPSO: 545 leads (CPL S/ 3.42).</div>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Resumen de KPIs – Enero 2026</h2>
+      <p class="card-desc">Estado de cada indicador frente a su meta.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Indicador</th><th>Resultado</th><th>Meta</th><th>Estado</th></tr></thead>
+          <tbody>
+            <tr><td>Total Leads</td><td>1,950</td><td>≥ 2,000</td><td class="warn-text">❌ No cumplido</td></tr>
+            <tr><td>CPL Global</td><td>S/ 4.07</td><td>&lt; S/ 6.68</td><td class="ok-text">✅ Cumplido</td></tr>
+            <tr><td>CPL Meta Ads</td><td>S/ 1.17</td><td>&lt; S/ 6.68</td><td class="ok-text">✅ Cumplido</td></tr>
+            <tr><td>CPL TikTok Ads</td><td>S/ 4.59</td><td>&lt; S/ 6.68</td><td class="ok-text">✅ Cumplido</td></tr>
+            <tr><td>ROAS</td><td>—</td><td>≥ 25x</td><td class="pend-text">⏳ Sin datos</td></tr>
+            <tr><td>Tasa Calificación</td><td>—</td><td>≥ 50%</td><td class="pend-text">⏳ Pendiente CRM</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="tab-panel " id="tab-2">
+  <div class="alerta"><ul style="margin:0;padding-left:18px;"><li>⚠️ <strong>Leads por debajo de la meta:</strong> Se generaron 941 leads de los 2,000 requeridos.</li></ul></div>
+  <div class="kpi-grid">
+    <div class="kpi warn">
+      <label>TOTAL LEADS</label>
+      <div class="val warn-val">941</div>
+      <div class="sub">Meta: 115 &nbsp;|&nbsp; TikTok: 826</div>
+      <span class="badge badge-warn">❌ 941 de 2,000</span>
+    </div>
+    <div class="kpi info">
+      <label>GASTO TOTAL</label>
+      <div class="val info-val">S/ 5,420</div>
+      <div class="sub">Meta: S/ 672<br>TikTok: S/ 4,748</div>
+    </div>
+    <div class="kpi ok">
+      <label>CPL GLOBAL</label>
+      <div class="val ok-val">S/ 5.76</div>
+      <div class="sub">Meta: S/ 5.84 &nbsp;|&nbsp; TikTok: S/ 5.75</div>
+      <span class="badge badge-ok">✅ Objetivo &lt; S/6.68 cumplido</span>
+    </div>
+    <div class="kpi pend">
+      <label>ROAS</label>
+      <div class="val pend-val">—</div><div class="sub">Sin datos de ventas</div><span class="badge badge-pend">⏳ Dato pendiente</span>
+    </div>
+    <div class="kpi pend">
+      <label>TASA CALIFICACIÓN</label>
+      <div class="val pend-val">—</div>
+      <div class="sub">Requiere datos del CRM</div>
+      <span class="badge badge-pend">⏳ Pendiente</span>
+    </div>
+  </div>
+
+  <div class="grid-3">
+    <div class="card">
+      <h2>Leads por semana – TikTok Ads</h2>
+      <p class="card-desc">Evolución semanal de conversiones durante Febrero.</p>
+      <div id="chart_sem_2" style="height:300px;"></div>
+    </div>
+    <div class="card">
+      <h2>Gasto por plataforma</h2>
+      <p class="card-desc">Distribución de la inversión total del mes.</p>
+      <div id="chart_dona_2" style="height:300px;"></div>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <h2>Campañas TikTok activas</h2>
+      <p class="card-desc">Leads generados y CPL por campaña en Febrero.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Campaña</th><th>Leads</th><th>CPL</th></tr></thead>
+          <tbody><tr>
+          <td>FLORENCIA | FORMS-REELS 01/01</td>
+          <td><div style="display:flex;align-items:center;gap:8px;">
+            <div style="background:#1e2d4a;border-radius:4px;height:8px;width:80px;"><div style="background:#a78bfa;height:8px;border-radius:4px;width:100%;"></div></div>
+            <span>360</span></div></td>
+          <td class="ok-text">S/ 6.22</td>
+        </tr><tr>
+          <td>CALIPSO| WSP-CALIPSO (09/02)</td>
+          <td><div style="display:flex;align-items:center;gap:8px;">
+            <div style="background:#1e2d4a;border-radius:4px;height:8px;width:80px;"><div style="background:#a78bfa;height:8px;border-radius:4px;width:49%;"></div></div>
+            <span>179</span></div></td>
+          <td class="ok-text">S/ 4.73</td>
+        </tr><tr>
+          <td>CALIPSO| WSP-CALIPSO (09/02)  NUEVOS VID</td>
+          <td><div style="display:flex;align-items:center;gap:8px;">
+            <div style="background:#1e2d4a;border-radius:4px;height:8px;width:80px;"><div style="background:#a78bfa;height:8px;border-radius:4px;width:38%;"></div></div>
+            <span>137</span></div></td>
+          <td class="ok-text">S/ 4.66</td>
+        </tr><tr>
+          <td>FLORENCIA | FORMS-VENTAS 26/08</td>
+          <td><div style="display:flex;align-items:center;gap:8px;">
+            <div style="background:#1e2d4a;border-radius:4px;height:8px;width:80px;"><div style="background:#a78bfa;height:8px;border-radius:4px;width:29%;"></div></div>
+            <span>106</span></div></td>
+          <td class="warn-text">S/ 6.77</td>
+        </tr><tr>
+          <td>Copy 1 of CALIPSO| WSP-CALIPSO (22/02)</td>
+          <td><div style="display:flex;align-items:center;gap:8px;">
+            <div style="background:#1e2d4a;border-radius:4px;height:8px;width:80px;"><div style="background:#a78bfa;height:8px;border-radius:4px;width:10%;"></div></div>
+            <span>39</span></div></td>
+          <td class="warn-text">S/ 7.18</td>
+        </tr><tr>
+          <td>CALIPSO/WSP-CALIPSO (08/11)</td>
+          <td><div style="display:flex;align-items:center;gap:8px;">
+            <div style="background:#1e2d4a;border-radius:4px;height:8px;width:80px;"><div style="background:#a78bfa;height:8px;border-radius:4px;width:1%;"></div></div>
+            <span>5</span></div></td>
+          <td class="ok-text">S/ 5.12</td>
+        </tr></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Proyectos TikTok</h2>
+      <p class="card-desc">FLORENCIA vs CALIPSO – volumen y eficiencia.</p>
+      <div id="chart_proj_2" style="height:300px;"></div>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <h2>Lectura ejecutiva – Febrero 2026</h2>
+      <p class="card-desc">Hallazgos clave del mes.</p>
+      <div class="insights">
+        <div class="note"><strong>📊 Volumen de leads:</strong><br>941 leads totales. Por debajo de la meta de 2,000. Brecha de 1,059 leads.</div>
+        <div class="note"><strong>💰 Eficiencia del gasto:</strong><br>CPL global de S/ 5.76. Ambas plataformas dentro del objetivo.</div>
+        <div class="note"><strong>📋 ROAS:</strong><br>No se registraron ventas o no se recibieron datos comerciales para este mes.</div>
+        <div class="note"><strong>🏗 Proyectos:</strong><br>FLORENCIA: 466 leads (CPL S/ 6.35). CALIPSO: 360 leads (CPL S/ 4.97).</div>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Resumen de KPIs – Febrero 2026</h2>
+      <p class="card-desc">Estado de cada indicador frente a su meta.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Indicador</th><th>Resultado</th><th>Meta</th><th>Estado</th></tr></thead>
+          <tbody>
+            <tr><td>Total Leads</td><td>941</td><td>≥ 2,000</td><td class="warn-text">❌ No cumplido</td></tr>
+            <tr><td>CPL Global</td><td>S/ 5.76</td><td>&lt; S/ 6.68</td><td class="ok-text">✅ Cumplido</td></tr>
+            <tr><td>CPL Meta Ads</td><td>S/ 5.84</td><td>&lt; S/ 6.68</td><td class="ok-text">✅ Cumplido</td></tr>
+            <tr><td>CPL TikTok Ads</td><td>S/ 5.75</td><td>&lt; S/ 6.68</td><td class="ok-text">✅ Cumplido</td></tr>
+            <tr><td>ROAS</td><td>—</td><td>≥ 25x</td><td class="pend-text">⏳ Sin datos</td></tr>
+            <tr><td>Tasa Calificación</td><td>—</td><td>≥ 50%</td><td class="pend-text">⏳ Pendiente CRM</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="tab-panel " id="tab-3">
+  <div class="alerta"><ul style="margin:0;padding-left:18px;"><li>⚠️ <strong>CPL TikTok elevado:</strong> S/ 7.97 supera el límite de S/ 6.68.</li></ul></div>
+  <div class="kpi-grid">
+    <div class="kpi ok">
+      <label>TOTAL LEADS</label>
+      <div class="val ok-val">2,326</div>
+      <div class="sub">Meta: 1,500 &nbsp;|&nbsp; TikTok: 826</div>
+      <span class="badge badge-ok">✅ Meta ≥2,000 cumplida</span>
+    </div>
+    <div class="kpi info">
+      <label>GASTO TOTAL</label>
+      <div class="val info-val">S/ 7,683</div>
+      <div class="sub">Meta: S/ 1,103<br>TikTok: S/ 6,580</div>
+    </div>
+    <div class="kpi ok">
+      <label>CPL GLOBAL</label>
+      <div class="val ok-val">S/ 3.30</div>
+      <div class="sub">Meta: S/ 0.74 &nbsp;|&nbsp; TikTok: S/ 7.97</div>
+      <span class="badge badge-ok">✅ Objetivo &lt; S/6.68 cumplido</span>
+    </div>
+    <div class="kpi pend">
+      <label>ROAS</label>
+      <div class="val pend-val">—</div><div class="sub">Sin datos de ventas</div><span class="badge badge-pend">⏳ Dato pendiente</span>
+    </div>
+    <div class="kpi pend">
+      <label>TASA CALIFICACIÓN</label>
+      <div class="val pend-val">—</div>
+      <div class="sub">Requiere datos del CRM</div>
+      <span class="badge badge-pend">⏳ Pendiente</span>
+    </div>
+  </div>
+
+  <div class="grid-3">
+    <div class="card">
+      <h2>Leads por semana – TikTok Ads</h2>
+      <p class="card-desc">Evolución semanal de conversiones durante Marzo.</p>
+      <div id="chart_sem_3" style="height:300px;"></div>
+    </div>
+    <div class="card">
+      <h2>Gasto por plataforma</h2>
+      <p class="card-desc">Distribución de la inversión total del mes.</p>
+      <div id="chart_dona_3" style="height:300px;"></div>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <h2>Campañas TikTok activas</h2>
+      <p class="card-desc">Leads generados y CPL por campaña en Marzo.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Campaña</th><th>Leads</th><th>CPL</th></tr></thead>
+          <tbody><tr>
+          <td>FLORENCIA | FORMS-REELS 01/01</td>
+          <td><div style="display:flex;align-items:center;gap:8px;">
+            <div style="background:#1e2d4a;border-radius:4px;height:8px;width:80px;"><div style="background:#a78bfa;height:8px;border-radius:4px;width:100%;"></div></div>
+            <span>320</span></div></td>
+          <td class="warn-text">S/ 7.71</td>
+        </tr><tr>
+          <td>CALIPSO| WSP-CALIPSO (09/02)</td>
+          <td><div style="display:flex;align-items:center;gap:8px;">
+            <div style="background:#1e2d4a;border-radius:4px;height:8px;width:80px;"><div style="background:#a78bfa;height:8px;border-radius:4px;width:43%;"></div></div>
+            <span>139</span></div></td>
+          <td class="warn-text">S/ 7.73</td>
+        </tr><tr>
+          <td>CALIPSO| WSP-CALIPSO (09/02)  NUEVOS VID</td>
+          <td><div style="display:flex;align-items:center;gap:8px;">
+            <div style="background:#1e2d4a;border-radius:4px;height:8px;width:80px;"><div style="background:#a78bfa;height:8px;border-radius:4px;width:37%;"></div></div>
+            <span>119</span></div></td>
+          <td class="warn-text">S/ 6.72</td>
+        </tr><tr>
+          <td>FLORENCIA | FORMS-VENTAS REMARKETING 11/</td>
+          <td><div style="display:flex;align-items:center;gap:8px;">
+            <div style="background:#1e2d4a;border-radius:4px;height:8px;width:80px;"><div style="background:#a78bfa;height:8px;border-radius:4px;width:26%;"></div></div>
+            <span>84</span></div></td>
+          <td class="warn-text">S/ 7.84</td>
+        </tr><tr>
+          <td>FLORENCIA | FORMS-VENTAS PIEZAS GANADORA</td>
+          <td><div style="display:flex;align-items:center;gap:8px;">
+            <div style="background:#1e2d4a;border-radius:4px;height:8px;width:80px;"><div style="background:#a78bfa;height:8px;border-radius:4px;width:23%;"></div></div>
+            <span>74</span></div></td>
+          <td class="warn-text">S/ 7.37</td>
+        </tr><tr>
+          <td>Copy 1 of CALIPSO| WSP-CALIPSO (22/02)</td>
+          <td><div style="display:flex;align-items:center;gap:8px;">
+            <div style="background:#1e2d4a;border-radius:4px;height:8px;width:80px;"><div style="background:#a78bfa;height:8px;border-radius:4px;width:17%;"></div></div>
+            <span>56</span></div></td>
+          <td class="warn-text">S/ 10.77</td>
+        </tr><tr>
+          <td>FLORENCIA | FORMS-VENTAS 26/08</td>
+          <td><div style="display:flex;align-items:center;gap:8px;">
+            <div style="background:#1e2d4a;border-radius:4px;height:8px;width:80px;"><div style="background:#a78bfa;height:8px;border-radius:4px;width:10%;"></div></div>
+            <span>34</span></div></td>
+          <td class="warn-text">S/ 12.7</td>
+        </tr></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Proyectos TikTok</h2>
+      <p class="card-desc">FLORENCIA vs CALIPSO – volumen y eficiencia.</p>
+      <div id="chart_proj_3" style="height:300px;"></div>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <h2>Lectura ejecutiva – Marzo 2026</h2>
+      <p class="card-desc">Hallazgos clave del mes.</p>
+      <div class="insights">
+        <div class="note"><strong>📊 Volumen de leads:</strong><br>2,326 leads totales. Por encima de la meta mensual de 2,000.</div>
+        <div class="note"><strong>💰 Eficiencia del gasto:</strong><br>CPL global de S/ 3.30. TikTok con CPL de S/ 7.97 supera el límite.</div>
+        <div class="note"><strong>📋 ROAS:</strong><br>No se registraron ventas o no se recibieron datos comerciales para este mes.</div>
+        <div class="note"><strong>🏗 Proyectos:</strong><br>FLORENCIA: 512 leads (CPL S/ 8.01). CALIPSO: 314 leads (CPL S/ 7.89).</div>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Resumen de KPIs – Marzo 2026</h2>
+      <p class="card-desc">Estado de cada indicador frente a su meta.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Indicador</th><th>Resultado</th><th>Meta</th><th>Estado</th></tr></thead>
+          <tbody>
+            <tr><td>Total Leads</td><td>2,326</td><td>≥ 2,000</td><td class="ok-text">✅ Cumplido</td></tr>
+            <tr><td>CPL Global</td><td>S/ 3.30</td><td>&lt; S/ 6.68</td><td class="ok-text">✅ Cumplido</td></tr>
+            <tr><td>CPL Meta Ads</td><td>S/ 0.74</td><td>&lt; S/ 6.68</td><td class="ok-text">✅ Cumplido</td></tr>
+            <tr><td>CPL TikTok Ads</td><td>S/ 7.97</td><td>&lt; S/ 6.68</td><td class="warn-text">❌ Supera límite</td></tr>
+            <tr><td>ROAS</td><td>—</td><td>≥ 25x</td><td class="pend-text">⏳ Sin datos</td></tr>
+            <tr><td>Tasa Calificación</td><td>—</td><td>≥ 50%</td><td class="pend-text">⏳ Pendiente CRM</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="tab-panel " id="tab-4">
+  <div class="alerta"><ul style="margin:0;padding-left:18px;"><li>⚠️ <strong>Leads por debajo de la meta:</strong> Se generaron 1,170 leads de los 2,000 requeridos.</li><li>⚠️ <strong>CPL TikTok elevado:</strong> S/ 7.16 supera el límite de S/ 6.68.</li></ul></div>
+  <div class="kpi-grid">
+    <div class="kpi warn">
+      <label>TOTAL LEADS</label>
+      <div class="val warn-val">1,170</div>
+      <div class="sub">Meta: 557 &nbsp;|&nbsp; TikTok: 613</div>
+      <span class="badge badge-warn">❌ 1,170 de 2,000</span>
+    </div>
+    <div class="kpi info">
+      <label>GASTO TOTAL</label>
+      <div class="val info-val">S/ 6,306</div>
+      <div class="sub">Meta: S/ 1,917<br>TikTok: S/ 4,390</div>
+    </div>
+    <div class="kpi ok">
+      <label>CPL GLOBAL</label>
+      <div class="val ok-val">S/ 5.39</div>
+      <div class="sub">Meta: S/ 3.44 &nbsp;|&nbsp; TikTok: S/ 7.16</div>
+      <span class="badge badge-ok">✅ Objetivo &lt; S/6.68 cumplido</span>
+    </div>
+    <div class="kpi warn">
+      <label>ROAS</label>
+      <div class="val warn-val">12.69x</div><div class="sub">Objetivo ≥ 25x</div><span class="badge badge-warn">❌ No cumplido</span>
+    </div>
+    <div class="kpi pend">
+      <label>TASA CALIFICACIÓN</label>
+      <div class="val pend-val">—</div>
+      <div class="sub">Requiere datos del CRM</div>
+      <span class="badge badge-pend">⏳ Pendiente</span>
+    </div>
+  </div>
+
+  <div class="grid-3">
+    <div class="card">
+      <h2>Leads por semana – TikTok Ads</h2>
+      <p class="card-desc">Evolución semanal de conversiones durante Abril.</p>
+      <div id="chart_sem_4" style="height:300px;"></div>
+    </div>
+    <div class="card">
+      <h2>Gasto por plataforma</h2>
+      <p class="card-desc">Distribución de la inversión total del mes.</p>
+      <div id="chart_dona_4" style="height:300px;"></div>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <h2>Campañas TikTok activas</h2>
+      <p class="card-desc">Leads generados y CPL por campaña en Abril.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Campaña</th><th>Leads</th><th>CPL</th></tr></thead>
+          <tbody><tr>
+          <td>FLORENCIA | FORMS-VENTAS NUEVAS PIEZAS 0</td>
+          <td><div style="display:flex;align-items:center;gap:8px;">
+            <div style="background:#1e2d4a;border-radius:4px;height:8px;width:80px;"><div style="background:#a78bfa;height:8px;border-radius:4px;width:100%;"></div></div>
+            <span>166</span></div></td>
+          <td class="ok-text">S/ 6.53</td>
+        </tr><tr>
+          <td>CALIPSO| WSP-CALIPSO (09/02)</td>
+          <td><div style="display:flex;align-items:center;gap:8px;">
+            <div style="background:#1e2d4a;border-radius:4px;height:8px;width:80px;"><div style="background:#a78bfa;height:8px;border-radius:4px;width:95%;"></div></div>
+            <span>159</span></div></td>
+          <td class="ok-text">S/ 5.3</td>
+        </tr><tr>
+          <td>FLORENCIA | FORMS-VENTAS PIEZAS GANADORA</td>
+          <td><div style="display:flex;align-items:center;gap:8px;">
+            <div style="background:#1e2d4a;border-radius:4px;height:8px;width:80px;"><div style="background:#a78bfa;height:8px;border-radius:4px;width:71%;"></div></div>
+            <span>118</span></div></td>
+          <td class="warn-text">S/ 7.26</td>
+        </tr><tr>
+          <td>FLORENCIA | FORMS-VENTAS REMARKETING 05/</td>
+          <td><div style="display:flex;align-items:center;gap:8px;">
+            <div style="background:#1e2d4a;border-radius:4px;height:8px;width:80px;"><div style="background:#a78bfa;height:8px;border-radius:4px;width:53%;"></div></div>
+            <span>88</span></div></td>
+          <td class="warn-text">S/ 7.95</td>
+        </tr><tr>
+          <td>FLORENCIA | FORMS - NUEVAS PIEZAS 18/04</td>
+          <td><div style="display:flex;align-items:center;gap:8px;">
+            <div style="background:#1e2d4a;border-radius:4px;height:8px;width:80px;"><div style="background:#a78bfa;height:8px;border-radius:4px;width:35%;"></div></div>
+            <span>59</span></div></td>
+          <td class="warn-text">S/ 10.42</td>
+        </tr><tr>
+          <td>FLORENCIA | FORMS-VENTAS PIEZAS GANADORA</td>
+          <td><div style="display:flex;align-items:center;gap:8px;">
+            <div style="background:#1e2d4a;border-radius:4px;height:8px;width:80px;"><div style="background:#a78bfa;height:8px;border-radius:4px;width:10%;"></div></div>
+            <span>18</span></div></td>
+          <td class="warn-text">S/ 12.29</td>
+        </tr><tr>
+          <td>FLORENCIA | FORMS-REELS 01/01</td>
+          <td><div style="display:flex;align-items:center;gap:8px;">
+            <div style="background:#1e2d4a;border-radius:4px;height:8px;width:80px;"><div style="background:#a78bfa;height:8px;border-radius:4px;width:2%;"></div></div>
+            <span>4</span></div></td>
+          <td class="warn-text">S/ 12.95</td>
+        </tr><tr>
+          <td>FLORENCIA | FORMS-VENTAS REMARKETING 11/</td>
+          <td><div style="display:flex;align-items:center;gap:8px;">
+            <div style="background:#1e2d4a;border-radius:4px;height:8px;width:80px;"><div style="background:#a78bfa;height:8px;border-radius:4px;width:0%;"></div></div>
+            <span>1</span></div></td>
+          <td class="warn-text">S/ 17.26</td>
+        </tr></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Proyectos TikTok</h2>
+      <p class="card-desc">FLORENCIA vs CALIPSO – volumen y eficiencia.</p>
+      <div id="chart_proj_4" style="height:300px;"></div>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <h2>Lectura ejecutiva – Abril 2026</h2>
+      <p class="card-desc">Hallazgos clave del mes.</p>
+      <div class="insights">
+        <div class="note"><strong>📊 Volumen de leads:</strong><br>1,170 leads totales. Por debajo de la meta de 2,000. Brecha de 830 leads.</div>
+        <div class="note"><strong>💰 Eficiencia del gasto:</strong><br>CPL global de S/ 5.39. TikTok con CPL de S/ 7.16 supera el límite.</div>
+        <div class="note"><strong>❌ ROAS 12.69x:</strong><br>Ingresos de S/ 80,024 sobre gasto de S/ 6,306. Para llegar a 25x se necesitan S/ 157,652 en ingresos o reducir gasto a S/ 3,200.</div>
+        <div class="note"><strong>🏗 Proyectos:</strong><br>FLORENCIA: 454 leads (CPL S/ 7.81). CALIPSO: 159 leads (CPL S/ 5.30).</div>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Resumen de KPIs – Abril 2026</h2>
+      <p class="card-desc">Estado de cada indicador frente a su meta.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Indicador</th><th>Resultado</th><th>Meta</th><th>Estado</th></tr></thead>
+          <tbody>
+            <tr><td>Total Leads</td><td>1,170</td><td>≥ 2,000</td><td class="warn-text">❌ No cumplido</td></tr>
+            <tr><td>CPL Global</td><td>S/ 5.39</td><td>&lt; S/ 6.68</td><td class="ok-text">✅ Cumplido</td></tr>
+            <tr><td>CPL Meta Ads</td><td>S/ 3.44</td><td>&lt; S/ 6.68</td><td class="ok-text">✅ Cumplido</td></tr>
+            <tr><td>CPL TikTok Ads</td><td>S/ 7.16</td><td>&lt; S/ 6.68</td><td class="warn-text">❌ Supera límite</td></tr>
+            <tr><td>ROAS</td><td>S/ 12.69x</td><td>≥ 25x</td><td class="warn-text">❌ No cumplido</td></tr>
+            <tr><td>Tasa Calificación</td><td>—</td><td>≥ 50%</td><td class="pend-text">⏳ Pendiente CRM</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="tab-panel " id="tab-5">
+  <div class="alerta"><ul style="margin:0;padding-left:18px;"><li>⚠️ <strong>Leads por debajo de la meta:</strong> Se generaron 513 leads de los 2,000 requeridos.</li><li>⚠️ <strong>CPL TikTok elevado:</strong> S/ 8.72 supera el límite de S/ 6.68.</li></ul></div>
+  <div class="kpi-grid">
+    <div class="kpi warn">
+      <label>TOTAL LEADS</label>
+      <div class="val warn-val">513</div>
+      <div class="sub">Meta: 315 &nbsp;|&nbsp; TikTok: 198</div>
+      <span class="badge badge-warn">❌ 513 de 2,000</span>
+    </div>
+    <div class="kpi info">
+      <label>GASTO TOTAL</label>
+      <div class="val info-val">S/ 3,674</div>
+      <div class="sub">Meta: S/ 1,946<br>TikTok: S/ 1,727</div>
+    </div>
+    <div class="kpi warn">
+      <label>CPL GLOBAL</label>
+      <div class="val warn-val">S/ 7.16</div>
+      <div class="sub">Meta: S/ 6.18 &nbsp;|&nbsp; TikTok: S/ 8.72</div>
+      <span class="badge badge-warn">❌ Supera S/ 6.68</span>
+    </div>
+    <div class="kpi pend">
+      <label>ROAS</label>
+      <div class="val pend-val">—</div><div class="sub">Sin datos de ventas</div><span class="badge badge-pend">⏳ Dato pendiente</span>
+    </div>
+    <div class="kpi pend">
+      <label>TASA CALIFICACIÓN</label>
+      <div class="val pend-val">—</div>
+      <div class="sub">Requiere datos del CRM</div>
+      <span class="badge badge-pend">⏳ Pendiente</span>
+    </div>
+  </div>
+
+  <div class="grid-3">
+    <div class="card">
+      <h2>Leads por semana – TikTok Ads</h2>
+      <p class="card-desc">Evolución semanal de conversiones durante Mayo.</p>
+      <div id="chart_sem_5" style="height:300px;"></div>
+    </div>
+    <div class="card">
+      <h2>Gasto por plataforma</h2>
+      <p class="card-desc">Distribución de la inversión total del mes.</p>
+      <div id="chart_dona_5" style="height:300px;"></div>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <h2>Campañas TikTok activas</h2>
+      <p class="card-desc">Leads generados y CPL por campaña en Mayo.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Campaña</th><th>Leads</th><th>CPL</th></tr></thead>
+          <tbody><tr>
+          <td>FLORENCIA | FORMS-VENTAS NUEVAS PIEZAS 0</td>
+          <td><div style="display:flex;align-items:center;gap:8px;">
+            <div style="background:#1e2d4a;border-radius:4px;height:8px;width:80px;"><div style="background:#a78bfa;height:8px;border-radius:4px;width:100%;"></div></div>
+            <span>91</span></div></td>
+          <td class="warn-text">S/ 6.93</td>
+        </tr><tr>
+          <td>FLORENCIA | FORMS - NUEVAS PIEZAS 18/04</td>
+          <td><div style="display:flex;align-items:center;gap:8px;">
+            <div style="background:#1e2d4a;border-radius:4px;height:8px;width:80px;"><div style="background:#a78bfa;height:8px;border-radius:4px;width:42%;"></div></div>
+            <span>39</span></div></td>
+          <td class="warn-text">S/ 13.41</td>
+        </tr><tr>
+          <td>CALIPSO| WSP-CALIPSO (09/02)</td>
+          <td><div style="display:flex;align-items:center;gap:8px;">
+            <div style="background:#1e2d4a;border-radius:4px;height:8px;width:80px;"><div style="background:#a78bfa;height:8px;border-radius:4px;width:40%;"></div></div>
+            <span>37</span></div></td>
+          <td class="warn-text">S/ 10.54</td>
+        </tr><tr>
+          <td>FLORENCIA | FORMS-NUEVAS PIEZAS EVENTO M</td>
+          <td><div style="display:flex;align-items:center;gap:8px;">
+            <div style="background:#1e2d4a;border-radius:4px;height:8px;width:80px;"><div style="background:#a78bfa;height:8px;border-radius:4px;width:26%;"></div></div>
+            <span>24</span></div></td>
+          <td class="ok-text">S/ 2.09</td>
+        </tr><tr>
+          <td>FLORENCIA | FORMS-VENTAS PIEZAS GANADORA</td>
+          <td><div style="display:flex;align-items:center;gap:8px;">
+            <div style="background:#1e2d4a;border-radius:4px;height:8px;width:80px;"><div style="background:#a78bfa;height:8px;border-radius:4px;width:7%;"></div></div>
+            <span>7</span></div></td>
+          <td class="warn-text">S/ 18.99</td>
+        </tr></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Proyectos TikTok</h2>
+      <p class="card-desc">FLORENCIA vs CALIPSO – volumen y eficiencia.</p>
+      <div id="chart_proj_5" style="height:300px;"></div>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <h2>Lectura ejecutiva – Mayo 2026</h2>
+      <p class="card-desc">Hallazgos clave del mes.</p>
+      <div class="insights">
+        <div class="note"><strong>📊 Volumen de leads:</strong><br>513 leads totales. Por debajo de la meta de 2,000. Brecha de 1,487 leads.</div>
+        <div class="note"><strong>💰 Eficiencia del gasto:</strong><br>CPL global de S/ 7.16. TikTok con CPL de S/ 8.72 supera el límite.</div>
+        <div class="note"><strong>📋 ROAS:</strong><br>No se registraron ventas o no se recibieron datos comerciales para este mes.</div>
+        <div class="note"><strong>🏗 Proyectos:</strong><br>FLORENCIA: 161 leads (CPL S/ 8.31). CALIPSO: 37 leads (CPL S/ 10.54).</div>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Resumen de KPIs – Mayo 2026</h2>
+      <p class="card-desc">Estado de cada indicador frente a su meta.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Indicador</th><th>Resultado</th><th>Meta</th><th>Estado</th></tr></thead>
+          <tbody>
+            <tr><td>Total Leads</td><td>513</td><td>≥ 2,000</td><td class="warn-text">❌ No cumplido</td></tr>
+            <tr><td>CPL Global</td><td>S/ 7.16</td><td>&lt; S/ 6.68</td><td class="warn-text">❌ Supera límite</td></tr>
+            <tr><td>CPL Meta Ads</td><td>S/ 6.18</td><td>&lt; S/ 6.68</td><td class="ok-text">✅ Cumplido</td></tr>
+            <tr><td>CPL TikTok Ads</td><td>S/ 8.72</td><td>&lt; S/ 6.68</td><td class="warn-text">❌ Supera límite</td></tr>
+            <tr><td>ROAS</td><td>—</td><td>≥ 25x</td><td class="pend-text">⏳ Sin datos</td></tr>
+            <tr><td>Tasa Calificación</td><td>—</td><td>≥ 50%</td><td class="pend-text">⏳ Pendiente CRM</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+  <div class="footer">
+    Dashboard Pauta Digital · Aurus Consultora Inmobiliaria 2026 · Generado con datos exportados de Meta Ads y TikTok Ads
+  </div>
+</div>
+
+<script>
+  function showTab(n) {
+    document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.getElementById('tab-'+n).classList.add('active');
+    document.getElementById('btn-'+n).classList.add('active');
+  }
+  const DATA = {"1": {"sem_labels": ["Sem 1", "Sem 2", "Sem 3", "Sem 4", "Sem 5"], "sem_leads": [292, 473, 318, 312, 263], "meta_gasto": 341.56, "tt_gasto": 7603.68, "flor_leads": 1113, "cal_leads": 545, "flor_cpl": 5.16, "cal_cpl": 3.42}, "2": {"sem_labels": ["Sem 1", "Sem 2", "Sem 3", "Sem 4", "Sem 5"], "sem_leads": [50, 148, 174, 265, 189], "meta_gasto": 671.98, "tt_gasto": 4748.13, "flor_leads": 466, "cal_leads": 360, "flor_cpl": 6.35, "cal_cpl": 4.97}, "3": {"sem_labels": ["Sem 1", "Sem 2", "Sem 3", "Sem 4", "Sem 5", "Sem 6"], "sem_leads": [47, 177, 209, 206, 152, 35], "meta_gasto": 1103.12, "tt_gasto": 6580.3, "flor_leads": 512, "cal_leads": 314, "flor_cpl": 8.01, "cal_cpl": 7.89}, "4": {"sem_labels": ["Sem 1", "Sem 2", "Sem 3", "Sem 4", "Sem 5"], "sem_leads": [22, 159, 147, 198, 87], "meta_gasto": 1916.54, "tt_gasto": 4389.56, "flor_leads": 454, "cal_leads": 159, "flor_cpl": 7.81, "cal_cpl": 5.3}, "5": {"sem_labels": ["Sem 1", "Sem 2", "Sem 3"], "sem_leads": [67, 99, 32], "meta_gasto": 1946.34, "tt_gasto": 1727.22, "flor_leads": 161, "cal_leads": 37, "flor_cpl": 8.31, "cal_cpl": 10.54}};
+
+  window.addEventListener('load', function(){
+    
+  // Mes 1
+  (function() {
+    const d = DATA[1];
+    const BL = {paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'rgba(0,0,0,0)',
+      font:{color:'#e2e8f0',family:'Inter,Arial,sans-serif'},
+      margin:{l:44,r:14,t:16,b:44},
+      xaxis:{gridcolor:'#1e2d4a',zerolinecolor:'#1e2d4a'},
+      yaxis:{gridcolor:'#1e2d4a',zerolinecolor:'#1e2d4a'},
+      legend:{orientation:'h',y:1.12,x:0}};
+
+    Plotly.newPlot('chart_sem_1',
+      [{type:'bar',x:d.sem_labels,y:d.sem_leads,
+        text:d.sem_leads,textposition:'outside',
+        marker:{color:'#a78bfa'}}],
+      {...BL,yaxis:{title:'Leads',gridcolor:'#1e2d4a'},
+        xaxis:{gridcolor:'rgba(0,0,0,0)'}},{responsive:true});
+
+    Plotly.newPlot('chart_dona_1',
+      [{type:'pie',
+        labels:['TikTok Ads','Meta Ads'],
+        values:[d.tt_gasto,d.meta_gasto],
+        hole:.55,
+        marker:{colors:['#a78bfa','#38bdf8']},
+        textinfo:'percent+label'}],
+      {...BL,margin:{l:8,r:8,t:10,b:8},showlegend:true},{responsive:true});
+
+    Plotly.newPlot('chart_proj_1',
+      [{type:'bar',
+        x:['FLORENCIA','CALIPSO'],
+        y:[d.flor_leads,d.cal_leads],
+        text:[d.flor_leads+' leads | CPL S/'+d.flor_cpl,
+              d.cal_leads+' leads | CPL S/'+d.cal_cpl],
+        textposition:'outside',
+        marker:{color:['#facc15','#22c55e']}}],
+      {...BL,
+        yaxis:{title:'Leads',gridcolor:'#1e2d4a',
+          range:[0,Math.max(d.flor_leads,d.cal_leads)*1.35+1]},
+        xaxis:{gridcolor:'rgba(0,0,0,0)'}},{responsive:true});
+  })();
+
+  // Mes 2
+  (function() {
+    const d = DATA[2];
+    const BL = {paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'rgba(0,0,0,0)',
+      font:{color:'#e2e8f0',family:'Inter,Arial,sans-serif'},
+      margin:{l:44,r:14,t:16,b:44},
+      xaxis:{gridcolor:'#1e2d4a',zerolinecolor:'#1e2d4a'},
+      yaxis:{gridcolor:'#1e2d4a',zerolinecolor:'#1e2d4a'},
+      legend:{orientation:'h',y:1.12,x:0}};
+
+    Plotly.newPlot('chart_sem_2',
+      [{type:'bar',x:d.sem_labels,y:d.sem_leads,
+        text:d.sem_leads,textposition:'outside',
+        marker:{color:'#a78bfa'}}],
+      {...BL,yaxis:{title:'Leads',gridcolor:'#1e2d4a'},
+        xaxis:{gridcolor:'rgba(0,0,0,0)'}},{responsive:true});
+
+    Plotly.newPlot('chart_dona_2',
+      [{type:'pie',
+        labels:['TikTok Ads','Meta Ads'],
+        values:[d.tt_gasto,d.meta_gasto],
+        hole:.55,
+        marker:{colors:['#a78bfa','#38bdf8']},
+        textinfo:'percent+label'}],
+      {...BL,margin:{l:8,r:8,t:10,b:8},showlegend:true},{responsive:true});
+
+    Plotly.newPlot('chart_proj_2',
+      [{type:'bar',
+        x:['FLORENCIA','CALIPSO'],
+        y:[d.flor_leads,d.cal_leads],
+        text:[d.flor_leads+' leads | CPL S/'+d.flor_cpl,
+              d.cal_leads+' leads | CPL S/'+d.cal_cpl],
+        textposition:'outside',
+        marker:{color:['#facc15','#22c55e']}}],
+      {...BL,
+        yaxis:{title:'Leads',gridcolor:'#1e2d4a',
+          range:[0,Math.max(d.flor_leads,d.cal_leads)*1.35+1]},
+        xaxis:{gridcolor:'rgba(0,0,0,0)'}},{responsive:true});
+  })();
+
+  // Mes 3
+  (function() {
+    const d = DATA[3];
+    const BL = {paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'rgba(0,0,0,0)',
+      font:{color:'#e2e8f0',family:'Inter,Arial,sans-serif'},
+      margin:{l:44,r:14,t:16,b:44},
+      xaxis:{gridcolor:'#1e2d4a',zerolinecolor:'#1e2d4a'},
+      yaxis:{gridcolor:'#1e2d4a',zerolinecolor:'#1e2d4a'},
+      legend:{orientation:'h',y:1.12,x:0}};
+
+    Plotly.newPlot('chart_sem_3',
+      [{type:'bar',x:d.sem_labels,y:d.sem_leads,
+        text:d.sem_leads,textposition:'outside',
+        marker:{color:'#a78bfa'}}],
+      {...BL,yaxis:{title:'Leads',gridcolor:'#1e2d4a'},
+        xaxis:{gridcolor:'rgba(0,0,0,0)'}},{responsive:true});
+
+    Plotly.newPlot('chart_dona_3',
+      [{type:'pie',
+        labels:['TikTok Ads','Meta Ads'],
+        values:[d.tt_gasto,d.meta_gasto],
+        hole:.55,
+        marker:{colors:['#a78bfa','#38bdf8']},
+        textinfo:'percent+label'}],
+      {...BL,margin:{l:8,r:8,t:10,b:8},showlegend:true},{responsive:true});
+
+    Plotly.newPlot('chart_proj_3',
+      [{type:'bar',
+        x:['FLORENCIA','CALIPSO'],
+        y:[d.flor_leads,d.cal_leads],
+        text:[d.flor_leads+' leads | CPL S/'+d.flor_cpl,
+              d.cal_leads+' leads | CPL S/'+d.cal_cpl],
+        textposition:'outside',
+        marker:{color:['#facc15','#22c55e']}}],
+      {...BL,
+        yaxis:{title:'Leads',gridcolor:'#1e2d4a',
+          range:[0,Math.max(d.flor_leads,d.cal_leads)*1.35+1]},
+        xaxis:{gridcolor:'rgba(0,0,0,0)'}},{responsive:true});
+  })();
+
+  // Mes 4
+  (function() {
+    const d = DATA[4];
+    const BL = {paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'rgba(0,0,0,0)',
+      font:{color:'#e2e8f0',family:'Inter,Arial,sans-serif'},
+      margin:{l:44,r:14,t:16,b:44},
+      xaxis:{gridcolor:'#1e2d4a',zerolinecolor:'#1e2d4a'},
+      yaxis:{gridcolor:'#1e2d4a',zerolinecolor:'#1e2d4a'},
+      legend:{orientation:'h',y:1.12,x:0}};
+
+    Plotly.newPlot('chart_sem_4',
+      [{type:'bar',x:d.sem_labels,y:d.sem_leads,
+        text:d.sem_leads,textposition:'outside',
+        marker:{color:'#a78bfa'}}],
+      {...BL,yaxis:{title:'Leads',gridcolor:'#1e2d4a'},
+        xaxis:{gridcolor:'rgba(0,0,0,0)'}},{responsive:true});
+
+    Plotly.newPlot('chart_dona_4',
+      [{type:'pie',
+        labels:['TikTok Ads','Meta Ads'],
+        values:[d.tt_gasto,d.meta_gasto],
+        hole:.55,
+        marker:{colors:['#a78bfa','#38bdf8']},
+        textinfo:'percent+label'}],
+      {...BL,margin:{l:8,r:8,t:10,b:8},showlegend:true},{responsive:true});
+
+    Plotly.newPlot('chart_proj_4',
+      [{type:'bar',
+        x:['FLORENCIA','CALIPSO'],
+        y:[d.flor_leads,d.cal_leads],
+        text:[d.flor_leads+' leads | CPL S/'+d.flor_cpl,
+              d.cal_leads+' leads | CPL S/'+d.cal_cpl],
+        textposition:'outside',
+        marker:{color:['#facc15','#22c55e']}}],
+      {...BL,
+        yaxis:{title:'Leads',gridcolor:'#1e2d4a',
+          range:[0,Math.max(d.flor_leads,d.cal_leads)*1.35+1]},
+        xaxis:{gridcolor:'rgba(0,0,0,0)'}},{responsive:true});
+  })();
+
+  // Mes 5
+  (function() {
+    const d = DATA[5];
+    const BL = {paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'rgba(0,0,0,0)',
+      font:{color:'#e2e8f0',family:'Inter,Arial,sans-serif'},
+      margin:{l:44,r:14,t:16,b:44},
+      xaxis:{gridcolor:'#1e2d4a',zerolinecolor:'#1e2d4a'},
+      yaxis:{gridcolor:'#1e2d4a',zerolinecolor:'#1e2d4a'},
+      legend:{orientation:'h',y:1.12,x:0}};
+
+    Plotly.newPlot('chart_sem_5',
+      [{type:'bar',x:d.sem_labels,y:d.sem_leads,
+        text:d.sem_leads,textposition:'outside',
+        marker:{color:'#a78bfa'}}],
+      {...BL,yaxis:{title:'Leads',gridcolor:'#1e2d4a'},
+        xaxis:{gridcolor:'rgba(0,0,0,0)'}},{responsive:true});
+
+    Plotly.newPlot('chart_dona_5',
+      [{type:'pie',
+        labels:['TikTok Ads','Meta Ads'],
+        values:[d.tt_gasto,d.meta_gasto],
+        hole:.55,
+        marker:{colors:['#a78bfa','#38bdf8']},
+        textinfo:'percent+label'}],
+      {...BL,margin:{l:8,r:8,t:10,b:8},showlegend:true},{responsive:true});
+
+    Plotly.newPlot('chart_proj_5',
+      [{type:'bar',
+        x:['FLORENCIA','CALIPSO'],
+        y:[d.flor_leads,d.cal_leads],
+        text:[d.flor_leads+' leads | CPL S/'+d.flor_cpl,
+              d.cal_leads+' leads | CPL S/'+d.cal_cpl],
+        textposition:'outside',
+        marker:{color:['#facc15','#22c55e']}}],
+      {...BL,
+        yaxis:{title:'Leads',gridcolor:'#1e2d4a',
+          range:[0,Math.max(d.flor_leads,d.cal_leads)*1.35+1]},
+        xaxis:{gridcolor:'rgba(0,0,0,0)'}},{responsive:true});
+  })();
+
+  });
+</script>
+</body>
+</html>
