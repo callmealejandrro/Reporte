@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Reporte Ejecutivo ADS - Aurus Consultora Inmobiliaria</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+:root{
+  --bg:#0d0f1a;--surface:#141625;--card:#1c1f35;--border:#252a47;
+  --text:#eef0fb;--muted:#7b829e;
+  --meta:#4f8ef7;--tiktok:#ff3b5c;
+  --green:#3dd68c;--yellow:#f5c542;--red:#f06565;--purple:#9b7fe8;
+  --accent:#6c63ff;--base:#34d4c4;--ref:#f97316;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:14px}
+header{background:linear-gradient(135deg,#141625 0%,#0d0f1a 100%);border-bottom:2px solid var(--accent);padding:22px 36px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px}
+.header-left{display:flex;align-items:center;gap:14px}
+.logo-box{width:48px;height:48px;background:linear-gradient(135deg,var(--accent),#a78bfa);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:24px}
+.header-left h1{font-size:1.35rem;font-weight:800;letter-spacing:-.5px}
+.header-left p{font-size:.78rem;color:var(--muted);margin-top:3px}
+.badge-period{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:7px 14px;font-size:.78rem;color:var(--muted)}
+.filters{background:var(--surface);border-bottom:1px solid var(--border);padding:14px 36px;display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end}
+.fg{display:flex;flex-direction:column;gap:5px}
+.fg label{font-size:.68rem;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.6px}
+.fg select{background:var(--card);border:1px solid var(--border);color:var(--text);padding:7px 12px;border-radius:8px;font-size:.82rem;outline:none;cursor:pointer;min-width:160px}
+.fg select:focus{border-color:var(--accent)}
+.btn-apply{background:linear-gradient(135deg,var(--accent),#a78bfa);color:#fff;border:none;padding:8px 20px;border-radius:8px;font-size:.82rem;font-weight:700;cursor:pointer;align-self:flex-end;transition:opacity .2s}
+.btn-apply:hover{opacity:.85}
+.btn-reset{background:var(--card);border:1px solid var(--border);color:var(--muted);padding:8px 16px;border-radius:8px;font-size:.82rem;cursor:pointer;align-self:flex-end;transition:all .2s}
+.btn-reset:hover{border-color:var(--accent);color:var(--text)}
+main{padding:28px 36px;display:flex;flex-direction:column;gap:32px}
+.sec-title{font-size:.85rem;font-weight:800;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin-bottom:16px;display:flex;align-items:center;gap:10px}
+.sec-title:after{content:'';flex:1;height:1px;background:var(--border)}
+.kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px}
+.kpi{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:22px 18px;position:relative;overflow:hidden;transition:transform .2s}
+.kpi:hover{transform:translateY(-3px)}
+.kpi-bar{position:absolute;top:0;left:0;right:0;height:3px;border-radius:14px 14px 0 0}
+.kpi-ico{position:absolute;right:14px;top:14px;font-size:1.5rem;opacity:.2}
+.kpi-lbl{font-size:.68rem;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+.kpi-val{font-size:2rem;font-weight:900;letter-spacing:-1.5px;line-height:1}
+.kpi-sub{font-size:.72rem;color:var(--muted);margin-top:7px}
+.okr-panel{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden}
+.okr-head{padding:16px 22px;background:rgba(108,99,255,.08);border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+.okr-head h3{font-size:.92rem;font-weight:800}
+.okr-item{display:grid;grid-template-columns:12px 1fr auto auto auto;align-items:center;gap:14px;padding:15px 22px;border-bottom:1px solid rgba(37,42,71,.6);transition:background .15s}
+.okr-item:last-child{border-bottom:none}
+.okr-item:hover{background:rgba(108,99,255,.05)}
+.okr-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.okr-name{font-size:.86rem;font-weight:600}
+.okr-desc{font-size:.72rem;color:var(--muted);margin-top:2px}
+.okr-target{font-size:.75rem;color:var(--muted);background:var(--surface);border:1px solid var(--border);padding:3px 10px;border-radius:6px;white-space:nowrap}
+.okr-num{font-size:1.1rem;font-weight:900;text-align:right;min-width:80px}
+.okr-badge{font-size:.72rem;font-weight:700;padding:4px 12px;border-radius:20px;white-space:nowrap}
+.ok{background:rgba(61,214,140,.12);color:var(--green);border:1px solid rgba(61,214,140,.25)}
+.warn{background:rgba(245,197,66,.12);color:var(--yellow);border:1px solid rgba(245,197,66,.25)}
+.fail{background:rgba(240,101,101,.12);color:var(--red);border:1px solid rgba(240,101,101,.25)}
+.funnel-wrap{display:flex;align-items:stretch;gap:0;background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden}
+.funnel-stage{flex:1;padding:24px 10px;text-align:center;border-right:1px solid var(--border);transition:background .2s}
+.funnel-stage:last-child{border-right:none}
+.funnel-stage:hover{background:rgba(108,99,255,.07)}
+.fs-icon{font-size:1.8rem;margin-bottom:8px}
+.fs-label{font-size:.66rem;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;line-height:1.4}
+.fs-num{font-size:2rem;font-weight:900;letter-spacing:-2px;line-height:1}
+.fs-conv{font-size:.72rem;font-weight:700;padding:3px 9px;border-radius:10px;display:inline-block;margin-top:8px}
+.fs-money{font-size:.76rem;color:var(--muted);margin-top:6px}
+.montos-row{display:flex;gap:14px;flex-wrap:wrap;margin-top:14px}
+.monto-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 20px;flex:1;min-width:160px}
+.monto-lbl{font-size:.68rem;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.4px;margin-bottom:5px}
+.monto-val{font-size:1.4rem;font-weight:900}
+.canal-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px}
+.canal-card{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.canal-head{padding:12px 16px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--border)}
+.canal-dot{width:10px;height:10px;border-radius:50%}
+.canal-body{padding:12px 16px;display:flex;flex-direction:column;gap:0}
+.c-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid rgba(37,42,71,.5);font-size:.82rem}
+.c-row:last-child{border-bottom:none}
+.c-lbl{color:var(--muted)}
+.c-val{font-weight:800}
+.charts-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.chart-box{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px}
+.chart-box h3{font-size:.76rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:16px}
+.chart-box canvas{max-height:220px}
+.chart-full{grid-column:1/-1}
+.chart-full canvas{max-height:180px}
+.table-wrap{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden}
+.tbl-head{padding:14px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+.tbl-head h3{font-size:.9rem;font-weight:800}
+.legend{display:flex;gap:14px;font-size:.72rem;color:var(--muted)}
+.leg{display:flex;align-items:center;gap:5px}
+.leg-dot{width:8px;height:8px;border-radius:50%}
+table{width:100%;border-collapse:collapse}
+th{background:var(--surface);padding:10px 16px;font-size:.68rem;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.4px;border-bottom:1px solid var(--border);white-space:nowrap;text-align:center}
+th:first-child{text-align:left}
+td{padding:11px 16px;text-align:center;border-bottom:1px solid rgba(37,42,71,.4);font-size:.84rem;font-weight:600}
+td:first-child{text-align:left;font-weight:700;color:var(--muted);font-size:.78rem;background:var(--surface)}
+tr:hover td{background:rgba(108,99,255,.05)}
+tr:hover td:first-child{background:var(--surface)}
+tr.sep-row td{background:rgba(108,99,255,.06);font-size:.72rem;color:var(--accent);font-weight:700;padding:8px 16px}
+tr.total-row td{background:rgba(108,99,255,.14);font-weight:900;font-size:.88rem;border-top:2px solid var(--accent)}
+tr.total-row td:first-child{background:rgba(108,99,255,.2);color:var(--accent)}
+.g{color:var(--green)}.y{color:var(--yellow)}.r{color:var(--red)}.n{color:var(--text)}.mv{color:var(--muted);font-weight:500}
+.month-tabs{display:flex;gap:6px;flex-wrap:wrap}
+.mtab{background:var(--card);border:1px solid var(--border);color:var(--muted);padding:6px 16px;border-radius:8px;cursor:pointer;font-size:.82rem;font-weight:700;transition:all .2s}
+.mtab.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.mtab:hover{border-color:var(--accent);color:var(--text)}
+footer{text-align:center;padding:22px;color:var(--muted);font-size:.72rem;border-top:1px solid var(--border)}
+@media(max-width:900px){main{padding:16px 14px}.charts-row{grid-template-columns:1fr}}
+@media(max-width:600px){.funnel-wrap{flex-direction:column}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <div class="logo-box">&#127968;</div>
+    <div>
+      <h1>Aurus Consultora Inmobiliaria</h1>
+      <p>Reporte Ejecutivo de Publicidad Digital &middot; Enero &ndash; Abril 2026</p>
+    </div>
+  </div>
+  <div class="badge-period">&#128197; Ene &ndash; Abr 2026</div>
+</header>
+
+<div class="filters">
+  <div class="fg">
+    <label>Mes</label>
+    <select id="f-mes" onchange="cambiarMes(this.value)">
+      <option value="TOTAL">Todos (Acumulado)</option>
+      <option value="Ene">Enero</option>
+      <option value="Feb">Febrero</option>
+      <option value="Mar">Marzo</option>
+      <option value="Abr">Abril</option>
+    </select>
+  </div>
+  <button class="btn-reset" onclick="cambiarMes('TOTAL'); document.getElementById('f-mes').value='TOTAL'">&#10005; Ver Total</button>
+</div>
+
+<main>
+
+<div>
+  <div class="sec-title">&#128202; Resumen General</div>
+  <div class="kpi-row" id="kpi-row"></div>
+</div>
+
+<div>
+  <div class="sec-title">&#127919; KPIs vs Metas (OKRs de Marketing)</div>
+  <div class="okr-panel">
+    <div class="okr-head">
+      <h3>Evaluacion de indicadores clave contra metas establecidas</h3>
+      <div class="month-tabs" id="okr-tabs"></div>
+    </div>
+    <div id="okr-body"></div>
+  </div>
+</div>
+
+<div>
+  <div class="sec-title">&#9660; Funnel Comercial Completo &middot; Ads &#8594; Venta</div>
+  <div class="funnel-wrap" id="funnel-wrap"></div>
+  <div class="montos-row" id="montos-row"></div>
+</div>
+
+<div>
+  <div class="sec-title">&#128225; Resultados por Canal</div>
+  <div class="canal-grid" id="canal-grid"></div>
+</div>
+
+<div>
+  <div class="sec-title">&#128200; Tendencia Mensual</div>
+  <div class="charts-row">
+    <div class="chart-box"><h3>Inversion por Mes (S/.)</h3><canvas id="ch-spend"></canvas></div>
+    <div class="chart-box"><h3>Leads y Ventas por Mes</h3><canvas id="ch-leads"></canvas></div>
+    <div class="chart-box chart-full"><h3>Inversion Diaria: Meta vs TikTok (S/.)</h3><canvas id="ch-daily"></canvas></div>
+  </div>
+</div>
+
+<div>
+  <div class="sec-title">&#128203; Detalle Mensual Completo</div>
+  <div class="table-wrap">
+    <div class="tbl-head">
+      <h3>Todas las metricas &middot; Enero a Abril 2026</h3>
+      <div class="legend">
+        <div class="leg"><div class="leg-dot" style="background:var(--green)"></div>Cumple meta</div>
+        <div class="leg"><div class="leg-dot" style="background:var(--yellow)"></div>Cerca</div>
+        <div class="leg"><div class="leg-dot" style="background:var(--red)"></div>Por debajo</div>
+      </div>
+    </div>
+    <div style="overflow-x:auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Metrica</th>
+            <th>Enero</th><th>Febrero</th><th>Marzo</th><th>Abril</th>
+            <th style="border-left:2px solid var(--accent);color:var(--accent)">TOTAL</th>
+          </tr>
+        </thead>
+        <tbody id="tbl-body"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+</main>
+<footer>Generado el 19 de mayo de 2026 &middot; Aurus Consultora Inmobiliaria &middot; Reporte Ejecutivo de Publicidad</footer>
+
+<script>
+const DATA = {"kpi_rows": [{"mes": "Ene", "spend": 7945.24, "spend_meta": 341.56, "spend_tiktok": 7603.68, "leads": 1950, "leads_meta": 292, "leads_tiktok": 1658, "cpl": 4.07, "cpl_meta": 1.17, "cpl_tiktok": 4.59, "citas": 93, "citas_meta": 13, "citas_tiktok": 65, "citas_base": 4, "citas_ref": 11, "visitas": 35, "visitas_meta": 6, "visitas_tiktok": 17, "visitas_base": 4, "visitas_ref": 8, "separaciones": 19, "ventas": 11, "ventas_meta": 3, "ventas_tiktok": 3, "monto_sep": 7200, "monto_ventas": 441900, "roas": 55.62, "conv_lead_cita": 4.8, "conv_cita_visita": 37.6, "conv_visita_sep": 54.3, "conv_sep_venta": 57.9}, {"mes": "Feb", "spend": 5420.11, "spend_meta": 671.98, "spend_tiktok": 4748.13, "leads": 941, "leads_meta": 115, "leads_tiktok": 826, "cpl": 5.76, "cpl_meta": 5.84, "cpl_tiktok": 5.75, "citas": 60, "citas_meta": 15, "citas_tiktok": 38, "citas_base": 6, "citas_ref": 1, "visitas": 19, "visitas_meta": 5, "visitas_tiktok": 9, "visitas_base": 4, "visitas_ref": 1, "separaciones": 9, "ventas": 3, "ventas_meta": 1, "ventas_tiktok": 1, "monto_sep": 3300, "monto_ventas": 41000, "roas": 7.56, "conv_lead_cita": 6.4, "conv_cita_visita": 31.7, "conv_visita_sep": 47.4, "conv_sep_venta": 33.3}, {"mes": "Mar", "spend": 7683.42, "spend_meta": 1103.12, "spend_tiktok": 6580.3, "leads": 2326, "leads_meta": 1500, "leads_tiktok": 826, "cpl": 3.3, "cpl_meta": 0.74, "cpl_tiktok": 7.97, "citas": 114, "citas_meta": 15, "citas_tiktok": 73, "citas_base": 8, "citas_ref": 18, "visitas": 45, "visitas_meta": 5, "visitas_tiktok": 26, "visitas_base": 4, "visitas_ref": 10, "separaciones": 9, "ventas": 1, "ventas_meta": 0, "ventas_tiktok": 1, "monto_sep": 2100, "monto_ventas": 15000, "roas": 1.95, "conv_lead_cita": 4.9, "conv_cita_visita": 39.5, "conv_visita_sep": 20.0, "conv_sep_venta": 11.1}, {"mes": "Abr", "spend": 6306.1, "spend_meta": 1916.54, "spend_tiktok": 4389.56, "leads": 1170, "leads_meta": 557, "leads_tiktok": 613, "cpl": 5.39, "cpl_meta": 3.44, "cpl_tiktok": 7.16, "citas": 67, "citas_meta": 0, "citas_tiktok": 0, "citas_base": 0, "citas_ref": 0, "visitas": 18, "visitas_meta": 0, "visitas_tiktok": 0, "visitas_base": 0, "visitas_ref": 0, "separaciones": 10, "ventas": 2, "ventas_meta": 0, "ventas_tiktok": 2, "monto_sep": 2900, "monto_ventas": 75000, "roas": 11.89, "conv_lead_cita": 5.7, "conv_cita_visita": 26.9, "conv_visita_sep": 55.6, "conv_sep_venta": 20.0}], "kpi_total": {"mes": "TOTAL", "spend": 27354.87, "spend_meta": 4033.2, "spend_tiktok": 23321.67, "leads": 6387, "leads_meta": 2464, "leads_tiktok": 3923, "citas": 334, "citas_meta": 43, "citas_tiktok": 176, "citas_base": 18, "citas_ref": 30, "visitas": 117, "visitas_meta": 16, "visitas_tiktok": 52, "visitas_base": 12, "visitas_ref": 19, "separaciones": 47, "ventas": 17, "ventas_meta": 4, "ventas_tiktok": 7, "monto_sep": 15500, "monto_ventas": 572900, "cpl": 4.28, "cpl_meta": 1.64, "cpl_tiktok": 5.94, "roas": 20.94, "conv_lead_cita": 5.2, "conv_cita_visita": 35.0, "conv_visita_sep": 40.2, "conv_sep_venta": 36.2}, "chart": {"dates": ["2026-01-01", "2026-01-02", "2026-01-03", "2026-01-04", "2026-01-05", "2026-01-06", "2026-01-07", "2026-01-08", "2026-01-09", "2026-01-10", "2026-01-11", "2026-01-12", "2026-01-13", "2026-01-14", "2026-01-15", "2026-01-16", "2026-01-17", "2026-01-18", "2026-01-19", "2026-01-20", "2026-01-21", "2026-01-22", "2026-01-23", "2026-01-24", "2026-01-25", "2026-01-26", "2026-01-27", "2026-01-28", "2026-01-29", "2026-01-30", "2026-01-31", "2026-02-01", "2026-02-02", "2026-02-03", "2026-02-04", "2026-02-05", "2026-02-06", "2026-02-07", "2026-02-08", "2026-02-09", "2026-02-10", "2026-02-11", "2026-02-12", "2026-02-13", "2026-02-14", "2026-02-15", "2026-02-16", "2026-02-17", "2026-02-18", "2026-02-19", "2026-02-20", "2026-02-21", "2026-02-22", "2026-02-23", "2026-02-24", "2026-02-25", "2026-02-26", "2026-02-27", "2026-02-28", "2026-03-01", "2026-03-02", "2026-03-03", "2026-03-04", "2026-03-05", "2026-03-06", "2026-03-07", "2026-03-08", "2026-03-09", "2026-03-10", "2026-03-11", "2026-03-12", "2026-03-13", "2026-03-14", "2026-03-15", "2026-03-16", "2026-03-17", "2026-03-18", "2026-03-19", "2026-03-20", "2026-03-21", "2026-03-22", "2026-03-23", "2026-03-24", "2026-03-25", "2026-03-26", "2026-03-27", "2026-03-28", "2026-03-29", "2026-03-30", "2026-03-31", "2026-04-01", "2026-04-02", "2026-04-03", "2026-04-04", "2026-04-05", "2026-04-06", "2026-04-07", "2026-04-08", "2026-04-09", "2026-04-10", "2026-04-11", "2026-04-12", "2026-04-13", "2026-04-14", "2026-04-15", "2026-04-16", "2026-04-17", "2026-04-18", "2026-04-19", "2026-04-20", "2026-04-21", "2026-04-22", "2026-04-23", "2026-04-24", "2026-04-25", "2026-04-26", "2026-04-27", "2026-04-28", "2026-04-29", "2026-04-30"], "meta_spend": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1.73, 3.21, 20.48, 42.0, 40.93, 31.04, 17.57, 30.36, 56.97, 49.49, 47.78, 64.76, 65.25, 54.23, 27.99, 24.43, 22.18, 15.13, 29.96, 27.07, 25.7, 16.6, 19.6, 18.29, 11.99, 18.38, 23.82, 25.36, 74.49, 70.27, 36.48, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 115.85, 209.55, 151.45, 214.32, 33.63, 25.02, 17.4, 16.53, 5.66, 0, 0, 0, 18.13, 40.56, 30.7, 62.27, 66.12, 36.5, 22.36, 17.47, 19.6, 21.83, 23.97, 17.6, 16.97, 23.81, 21.65, 24.96, 65.67, 57.02, 45.84, 47.08, 60.79, 53.72, 80.89, 56.4, 50.77, 46.82, 45.85, 26.07, 36.29, 47.75, 42.07, 43.72, 160.1, 112.99, 131.11, 161.48, 127.03, 122.18, 144.11], "tiktok_spend": [277.51, 284.31, 271.16, 289.57, 307.79, 388.65, 362.84, 334.98, 397.13, 346.94, 376.85, 229.86, 0.1, 246.24, 249.85, 237.04, 248.36, 183.92, 229.48, 170.86, 223.32, 198.49, 165.73, 226.58, 204.68, 151.46, 178.4, 198.84, 214.57, 236.68, 171.49, 180.42, 141.69, 106.65, 121.24, 99.67, 115.89, 105.7, 115.58, 81.27, 173.78, 128.08, 171.16, 152.28, 147.85, 163.85, 187.61, 201.62, 191.25, 191.77, 159.85, 201.01, 228.92, 201.29, 254.94, 209.13, 254.25, 246.46, 214.92, 254.65, 211.32, 204.45, 270.44, 171.29, 259.93, 237.92, 269.18, 205.37, 242.07, 208.21, 252.28, 275.01, 277.88, 335.86, 183.13, 204.01, 230.37, 206.27, 208.11, 200.16, 215.66, 187.64, 196.01, 201.72, 166.16, 119.95, 163.56, 128.82, 142.71, 150.16, 88.43, 12.62, 25.0, 16.24, 18.72, 124.63, 95.46, 140.49, 98.27, 129.59, 143.83, 112.14, 103.32, 169.84, 166.51, 166.37, 172.29, 151.72, 199.94, 228.48, 231.67, 183.45, 245.15, 196.65, 181.75, 193.04, 201.12, 181.15, 188.75, 222.94], "meta_leads": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 5, 8, 1, 2, 114, 137, 12, 10, 10, 16, 12, 3, 2, 2, 0, 3, 1, 1, 1, 3, 4, 1, 2, 2, 3, 23, 19, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 11, 1305, 62, 12, 17, 8, 10, 9, 3, 0, 0, 0, 3, 1, 0, 6, 20, 14, 9, 4, 6, 3, 4, 15, 7, 9, 8, 2, 14, 15, 7, 9, 20, 9, 20, 13, 11, 10, 8, 8, 5, 146, 42, 5, 20, 21, 43, 20, 16, 20, 27], "tiktok_leads": [55, 67, 83, 87, 68, 76, 73, 47, 72, 60, 77, 49, 0, 36, 70, 66, 58, 39, 64, 37, 48, 41, 21, 38, 63, 46, 51, 26, 37, 61, 42, 50, 32, 20, 23, 15, 18, 17, 23, 8, 42, 18, 25, 25, 26, 30, 38, 41, 40, 40, 24, 31, 51, 29, 41, 26, 32, 34, 27, 47, 26, 19, 40, 13, 28, 19, 32, 25, 27, 22, 32, 29, 19, 55, 24, 26, 33, 28, 31, 29, 35, 23, 24, 27, 19, 17, 24, 18, 16, 19, 11, 1, 6, 2, 2, 37, 16, 34, 15, 12, 23, 22, 13, 24, 20, 22, 24, 19, 25, 25, 27, 22, 34, 35, 27, 28, 24, 17, 16, 30]}};
+
+var MESES = ['Ene','Feb','Mar','Abr'];
+var ROWS  = DATA.kpi_rows;
+var TOT   = DATA.kpi_total;
+var CHART = DATA.chart;
+var activeMes = 'TOTAL';
+
+var TARGETS = { leads: 2000, cpl: 6.68, roas: 25, conv_lead_cita: 50 };
+
+function fmtS(n) {
+  return 'S/. ' + parseFloat(n || 0).toLocaleString('es-PE', {minimumFractionDigits:2, maximumFractionDigits:2});
+}
+function fmtN(n) {
+  return parseFloat(n || 0).toLocaleString('es-PE', {minimumFractionDigits:0, maximumFractionDigits:0});
+}
+function fmtP(v) { return parseFloat(v || 0).toFixed(1) + '%'; }
+function fmtX(v) { return parseFloat(v || 0).toFixed(1) + 'x'; }
+
+function getRow(mes) {
+  if (mes === 'TOTAL') return TOT;
+  for (var i = 0; i < ROWS.length; i++) {
+    if (ROWS[i].mes === mes) return ROWS[i];
+  }
+  return TOT;
+}
+
+function statusCls(val, target, inv) {
+  var ratio = inv ? target / val : val / target;
+  if (ratio >= 1) return 'ok';
+  if (ratio >= 0.75) return 'warn';
+  return 'fail';
+}
+function statusColor(cls) {
+  if (cls === 'ok') return 'var(--green)';
+  if (cls === 'warn') return 'var(--yellow)';
+  return 'var(--red)';
+}
+function statusLabel(cls) {
+  if (cls === 'ok') return '&#9989; Cumple';
+  if (cls === 'warn') return '&#9888;&#65039; Cerca';
+  return '&#10060; No cumple';
+}
+
+function cambiarMes(mes) {
+  activeMes = mes;
+  var r = getRow(mes);
+  renderKPIs(r);
+  renderOKR(mes);
+  renderFunnel(r);
+  renderCanales(r);
+  document.querySelectorAll('.mtab').forEach(function(t) {
+    t.classList.toggle('on', t.getAttribute('data-m') === mes);
+  });
+}
+
+function renderKPIs(r) {
+  var items = [
+    { lbl:'Inversion Publicitaria', val:fmtS(r.spend), sub:'Gasto total en ads (PEN)', color:'#6c63ff', ico:'&#128176;' },
+    { lbl:'Leads Generados', val:fmtN(r.leads), sub:'CPL: ' + fmtS(r.cpl), color:'#60a5fa', ico:'&#127919;' },
+    { lbl:'Citas Agendadas', val:fmtN(r.citas), sub:fmtP(r.conv_lead_cita) + ' conv. desde leads', color:'#34d4c4', ico:'&#128222;' },
+    { lbl:'Visitas Realizadas', val:fmtN(r.visitas), sub:fmtP(r.conv_cita_visita) + ' de citas', color:'#4ade80', ico:'&#127968;' },
+    { lbl:'Separaciones', val:fmtN(r.separaciones), sub:fmtP(r.conv_visita_sep) + ' de visitas', color:'#f5c542', ico:'&#128203;' },
+    { lbl:'Ventas Cerradas', val:fmtN(r.ventas), sub:fmtS(r.monto_ventas), color:'#f472b6', ico:'&#127942;' },
+    { lbl:'ROAS', val:fmtX(r.roas), sub:'Retorno sobre inversion publicitaria',
+      color: parseFloat(r.roas)>=25 ? 'var(--green)' : parseFloat(r.roas)>=10 ? 'var(--yellow)' : 'var(--red)', ico:'&#128200;' },
+    { lbl:'Costo por Lead (CPL)', val:fmtS(r.cpl), sub:'Meta: menor a S/. 6.68',
+      color: parseFloat(r.cpl)<=6.68 ? 'var(--green)' : 'var(--red)', ico:'&#128201;' },
+  ];
+  var html = '';
+  for (var i = 0; i < items.length; i++) {
+    var it = items[i];
+    html += '<div class="kpi">' +
+      '<div class="kpi-bar" style="background:' + it.color + '"></div>' +
+      '<div class="kpi-ico">' + it.ico + '</div>' +
+      '<div class="kpi-lbl">' + it.lbl + '</div>' +
+      '<div class="kpi-val" style="color:' + it.color + '">' + it.val + '</div>' +
+      '<div class="kpi-sub">' + it.sub + '</div>' +
+      '</div>';
+  }
+  document.getElementById('kpi-row').innerHTML = html;
+}
+
+function renderOKR(mes) {
+  var r = getRow(mes);
+  var items = [
+    { name:'Leads Generados por Mes', desc:'Conteo de leads ingresados desde campanas de publicidad',
+      target:'&ge; 2,000 / mes', val:fmtN(r.leads), raw:r.leads, t:TARGETS.leads, inv:false },
+    { name:'Tasa de Leads Evaluados (Lead &rarr; Cita)', desc:'(Citas agendadas &divide; Leads generados) x 100',
+      target:'&ge; 50%', val:fmtP(r.conv_lead_cita), raw:r.conv_lead_cita, t:TARGETS.conv_lead_cita, inv:false },
+    { name:'ROAS - Retorno sobre Inversion Publicitaria', desc:'Ingresos atribuibles a campanas &divide; Gasto en publicidad',
+      target:'&ge; 25x', val:fmtX(r.roas), raw:r.roas, t:TARGETS.roas, inv:false },
+    { name:'Costo por Lead (CPL Promedio)', desc:'Importe gastado en ads &divide; N de leads generados',
+      target:'&lt; S/. 6.68', val:fmtS(r.cpl), raw:r.cpl, t:TARGETS.cpl, inv:true },
+  ];
+  var html = '';
+  for (var i = 0; i < items.length; i++) {
+    var it = items[i];
+    var c = statusCls(it.raw, it.t, it.inv);
+    var col = statusColor(c);
+    html += '<div class="okr-item">' +
+      '<div class="okr-dot" style="background:' + col + '"></div>' +
+      '<div><div class="okr-name">' + it.name + '</div><div class="okr-desc">' + it.desc + '</div></div>' +
+      '<div class="okr-target">' + it.target + '</div>' +
+      '<div class="okr-num" style="color:' + col + '">' + it.val + '</div>' +
+      '<div class="okr-badge ' + c + '">' + statusLabel(c) + '</div>' +
+      '</div>';
+  }
+  document.getElementById('okr-body').innerHTML = html;
+  document.querySelectorAll('.mtab').forEach(function(t) {
+    t.classList.toggle('on', t.getAttribute('data-m') === mes);
+  });
+}
+
+function renderFunnel(r) {
+  var stages = [
+    { ico:'&#127919;', lbl:'Leads Generados', num:r.leads, color:'#6c63ff', conv:null, money:fmtS(r.spend) + ' invertidos' },
+    { ico:'&#128222;', lbl:'Citas Agendadas', num:r.citas, color:'#34d4c4', conv:fmtP(r.conv_lead_cita), money:null },
+    { ico:'&#127968;', lbl:'Visitas Realizadas', num:r.visitas, color:'#4ade80', conv:fmtP(r.conv_cita_visita), money:null },
+    { ico:'&#128203;', lbl:'Separaciones', num:r.separaciones, color:'#f5c542', conv:fmtP(r.conv_visita_sep), money:null },
+    { ico:'&#127942;', lbl:'Ventas Cerradas', num:r.ventas, color:'#f472b6', conv:fmtP(r.conv_sep_venta), money:fmtS(r.monto_ventas) },
+  ];
+  var html = '';
+  for (var i = 0; i < stages.length; i++) {
+    var st = stages[i];
+    html += '<div class="funnel-stage">' +
+      '<div class="fs-icon">' + st.ico + '</div>' +
+      '<div class="fs-label">' + st.lbl + '</div>' +
+      '<div class="fs-num" style="color:' + st.color + '">' + parseFloat(st.num).toLocaleString('es-PE') + '</div>';
+    if (st.conv) {
+      html += '<div class="fs-conv" style="background:' + st.color + '1a;color:' + st.color + ';border:1px solid ' + st.color + '40">&rarr; ' + st.conv + '</div>';
+    }
+    if (st.money) {
+      html += '<div class="fs-money">' + st.money + '</div>';
+    }
+    html += '</div>';
+  }
+  document.getElementById('funnel-wrap').innerHTML = html;
+
+  var roasColor = parseFloat(r.roas) >= 25 ? 'var(--green)' : parseFloat(r.roas) >= 10 ? 'var(--yellow)' : 'var(--red)';
+  var cplColor  = parseFloat(r.cpl) <= 6.68 ? 'var(--green)' : 'var(--red)';
+  var montos = [
+    { lbl:'&#128181; Monto Separaciones', val:fmtS(r.monto_sep), color:'var(--yellow)' },
+    { lbl:'&#127942; Monto Ventas Cerradas', val:fmtS(r.monto_ventas), color:'var(--green)' },
+    { lbl:'&#128200; ROAS del periodo', val:fmtX(r.roas), color:roasColor },
+    { lbl:'&#128201; Costo por Lead', val:fmtS(r.cpl), color:cplColor },
+  ];
+  var mhtml = '';
+  for (var j = 0; j < montos.length; j++) {
+    var m = montos[j];
+    mhtml += '<div class="monto-card"><div class="monto-lbl">' + m.lbl + '</div>' +
+      '<div class="monto-val" style="color:' + m.color + '">' + m.val + '</div></div>';
+  }
+  document.getElementById('montos-row').innerHTML = mhtml;
+}
+
+function renderCanales(r) {
+  var canales = [
+    { name:'Meta Ads', dot:'var(--meta)', items:[
+      ['Leads generados', fmtN(r.leads_meta)],
+      ['Citas agendadas', fmtN(r.citas_meta)],
+      ['Visitas realizadas', fmtN(r.visitas_meta)],
+      ['Ventas cerradas', fmtN(r.ventas_meta)],
+      ['Inversion', fmtS(r.spend_meta)],
+      ['CPL', fmtS(r.cpl_meta)],
+    ]},
+    { name:'TikTok Ads', dot:'var(--tiktok)', items:[
+      ['Leads generados', fmtN(r.leads_tiktok)],
+      ['Citas agendadas', fmtN(r.citas_tiktok)],
+      ['Visitas realizadas', fmtN(r.visitas_tiktok)],
+      ['Ventas cerradas', fmtN(r.ventas_tiktok)],
+      ['Inversion', fmtS(r.spend_tiktok)],
+      ['CPL', fmtS(r.cpl_tiktok)],
+    ]},
+    { name:'Base Propia', dot:'var(--base)', items:[
+      ['Citas agendadas', fmtN(r.citas_base)],
+      ['Visitas realizadas', fmtN(r.visitas_base)],
+      ['Sin costo publicitario', '&#8212;'],
+    ]},
+    { name:'Referidos', dot:'var(--ref)', items:[
+      ['Citas agendadas', fmtN(r.citas_ref)],
+      ['Visitas realizadas', fmtN(r.visitas_ref)],
+      ['Sin costo publicitario', '&#8212;'],
+    ]},
+  ];
+  var html = '';
+  for (var i = 0; i < canales.length; i++) {
+    var c = canales[i];
+    html += '<div class="canal-card"><div class="canal-head"><div class="canal-dot" style="background:' + c.dot + '"></div><span style="font-size:.85rem;font-weight:700">' + c.name + '</span></div><div class="canal-body">';
+    for (var j = 0; j < c.items.length; j++) {
+      html += '<div class="c-row"><span class="c-lbl">' + c.items[j][0] + '</span><span class="c-val">' + c.items[j][1] + '</span></div>';
+    }
+    html += '</div></div>';
+  }
+  document.getElementById('canal-grid').innerHTML = html;
+}
+
+function renderTable() {
+  var allRows = ROWS.concat([TOT]);
+  var cols = ['Ene','Feb','Mar','Abr','TOTAL'];
+  var sections = [
+    { title:'&#128176; Inversion Publicitaria', rows:[
+      { lbl:'Inversion Total (S/.)', key:'spend', fmt:fmtS, c:function(){return 'n';} },
+      { lbl:'&nbsp;&nbsp;Meta Ads', key:'spend_meta', fmt:fmtS, c:function(){return 'mv';} },
+      { lbl:'&nbsp;&nbsp;TikTok Ads', key:'spend_tiktok', fmt:fmtS, c:function(){return 'mv';} },
+    ]},
+    { title:'&#127919; Generacion de Leads', rows:[
+      { lbl:'Leads totales', key:'leads', fmt:fmtN, c:function(v){return v>=2000?'g':v>=1500?'y':'r';} },
+      { lbl:'Costo por Lead (CPL)', key:'cpl', fmt:fmtS, c:function(v){return v<=6.68?'g':v<=8?'y':'r';} },
+      { lbl:'&nbsp;&nbsp;Leads Meta Ads', key:'leads_meta', fmt:fmtN, c:function(){return 'mv';} },
+      { lbl:'&nbsp;&nbsp;Leads TikTok Ads', key:'leads_tiktok', fmt:fmtN, c:function(){return 'mv';} },
+    ]},
+    { title:'&#128222; Gestion Comercial', rows:[
+      { lbl:'Citas agendadas', key:'citas', fmt:fmtN, c:function(){return 'n';} },
+      { lbl:'Visitas realizadas', key:'visitas', fmt:fmtN, c:function(){return 'n';} },
+      { lbl:'Conv. Lead &rarr; Cita', key:'conv_lead_cita', fmt:fmtP, c:function(v){return v>=50?'g':v>=10?'y':'r';} },
+      { lbl:'Conv. Cita &rarr; Visita', key:'conv_cita_visita', fmt:fmtP, c:function(v){return v>=30?'g':v>=15?'y':'r';} },
+    ]},
+    { title:'&#127968; Cierre de Negocios', rows:[
+      { lbl:'Separaciones', key:'separaciones', fmt:fmtN, c:function(){return 'n';} },
+      { lbl:'Monto separaciones (S/.)', key:'monto_sep', fmt:fmtS, c:function(){return 'n';} },
+      { lbl:'Ventas cerradas', key:'ventas', fmt:fmtN, c:function(v){return v>=5?'g':v>=2?'y':'r';} },
+      { lbl:'Monto ventas (S/.)', key:'monto_ventas', fmt:fmtS, c:function(){return 'g';} },
+      { lbl:'Conv. Visita &rarr; Separacion', key:'conv_visita_sep', fmt:fmtP, c:function(v){return v>=40?'g':v>=20?'y':'r';} },
+      { lbl:'Conv. Separacion &rarr; Venta', key:'conv_sep_venta', fmt:fmtP, c:function(v){return v>=40?'g':v>=20?'y':'r';} },
+    ]},
+    { title:'&#128200; Rentabilidad', rows:[
+      { lbl:'ROAS', key:'roas', fmt:fmtX, c:function(v){return v>=25?'g':v>=10?'y':'r';} },
+    ]},
+  ];
+
+  var html = '';
+  for (var s = 0; s < sections.length; s++) {
+    var sec = sections[s];
+    html += '<tr class="sep-row"><td colspan="6">' + sec.title + '</td></tr>';
+    for (var row = 0; row < sec.rows.length; row++) {
+      var rw = sec.rows[row];
+      var isTotal = false;
+      html += '<tr>';
+      html += '<td>' + rw.lbl + '</td>';
+      for (var ci = 0; ci < cols.length; ci++) {
+        var col = cols[ci];
+        isTotal = col === 'TOTAL';
+        var found = null;
+        for (var ri = 0; ri < allRows.length; ri++) {
+          if (allRows[ri].mes === col) { found = allRows[ri]; break; }
+        }
+        var v = found ? found[rw.key] : null;
+        var cls2 = (v !== null && v !== undefined) ? rw.c(parseFloat(v)) : 'mv';
+        var display = (v !== null && v !== undefined) ? rw.fmt(v) : '-';
+        var style = isTotal ? 'border-left:2px solid var(--accent)' : '';
+        html += '<td class="' + cls2 + '" style="' + style + '">' + display + '</td>';
+      }
+      html += '</tr>';
+    }
+  }
+  // Total row
+  html += '<tr class="total-row"><td>TOTAL ACUMULADO</td>';
+  var totalCols = [
+    fmtS(TOT.spend), fmtS(TOT.spend), fmtS(TOT.spend), fmtS(TOT.spend)
+  ];
+  html += '<td colspan="4" style="text-align:center">Ene + Feb + Mar + Abr</td>';
+  html += '<td style="border-left:2px solid var(--accent)">' + fmtS(TOT.spend) + ' invertidos &bull; ' + fmtN(TOT.leads) + ' leads &bull; ' + fmtN(TOT.ventas) + ' ventas &bull; ROAS ' + fmtX(TOT.roas) + '</td>';
+  html += '</tr>';
+
+  document.getElementById('tbl-body').innerHTML = html;
+}
+
+var charts = {};
+function destroyChart(id) { if (charts[id]) { charts[id].destroy(); delete charts[id]; } }
+
+function renderCharts() {
+  destroyChart('spend');
+  charts['spend'] = new Chart(document.getElementById('ch-spend'), {
+    type: 'bar',
+    data: {
+      labels: MESES,
+      datasets: [
+        { label: 'Meta Ads', data: ROWS.map(function(r){return parseFloat(r.spend_meta.toFixed(2));}),
+          backgroundColor: 'rgba(79,142,247,.75)', borderRadius: 6, borderSkipped: false },
+        { label: 'TikTok Ads', data: ROWS.map(function(r){return parseFloat(r.spend_tiktok.toFixed(2));}),
+          backgroundColor: 'rgba(255,59,92,.75)', borderRadius: 6, borderSkipped: false },
+      ]
+    },
+    options: { responsive: true,
+      plugins: { legend: { labels: { color: '#7b829e', font: { size: 11 } } } },
+      scales: {
+        x: { stacked: true, grid: { color: 'rgba(255,255,255,.04)' }, ticks: { color: '#7b829e' } },
+        y: { stacked: true, grid: { color: 'rgba(255,255,255,.04)' }, ticks: { color: '#7b829e',
+          callback: function(v){ return 'S/.' + v.toLocaleString('es-PE'); } } }
+      }
+    }
+  });
+
+  destroyChart('leads');
+  charts['leads'] = new Chart(document.getElementById('ch-leads'), {
+    type: 'bar',
+    data: {
+      labels: MESES,
+      datasets: [
+        { label: 'Leads', data: ROWS.map(function(r){return r.leads;}),
+          backgroundColor: 'rgba(108,99,255,.6)', borderRadius: 6, yAxisID: 'y' },
+        { label: 'Citas', data: ROWS.map(function(r){return r.citas;}),
+          type: 'line', borderColor: '#34d4c4', backgroundColor: 'rgba(52,212,196,.12)',
+          fill: true, tension: .4, pointRadius: 5, yAxisID: 'y' },
+        { label: 'Ventas', data: ROWS.map(function(r){return r.ventas;}),
+          type: 'line', borderColor: '#f472b6', backgroundColor: 'rgba(244,114,182,.1)',
+          fill: false, tension: .4, pointRadius: 5, yAxisID: 'y2' },
+      ]
+    },
+    options: { responsive: true,
+      plugins: { legend: { labels: { color: '#7b829e', font: { size: 11 } } } },
+      scales: {
+        x: { grid: { color: 'rgba(255,255,255,.04)' }, ticks: { color: '#7b829e' } },
+        y: { grid: { color: 'rgba(255,255,255,.04)' }, ticks: { color: '#7b829e' }, position: 'left' },
+        y2: { grid: { display: false }, ticks: { color: '#f472b6' }, position: 'right' },
+      }
+    }
+  });
+
+  destroyChart('daily');
+  charts['daily'] = new Chart(document.getElementById('ch-daily'), {
+    type: 'line',
+    data: {
+      labels: CHART.dates,
+      datasets: [
+        { label: 'Meta Ads', data: CHART.meta_spend,
+          borderColor: '#4f8ef7', backgroundColor: 'rgba(79,142,247,.08)',
+          fill: true, tension: .3, pointRadius: 0, borderWidth: 2 },
+        { label: 'TikTok Ads', data: CHART.tiktok_spend,
+          borderColor: '#ff3b5c', backgroundColor: 'rgba(255,59,92,.08)',
+          fill: true, tension: .3, pointRadius: 0, borderWidth: 2 },
+      ]
+    },
+    options: { responsive: true,
+      plugins: { legend: { labels: { color: '#7b829e', font: { size: 11 } } } },
+      scales: {
+        x: { grid: { color: 'rgba(255,255,255,.03)' }, ticks: { color: '#7b829e', maxTicksLimit: 12, font: { size: 10 } } },
+        y: { grid: { color: 'rgba(255,255,255,.03)' }, ticks: { color: '#7b829e',
+          callback: function(v){ return 'S/.' + v; } } }
+      }
+    }
+  });
+}
+
+// ── INIT ─────────────────────────────────────────────────────────────────
+window.onload = function() {
+  var tabsEl = document.getElementById('okr-tabs');
+  var tabMeses = ['TOTAL', 'Ene', 'Feb', 'Mar', 'Abr'];
+  for (var i = 0; i < tabMeses.length; i++) {
+    (function(m) {
+      var btn = document.createElement('button');
+      btn.className = 'mtab' + (m === 'TOTAL' ? ' on' : '');
+      btn.setAttribute('data-m', m);
+      btn.textContent = m;
+      btn.onclick = function() { cambiarMes(m); };
+      tabsEl.appendChild(btn);
+    })(tabMeses[i]);
+  }
+  var r = getRow('TOTAL');
+  renderKPIs(r);
+  renderOKR('TOTAL');
+  renderFunnel(r);
+  renderCanales(r);
+  renderTable();
+  renderCharts();
+};
+</script>
+</body>
+</html>
