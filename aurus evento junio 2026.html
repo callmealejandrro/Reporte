@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="slides-format" content="viewport">
+    <title>AURUS – Evento Día del Padre & Mundial 2026</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+    <style type="text/tailwindcss">
+        @theme {
+            --color-bg: #0b1120;
+            --color-bg-deep: #060c16;
+            --color-surface: #141e33;
+            --color-text: #f0f4ff;
+            --color-text-secondary: #b8c8e8;
+            --color-text-muted: #7a90b8;
+            --color-accent-1: #c9a84c;
+            --color-accent-2: #e8d48a;
+            --color-accent-3: #4a9e6b;
+            --color-accent-red: #e03a3a;
+            --color-glass-bg: rgba(255,255,255,0.05);
+            --color-glass-border: rgba(255,255,255,0.09);
+            --color-vignette: rgba(0,0,0,0.45);
+            --font-display: 'Playfair Display', serif;
+            --font-body: 'DM Sans', sans-serif;
+        }
+    </style>
+
+    <style>
+        :root {
+            --color-bg: #0b1120;
+            --color-text: #f0f4ff;
+            --glow-color-rgb: 201,168,76;
+        }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html, body { background: var(--color-bg); }
+        body { font-family: 'DM Sans', sans-serif; color: var(--color-text); overflow: hidden; height: 100vh; width: 100vw; }
+
+        .deck { width: 100vw; height: 100vh; position: relative; }
+        .slide {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--color-bg);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            opacity: 0; transform: scale(0.96);
+            transition: opacity 0.65s ease, transform 0.65s ease;
+            pointer-events: none; overflow: hidden;
+        }
+        .slide.active { opacity: 1; transform: scale(1); pointer-events: all; }
+        .slide > .content {
+            position: relative; z-index: 2; width: 100%;
+            max-width: 1100px;
+            padding: clamp(1.5rem, 3.5vw, 3.5rem);
+        }
+
+        /* Nav */
+        .nav-controls {
+            position: fixed; bottom: 26px; left: 50%; transform: translateX(-50%);
+            display: flex; align-items: center; gap: 14px; z-index: 100;
+            background: rgba(255,255,255,0.05); backdrop-filter: blur(12px);
+            padding: 9px 22px; border-radius: 40px;
+            border: 1px solid rgba(255,255,255,0.09);
+        }
+        .nav-btn {
+            width: 38px; height: 38px; border: none;
+            background: rgba(255,255,255,0.06); color: #c9a84c;
+            border-radius: 50%; font-size: 1.25rem; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: background 0.3s;
+        }
+        .nav-btn:hover { background: rgba(201,168,76,0.18); }
+        .slide-dots { display: flex; gap: 7px; }
+        .slide-dots .dot {
+            width: 9px; height: 9px; border-radius: 50%;
+            background: rgba(255,255,255,0.15); cursor: pointer;
+            transition: background 0.3s, transform 0.3s;
+        }
+        .slide-dots .dot.active { background: #c9a84c; transform: scale(1.35); }
+        .slide-counter { font-size: 0.78rem; color: #7a90b8; min-width: 38px; text-align: center; }
+
+        .reveal { opacity: 0; transform: translateY(18px); }
+
+        /* Blobs */
+        @keyframes float-slow {
+            0% { transform: translate(0,0) scale(1); }
+            25% { transform: translate(55px,-45px) scale(1.1); }
+            50% { transform: translate(-35px,35px) scale(0.92); }
+            75% { transform: translate(45px,18px) scale(1.07); }
+            100% { transform: translate(0,0) scale(1); }
+        }
+        @keyframes float-drift {
+            0% { transform: translate(0,0) scale(1) rotate(0deg); }
+            33% { transform: translate(-45px,-55px) scale(1.13) rotate(3deg); }
+            66% { transform: translate(38px,28px) scale(0.9) rotate(-2deg); }
+            100% { transform: translate(0,0) scale(1) rotate(0deg); }
+        }
+        @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-14px); } }
+        .gradient-mesh { position: absolute; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
+        .blob { position: absolute; border-radius: 50%; filter: blur(80px); animation: float-slow 11s ease-in-out infinite; }
+        .blob:nth-child(2) { animation: float-drift 15s ease-in-out infinite; }
+        .blob:nth-child(3) { animation: float-slow 19s ease-in-out infinite reverse; }
+
+        /* Noise + vignette */
+        .slide::before {
+            content:''; position:absolute; inset:0; z-index:1; pointer-events:none;
+            background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+            background-repeat:repeat; background-size:256px 256px; opacity:0.03; mix-blend-mode:overlay;
+        }
+        .slide::after {
+            content:''; position:absolute; inset:0; z-index:1; pointer-events:none;
+            background:radial-gradient(ellipse at center, transparent 45%, var(--color-vignette) 100%);
+        }
+
+        /* Glow effects */
+        .text-glow { text-shadow: 0 0 20px rgba(201,168,76,0.5), 0 0 40px rgba(201,168,76,0.2); }
+        .stat-glow { text-shadow: 0 0 28px rgba(201,168,76,0.65), 0 0 55px rgba(201,168,76,0.28); }
+        @keyframes glow-pulse {
+            0%,100% { text-shadow: 0 0 18px rgba(201,168,76,0.5), 0 0 38px rgba(201,168,76,0.2); }
+            50% { text-shadow: 0 0 30px rgba(201,168,76,0.85), 0 0 60px rgba(201,168,76,0.3); }
+        }
+        .glow-pulse { animation: glow-pulse 3s ease-in-out infinite; }
+
+        /* Glass card */
+        .glass-card {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(14px);
+            border: 1px solid rgba(255,255,255,0.09);
+            border-radius: 16px;
+            padding: clamp(1rem,2vw,1.5rem) clamp(1rem,2vw,1.6rem);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .glass-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(201,168,76,0.12); }
+
+        /* Badge idea number */
+        .idea-badge {
+            display: inline-flex; align-items: center; justify-content: center;
+            width: 38px; height: 38px; border-radius: 50%;
+            background: linear-gradient(135deg, #c9a84c, #e8d48a);
+            color: #0b1120; font-weight: 800; font-size: 1rem;
+            flex-shrink: 0;
+        }
+
+        /* Timeline line */
+        .timeline-item { position: relative; padding-left: 2.2rem; }
+        .timeline-item::before {
+            content: '';
+            position: absolute; left: 9px; top: 0; bottom: -1.2rem;
+            width: 2px;
+            background: linear-gradient(to bottom, #c9a84c, rgba(201,168,76,0.1));
+        }
+        .timeline-item:last-child::before { display: none; }
+        .timeline-dot {
+            position: absolute; left: 3px; top: 5px;
+            width: 14px; height: 14px; border-radius: 50%;
+            background: #c9a84c;
+            box-shadow: 0 0 10px rgba(201,168,76,0.7);
+        }
+
+        /* Horizontal step bar */
+        .step-bar { display: flex; align-items: stretch; gap: 0; }
+        .step-item {
+            flex: 1; text-align: center; padding: 0.55rem 0.4rem;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+            font-size: clamp(0.6rem, 1vw, 0.72rem);
+            color: #b8c8e8; line-height: 1.3;
+            position: relative;
+        }
+        .step-item:first-child { border-radius: 10px 0 0 10px; }
+        .step-item:last-child { border-radius: 0 10px 10px 0; }
+        .step-item.highlight { background: rgba(201,168,76,0.14); border-color: rgba(201,168,76,0.35); color: #e8d48a; }
+        .step-time { display: block; font-weight: 700; font-size: clamp(0.58rem, 0.9vw, 0.68rem); color: #c9a84c; margin-bottom: 2px; }
+
+        /* Tags */
+        .tag {
+            display: inline-flex; align-items: center; gap: 5px;
+            padding: 3px 10px; border-radius: 20px; font-size: 0.72rem;
+            background: rgba(201,168,76,0.12); border: 1px solid rgba(201,168,76,0.25);
+            color: #e8d48a; font-weight: 500;
+        }
+        .tag.green { background: rgba(74,158,107,0.14); border-color: rgba(74,158,107,0.3); color: #7dd9a0; }
+        .tag.red { background: rgba(224,58,58,0.12); border-color: rgba(224,58,58,0.28); color: #f28080; }
+
+        /* Pros/cons */
+        .pro-line { color: #7dd9a0; font-size: 0.82rem; padding: 3px 0; }
+        .con-line { color: #f28080; font-size: 0.82rem; padding: 3px 0; }
+
+        /* Mouse spotlight */
+        .mouse-spotlight { position:fixed; inset:0; z-index:99; pointer-events:none; }
+
+        /* Deco shapes parallax */
+        .deco-shape { position:absolute; border-radius:50%; pointer-events:none; will-change:transform; }
+
+        /* Section divider accent line */
+        .accent-line { height: 3px; width: 60px; background: linear-gradient(90deg,#c9a84c,#4a9e6b); border-radius: 2px; margin-bottom: 0.9rem; }
+
+        /* KPI big */
+        .kpi-num { font-family: 'Playfair Display', serif; font-weight: 900; font-size: clamp(2rem,4.5vw,3.2rem); color: #c9a84c; }
+
+        /* Footer slide label */
+        .slide-label {
+            position: absolute; bottom: 70px; right: 36px; z-index: 3;
+            font-size: 0.65rem; color: rgba(255,255,255,0.2); letter-spacing: 0.1em; text-transform: uppercase;
+        }
+
+        /* ── Idea color accents ── */
+        .idea1-accent { border-left: 4px solid #c9a84c; }
+        .idea2-accent { border-left: 4px solid #4a9e6b; }
+        .idea3-accent { border-left: 4px solid #7b68ee; }
+        .idea4-accent { border-left: 4px solid #e03a3a; }
+        .idea1-bg { background: rgba(201,168,76,0.08); }
+        .idea2-bg { background: rgba(74,158,107,0.08); }
+        .idea3-bg { background: rgba(123,104,238,0.08); }
+        .idea4-bg { background: rgba(224,58,58,0.08); }
+        .idea1-badge { background: linear-gradient(135deg,#c9a84c,#e8d48a); }
+        .idea2-badge { background: linear-gradient(135deg,#4a9e6b,#7dd9a0); }
+        .idea3-badge { background: linear-gradient(135deg,#7b68ee,#b0a8f0); }
+        .idea4-badge { background: linear-gradient(135deg,#e03a3a,#f28080); }
+
+        @media (prefers-reduced-motion:reduce) { *,*::before,*::after { animation-duration:0.01ms!important; transition-duration:0.2s!important; } }
+    </style>
+</head>
+<body>
+
+<div class="mouse-spotlight"></div>
+
+<div class="deck">
+
+<!-- ═══════════════════════════════════════════
+     SLIDE 1 — PORTADA
+═══════════════════════════════════════════ -->
+<div class="slide slide-1 active" data-slide="1">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:520px;height:520px;top:-130px;right:-110px;background:#c9a84c;opacity:0.13;"></div>
+        <div class="blob" style="width:340px;height:340px;bottom:-90px;left:-70px;background:#4a9e6b;opacity:0.10;"></div>
+        <div class="blob" style="width:220px;height:220px;top:42%;left:12%;background:#e8d48a;opacity:0.08;"></div>
+    </div>
+    <canvas class="particle-canvas" style="position:absolute;inset:0;z-index:1;"></canvas>
+    <div class="content text-center">
+        <div style="font-size:clamp(3rem,8vw,6rem);animation:float 3.5s ease-in-out infinite;margin-bottom:0.8rem;">🏆⚽</div>
+        <h1 class="reveal" style="font-family:'Playfair Display',serif;font-weight:900;font-size:clamp(2rem,5.5vw,4.2rem);background:linear-gradient(135deg,#c9a84c,#e8d48a,#c9a84c);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:-0.02em;margin-bottom:0.8rem;line-height:1.1;">
+            Evento<br>Domingo 14 de Junio
+        </h1>
+        <p class="reveal" style="font-size:clamp(0.85rem,1.8vw,1.15rem);color:#7a90b8;letter-spacing:0.22em;text-transform:uppercase;margin-bottom:1.4rem;">
+            Día del Padre &nbsp;·&nbsp; Mundial 2026
+        </p>
+        <div class="reveal" style="display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;">
+            <span class="tag">🏗️ AURUS Inmobiliaria</span>
+            <span class="tag">📋 Propuesta a Gerencia</span>
+            <span class="tag">📅 Junio 2026</span>
+        </div>
+    </div>
+    <div class="slide-label">AURUS · Evento Mensual Junio 2026</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     SLIDE 2 — CONTEXTO DEL EVENTO
+═══════════════════════════════════════════ -->
+<div class="slide slide-2" data-slide="2">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:380px;height:380px;top:-90px;right:-80px;background:#c9a84c;opacity:0.09;"></div>
+        <div class="blob" style="width:260px;height:260px;bottom:-60px;left:-50px;background:#4a9e6b;opacity:0.07;"></div>
+    </div>
+    <div class="content">
+        <div class="accent-line reveal"></div>
+        <h2 class="reveal" style="font-family:'Playfair Display',serif;font-size:clamp(1.6rem,3.5vw,2.6rem);font-weight:700;margin-bottom:0.4rem;">Contexto del Evento</h2>
+        <p class="reveal" style="color:#7a90b8;font-size:0.9rem;margin-bottom:1.6rem;">Visita mensual · Tercer domingo del mes</p>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;">
+            <div class="glass-card reveal" style="text-align:center;">
+                <div style="font-size:2.2rem;margin-bottom:0.5rem;">📅</div>
+                <div style="font-weight:700;color:#e8d48a;margin-bottom:0.3rem;">Domingo 14 de Junio</div>
+                <div style="font-size:0.8rem;color:#7a90b8;">Tercer domingo del mes</div>
+            </div>
+            <div class="glass-card reveal" style="text-align:center;">
+                <div style="font-size:2.2rem;margin-bottom:0.5rem;">👔</div>
+                <div style="font-weight:700;color:#e8d48a;margin-bottom:0.3rem;">Día del Padre</div>
+                <div style="font-size:0.8rem;color:#7a90b8;">Temática emocional + celebración</div>
+            </div>
+            <div class="glass-card reveal" style="text-align:center;">
+                <div style="font-size:2.2rem;margin-bottom:0.5rem;">⚽</div>
+                <div style="font-weight:700;color:#e8d48a;margin-bottom:0.3rem;">Mundial 2026</div>
+                <div style="font-size:0.8rem;color:#7a90b8;">Ambiente festivo · Engagement alto</div>
+            </div>
+        </div>
+
+        <div style="margin-top:1.4rem;display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+            <div class="glass-card reveal" style="display:flex;gap:14px;align-items:flex-start;">
+                <div style="font-size:1.8rem;flex-shrink:0;">🎯</div>
+                <div>
+                    <div style="font-weight:600;font-size:0.9rem;color:#e8d48a;margin-bottom:4px;">Objetivo del Evento</div>
+                    <div style="font-size:0.78rem;color:#b8c8e8;line-height:1.5;">Trasladar leads a proyecto, educar, generar confianza y acercar a la compra de lotes.</div>
+                </div>
+            </div>
+            <div class="glass-card reveal" style="display:flex;gap:14px;align-items:flex-start;">
+                <div style="font-size:1.8rem;flex-shrink:0;">📍</div>
+                <div>
+                    <div style="font-weight:600;font-size:0.9rem;color:#e8d48a;margin-bottom:4px;">Puntos de Recojo</div>
+                    <div style="font-size:0.78rem;color:#b8c8e8;line-height:1.5;">Oficina AURUS · Óvalo Santa Anita · Jockey Plaza · Puruchuco · Punto Repsol (10:30 am)</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="slide-label">AURUS · Contexto</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     SLIDE 3 — COMPARATIVA 4 IDEAS
+═══════════════════════════════════════════ -->
+<div class="slide slide-3" data-slide="3">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:400px;height:400px;top:-100px;right:-80px;background:#c9a84c;opacity:0.08;"></div>
+        <div class="blob" style="width:280px;height:280px;bottom:-70px;left:-60px;background:#4a9e6b;opacity:0.07;"></div>
+    </div>
+    <div class="content">
+        <div class="accent-line reveal"></div>
+        <h2 class="reveal" style="font-family:'Playfair Display',serif;font-size:clamp(1.5rem,3vw,2.2rem);font-weight:700;margin-bottom:1.4rem;">Las 4 Propuestas</h2>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+            <div class="glass-card idea1-accent idea1-bg reveal" style="display:flex;gap:12px;align-items:flex-start;">
+                <div class="idea-badge idea1-badge" style="color:#0b1120;font-weight:800;font-size:0.9rem;flex-shrink:0;width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:50%;">1</div>
+                <div>
+                    <div style="font-weight:700;font-size:0.95rem;color:#e8d48a;margin-bottom:4px;">Desayuno + Visita Estratégica</div>
+                    <div style="font-size:0.78rem;color:#b8c8e8;line-height:1.5;">Llegada a oficina 8:30–9:00 am. Presentación + desayuno en sala. Salida a las 10:30 am con parada Repsol.</div>
+                    <div style="margin-top:6px;"><span class="tag" style="font-size:0.66rem;">🕗 8:30 am arranque</span></div>
+                </div>
+            </div>
+
+            <div class="glass-card idea2-accent idea2-bg reveal" style="display:flex;gap:12px;align-items:flex-start;">
+                <div class="idea-badge idea2-badge" style="color:#0b1120;font-weight:800;font-size:0.9rem;flex-shrink:0;width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:50%;">2</div>
+                <div>
+                    <div style="font-weight:700;font-size:0.95rem;color:#7dd9a0;margin-bottom:4px;">Salida Directa + Choripanes</div>
+                    <div style="font-size:0.78rem;color:#b8c8e8;line-height:1.5;">Subida a vans en oficina 9:00 am. Recojo en puntos. Llegada a proyecto 10:30 am con invitación de choripanes.</div>
+                    <div style="margin-top:6px;"><span class="tag green" style="font-size:0.66rem;">⚡ Llegada directa al campo</span></div>
+                </div>
+            </div>
+
+            <div class="glass-card reveal" style="border-left:4px solid #7b68ee;background:rgba(123,104,238,0.08);display:flex;gap:12px;align-items:flex-start;">
+                <div style="background:linear-gradient(135deg,#7b68ee,#b0a8f0);color:#fff;font-weight:800;font-size:0.9rem;flex-shrink:0;width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:50%;">3</div>
+                <div>
+                    <div style="font-weight:700;font-size:0.95rem;color:#b0a8f0;margin-bottom:4px;">La Casa de los Panes</div>
+                    <div style="font-size:0.78rem;color:#b8c8e8;line-height:1.5;">Misma salida 9:00 am. Parada especial en La Casa de los Panes: pan artesanal + café. Luego presentación en proyecto.</div>
+                    <div style="margin-top:6px;"><span class="tag" style="font-size:0.66rem;background:rgba(123,104,238,0.14);border-color:rgba(123,104,238,0.3);color:#b0a8f0;">🍞 Experiencia gastronómica</span></div>
+                </div>
+            </div>
+
+            <div class="glass-card idea4-accent idea4-bg reveal" style="display:flex;gap:12px;align-items:flex-start;">
+                <div class="idea-badge idea4-badge" style="color:#fff;font-weight:800;font-size:0.9rem;flex-shrink:0;width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:50%;">4</div>
+                <div>
+                    <div style="font-weight:700;font-size:0.95rem;color:#f28080;margin-bottom:4px;">No hacer evento · Reinvertir</div>
+                    <div style="font-size:0.78rem;color:#b8c8e8;line-height:1.5;">Cancelar visita presencial. Redirigir el presupuesto íntegramente a pauta digital para generar más leads calificados.</div>
+                    <div style="margin-top:6px;"><span class="tag red" style="font-size:0.66rem;">💰 Ahorro en presupuesto</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="slide-label">AURUS · Resumen de Ideas</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     SLIDE 4 — IDEA 1 DETALLE
+═══════════════════════════════════════════ -->
+<div class="slide slide-4" data-slide="4">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:420px;height:420px;top:-100px;right:-80px;background:#c9a84c;opacity:0.11;"></div>
+        <div class="blob" style="width:250px;height:250px;bottom:-60px;left:-50px;background:#e8d48a;opacity:0.08;"></div>
+    </div>
+    <div class="content">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:1rem;" class="reveal">
+            <div class="idea-badge idea1-badge" style="width:42px;height:42px;font-size:1.1rem;display:flex;align-items:center;justify-content:center;border-radius:50%;color:#0b1120;font-weight:800;flex-shrink:0;">1</div>
+            <div>
+                <div class="accent-line" style="margin-bottom:4px;"></div>
+                <h2 style="font-family:'Playfair Display',serif;font-size:clamp(1.4rem,3vw,2rem);font-weight:700;">Idea 1 — Desayuno + Visita Estratégica</h2>
+            </div>
+        </div>
+
+        <!-- Timeline horizontal -->
+        <div class="step-bar reveal" style="margin-bottom:1rem;">
+            <div class="step-item">
+                <span class="step-time">8:30–9:00</span>
+                📍 Recojo Puntos
+            </div>
+            <div class="step-item highlight">
+                <span class="step-time">9:00–9:15</span>
+                🏢 Llegada Oficina
+            </div>
+            <div class="step-item">
+                <span class="step-time">9:15–10:00</span>
+                ☕ Desayuno en Oficina
+            </div>
+            <div class="step-item highlight">
+                <span class="step-time">10:00</span>
+                🚐 Salida a Proyecto
+            </div>
+            <div class="step-item">
+                <span class="step-time">10:00–10:30</span>
+                🎬 Video en Camino
+            </div>
+            <div class="step-item highlight">
+                <span class="step-time">10:30</span>
+                ⛽ Pto. Repsol
+            </div>
+            <div class="step-item">
+                <span class="step-time">10:30–10:45</span>
+                🚐 Continúa Ruta
+            </div>
+            <div class="step-item highlight">
+                <span class="step-time">10:45–11:45</span>
+                🗺️ Campo + Planos
+            </div>
+            <div class="step-item">
+                <span class="step-time">12:00+</span>
+                🤝 Cierre Comercial
+            </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1.1fr 1fr;gap:14px;">
+            <div class="glass-card idea1-accent idea1-bg reveal">
+                <div style="font-weight:700;font-size:0.88rem;color:#e8d48a;margin-bottom:8px;">✅ Puntos Clave</div>
+                <div class="pro-line">✔ Vans recogen en todos los puntos desde las 8:30 am</div>
+                <div class="pro-line">✔ Todo el grupo llega junto a oficina: experiencia colectiva</div>
+                <div class="pro-line">✔ Desayuno en oficina como gancho de bienvenida y confianza</div>
+                <div class="pro-line">✔ Video demostrativo se proyecta durante el trayecto al proyecto</div>
+                <div class="pro-line">✔ Lead llega al campo ya educado y con intención activada</div>
+                <div class="pro-line">✔ Parada Repsol en ruta y cierre in-situ con planos físicos</div>
+            </div>
+            <div>
+                <div class="glass-card reveal" style="margin-bottom:10px;">
+                    <div style="font-weight:700;font-size:0.82rem;color:#e8d48a;margin-bottom:6px;">🎯 Perfil Ideal de Lead</div>
+                    <div style="font-size:0.78rem;color:#b8c8e8;line-height:1.5;">Leads en etapa de educación o primera visita. El desayuno grupal en oficina genera cohesión y confianza antes de ver el terreno. Ideal para familias con el padre como tomador de decisión.</div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="slide-label">AURUS · Idea 1</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     SLIDE 5 — IDEA 2 DETALLE
+═══════════════════════════════════════════ -->
+<div class="slide slide-5" data-slide="5">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:420px;height:420px;top:-100px;right:-80px;background:#4a9e6b;opacity:0.11;"></div>
+        <div class="blob" style="width:260px;height:260px;bottom:-70px;left:-50px;background:#7dd9a0;opacity:0.08;"></div>
+    </div>
+    <div class="content">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:1rem;" class="reveal">
+            <div class="idea-badge idea2-badge" style="width:42px;height:42px;font-size:1.1rem;display:flex;align-items:center;justify-content:center;border-radius:50%;color:#0b1120;font-weight:800;flex-shrink:0;">2</div>
+            <div>
+                <div class="accent-line" style="background:linear-gradient(90deg,#4a9e6b,#c9a84c);margin-bottom:4px;"></div>
+                <h2 style="font-family:'Playfair Display',serif;font-size:clamp(1.4rem,3vw,2rem);font-weight:700;">Idea 2 — Salida Directa + Choripanes</h2>
+            </div>
+        </div>
+
+        <div class="step-bar reveal" style="margin-bottom:1rem;">
+            <div class="step-item" style="border-left-color:rgba(74,158,107,0.4);">
+                <span class="step-time" style="color:#7dd9a0;">9:00</span>
+                🏢 Subida a Vans
+            </div>
+            <div class="step-item" style="background:rgba(74,158,107,0.1);border-color:rgba(74,158,107,0.3);">
+                <span class="step-time" style="color:#7dd9a0;">9:00–9:30</span>
+                📍 Puntos Recojo
+            </div>
+            <div class="step-item">
+                <span class="step-time" style="color:#7dd9a0;">9:45</span>
+                🚐 Salida a Proyecto
+            </div>
+            <div class="step-item" style="background:rgba(74,158,107,0.1);border-color:rgba(74,158,107,0.3);">
+                <span class="step-time" style="color:#7dd9a0;">10:30</span>
+                🌭 Llegada + Choripanes
+            </div>
+            <div class="step-item">
+                <span class="step-time" style="color:#7dd9a0;">11:00–12:00</span>
+                🗺️ Presentación + Planos
+            </div>
+            <div class="step-item" style="background:rgba(74,158,107,0.1);border-color:rgba(74,158,107,0.3);">
+                <span class="step-time" style="color:#7dd9a0;">12:00+</span>
+                🤝 Cierre Comercial
+            </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1.1fr 1fr;gap:14px;">
+            <div class="glass-card reveal" style="border-left:4px solid #4a9e6b;background:rgba(74,158,107,0.08);">
+                <div style="font-weight:700;font-size:0.88rem;color:#7dd9a0;margin-bottom:8px;">✅ Puntos Clave</div>
+                <div class="pro-line">✔ Logística ágil: sin sala previa, directo al campo</div>
+                <div class="pro-line">✔ Choripanes = experiencia memorable Día del Padre</div>
+                <div class="pro-line">✔ Ambiente festivo activa la conversación y confianza</div>
+                <div class="pro-line">✔ Menor tiempo total, mayor impacto emocional en campo</div>
+                <div class="pro-line">✔ Ideal para leads ya pre-calificados con visita anterior</div>
+
+            </div>
+            <div>
+                <div class="glass-card reveal" style="margin-bottom:10px;">
+                    <div style="font-weight:700;font-size:0.82rem;color:#7dd9a0;margin-bottom:6px;">🌭 Dinámica Choripanes</div>
+                    <div style="font-size:0.78rem;color:#b8c8e8;line-height:1.5;">Al llegar al proyecto, recibir con parrilla activa. El ambiente informal rompe barreras y acerca emocionalmente al lead antes de la presentación técnica.</div>
+                </div>
+                <div class="glass-card reveal">
+                    <div style="font-weight:700;font-size:0.82rem;color:#7dd9a0;margin-bottom:6px;">🎯 Perfil Ideal</div>
+                    <div style="font-size:0.78rem;color:#b8c8e8;line-height:1.5;">Leads en etapa de consideración o cierre. Familias que ya conocen el proyecto y necesitan experiencia vivencial para decidir.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="slide-label">AURUS · Idea 2</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     SLIDE 6 — IDEA 3 DETALLE
+═══════════════════════════════════════════ -->
+<div class="slide slide-6" data-slide="6">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:430px;height:430px;top:-110px;right:-90px;background:#7b68ee;opacity:0.11;"></div>
+        <div class="blob" style="width:260px;height:260px;bottom:-70px;left:-50px;background:#b0a8f0;opacity:0.08;"></div>
+    </div>
+    <div class="content">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:1rem;" class="reveal">
+            <div style="background:linear-gradient(135deg,#7b68ee,#b0a8f0);color:#fff;font-weight:800;font-size:1.1rem;width:42px;height:42px;display:flex;align-items:center;justify-content:center;border-radius:50%;flex-shrink:0;">3</div>
+            <div>
+                <div class="accent-line" style="background:linear-gradient(90deg,#7b68ee,#c9a84c);margin-bottom:4px;"></div>
+                <h2 style="font-family:'Playfair Display',serif;font-size:clamp(1.4rem,3vw,2rem);font-weight:700;">Idea 3 — La Casa de los Panes</h2>
+            </div>
+        </div>
+
+        <div class="step-bar reveal" style="margin-bottom:1rem;">
+            <div class="step-item">
+                <span class="step-time" style="color:#b0a8f0;">9:00</span>
+                🏢 Subida a Vans
+            </div>
+            <div class="step-item" style="background:rgba(123,104,238,0.1);border-color:rgba(123,104,238,0.3);">
+                <span class="step-time" style="color:#b0a8f0;">9:00–9:30</span>
+                📍 Puntos Recojo
+            </div>
+            <div class="step-item">
+                <span class="step-time" style="color:#b0a8f0;">9:45</span>
+                🚐 Salida a Proyecto
+            </div>
+            <div class="step-item" style="background:rgba(123,104,238,0.12);border-color:rgba(123,104,238,0.35);">
+                <span class="step-time" style="color:#b0a8f0;">10:15</span>
+                ☕ La Casa de los Panes
+            </div>
+            <div class="step-item">
+                <span class="step-time" style="color:#b0a8f0;">10:30</span>
+                🚐 Al Proyecto
+            </div>
+            <div class="step-item" style="background:rgba(123,104,238,0.1);border-color:rgba(123,104,238,0.3);">
+                <span class="step-time" style="color:#b0a8f0;">11:00–12:00</span>
+                🗺️ Campo + Planos
+            </div>
+            <div class="step-item">
+                <span class="step-time" style="color:#b0a8f0;">12:00+</span>
+                🤝 Cierre
+            </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1.1fr 1fr;gap:14px;">
+            <div class="glass-card reveal" style="border-left:4px solid #7b68ee;background:rgba(123,104,238,0.08);">
+                <div style="font-weight:700;font-size:0.88rem;color:#b0a8f0;margin-bottom:8px;">✅ Puntos Clave</div>
+                <div class="pro-line">✔ Parada en La Casa de los Panes: pan artesanal + café</div>
+                <div class="pro-line">✔ Experiencia premium diferenciadora vs otras inmobiliarias</div>
+                <div class="pro-line">✔ Momento de conversación informal en ruta → mayor apertura</div>
+                <div class="pro-line">✔ Refuerza el mensaje "calidad de vida" del proyecto</div>
+                <div class="pro-line">✔ Coste relativamente bajo vs impacto en experiencia</div>
+
+            </div>
+            <div>
+                <div class="glass-card reveal" style="margin-bottom:10px;">
+                    <div style="font-weight:700;font-size:0.82rem;color:#b0a8f0;margin-bottom:6px;">☕ La Experiencia</div>
+                    <div style="font-size:0.78rem;color:#b8c8e8;line-height:1.5;">A los ~30 min de camino, parada en La Casa de los Panes. Pan artesanal + café mientras el asesor conversa con los leads. El grupo llega al campo (45 min totales) en un estado emocional cálido y receptivo.</div>
+                </div>
+                <div class="glass-card reveal">
+                    <div style="font-weight:700;font-size:0.82rem;color:#b0a8f0;margin-bottom:6px;">🎯 Perfil Ideal</div>
+                    <div style="font-size:0.78rem;color:#b8c8e8;line-height:1.5;">Leads sensibles a la experiencia de marca. Compradores que valoran el detalle. Funcionaría muy bien con pareja + hijos.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="slide-label">AURUS · Idea 3</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     SLIDE 7 — IDEA 4 DETALLE
+═══════════════════════════════════════════ -->
+<div class="slide slide-7" data-slide="7">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:430px;height:430px;top:-110px;right:-90px;background:#e03a3a;opacity:0.09;"></div>
+        <div class="blob" style="width:260px;height:260px;bottom:-70px;left:-50px;background:#f28080;opacity:0.06;"></div>
+    </div>
+    <div class="content">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:1rem;" class="reveal">
+            <div class="idea-badge idea4-badge" style="width:42px;height:42px;font-size:1.1rem;display:flex;align-items:center;justify-content:center;border-radius:50%;color:#fff;font-weight:800;flex-shrink:0;">4</div>
+            <div>
+                <div class="accent-line" style="background:linear-gradient(90deg,#e03a3a,#c9a84c);margin-bottom:4px;"></div>
+                <h2 style="font-family:'Playfair Display',serif;font-size:clamp(1.4rem,3vw,2rem);font-weight:700;">Idea 4 — No Evento · Reinvertir en Pauta</h2>
+            </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:1rem;">
+            <div class="glass-card idea4-accent idea4-bg reveal">
+                <div style="font-weight:700;font-size:0.88rem;color:#f28080;margin-bottom:8px;">💡 Planteamiento</div>
+                <div style="font-size:0.8rem;color:#b8c8e8;line-height:1.6;">
+                    En lugar de realizar la visita presencial del 14 de junio, <strong style="color:#e8d48a;">cancelar el evento</strong> y destinar el presupuesto íntegro a campañas digitales de captación.<br><br>
+                    Objetivo: generar mayor volumen de leads calificados para visitas futuras con mejor ratio de cierre.
+                </div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:12px;">
+                <div class="glass-card reveal" style="border-left:4px solid #4a9e6b;background:rgba(74,158,107,0.08);">
+                    <div style="font-weight:600;font-size:0.82rem;color:#7dd9a0;margin-bottom:4px;">✅ Argumentos a Favor</div>
+                    <div class="pro-line">✔ 100% del presupuesto → pauta digital</div>
+                    <div class="pro-line">✔ Mayor alcance de nuevos leads fríos</div>
+                    <div class="pro-line">✔ Evita riesgo operativo de logística</div>
+                    <div class="pro-line">✔ Resultados medibles en tiempo real</div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="glass-card reveal" style="background:rgba(201,168,76,0.07);border:1px solid rgba(201,168,76,0.2);border-radius:12px;padding:1rem 1.3rem;">
+            <div style="font-weight:700;font-size:0.85rem;color:#e8d48a;margin-bottom:6px;">⚖️ Consideración Estratégica</div>
+            <div style="font-size:0.78rem;color:#b8c8e8;line-height:1.5;">Esta opción tiene sentido <strong style="color:#e8d48a;">únicamente si la base de leads confirmados es muy baja</strong> (menos de 5 personas). Si ya hay confirmados, cancelar el evento daña la relación con esos prospectos. Se recomienda evaluar primero el número de registros al corte del miércoles 11 de junio antes de tomar esta decisión.</div>
+        </div>
+    </div>
+    <div class="slide-label">AURUS · Idea 4</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     SLIDE 8 — TABLA COMPARATIVA
+═══════════════════════════════════════════ -->
+<div class="slide slide-8" data-slide="8">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:380px;height:380px;top:-90px;right:-80px;background:#c9a84c;opacity:0.08;"></div>
+        <div class="blob" style="width:240px;height:240px;bottom:-60px;left:-40px;background:#4a9e6b;opacity:0.07;"></div>
+    </div>
+    <div class="content">
+        <div class="accent-line reveal"></div>
+        <h2 class="reveal" style="font-family:'Playfair Display',serif;font-size:clamp(1.5rem,3vw,2.2rem);font-weight:700;margin-bottom:1.2rem;">Comparativa de Ideas</h2>
+
+        <div class="reveal" style="overflow:hidden;border-radius:14px;border:1px solid rgba(255,255,255,0.08);">
+            <table style="width:100%;border-collapse:collapse;font-size:clamp(0.65rem,1.1vw,0.8rem);">
+                <thead>
+                    <tr style="background:rgba(201,168,76,0.12);">
+                        <th style="padding:10px 14px;text-align:left;color:#e8d48a;font-weight:700;width:20%;">Criterio</th>
+                        <th style="padding:10px 14px;text-align:center;color:#e8d48a;border-left:1px solid rgba(255,255,255,0.07);">💛 Idea 1</th>
+                        <th style="padding:10px 14px;text-align:center;color:#7dd9a0;border-left:1px solid rgba(255,255,255,0.07);">💚 Idea 2</th>
+                        <th style="padding:10px 14px;text-align:center;color:#b0a8f0;border-left:1px solid rgba(255,255,255,0.07);">💜 Idea 3</th>
+                        <th style="padding:10px 14px;text-align:center;color:#f28080;border-left:1px solid rgba(255,255,255,0.07);">🔴 Idea 4</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="border-top:1px solid rgba(255,255,255,0.06);">
+                        <td style="padding:8px 14px;color:#b8c8e8;font-weight:500;">Hora arranque</td>
+                        <td style="padding:8px;text-align:center;border-left:1px solid rgba(255,255,255,0.05);">8:30 am</td>
+                        <td style="padding:8px;text-align:center;border-left:1px solid rgba(255,255,255,0.05);">9:00 am</td>
+                        <td style="padding:8px;text-align:center;border-left:1px solid rgba(255,255,255,0.05);">9:00 am</td>
+                        <td style="padding:8px;text-align:center;border-left:1px solid rgba(255,255,255,0.05);color:#f28080;">Sin evento</td>
+                    </tr>
+                    <tr style="background:rgba(255,255,255,0.02);border-top:1px solid rgba(255,255,255,0.06);">
+                        <td style="padding:8px 14px;color:#b8c8e8;font-weight:500;">Experiencia food</td>
+                        <td style="padding:8px;text-align:center;border-left:1px solid rgba(255,255,255,0.05);">☕ Desayuno oficina</td>
+                        <td style="padding:8px;text-align:center;border-left:1px solid rgba(255,255,255,0.05);">🌭 Choripanes campo</td>
+                        <td style="padding:8px;text-align:center;border-left:1px solid rgba(255,255,255,0.05);">🍞 Pan + café ruta</td>
+                        <td style="padding:8px;text-align:center;border-left:1px solid rgba(255,255,255,0.05);color:#f28080;">—</td>
+                    </tr>
+                    <tr style="border-top:1px solid rgba(255,255,255,0.06);">
+                        <td style="padding:8px 14px;color:#b8c8e8;font-weight:500;">Presentación técnica</td>
+                        <td style="padding:8px;text-align:center;border-left:1px solid rgba(255,255,255,0.05);">✅ Antes de ir</td>
+                        <td style="padding:8px;text-align:center;border-left:1px solid rgba(255,255,255,0.05);">🔶 En campo</td>
+                        <td style="padding:8px;text-align:center;border-left:1px solid rgba(255,255,255,0.05);">🔶 En campo</td>
+                        <td style="padding:8px;text-align:center;border-left:1px solid rgba(255,255,255,0.05);color:#f28080;">—</td>
+                    </tr>
+                    <tr style="background:rgba(255,255,255,0.02);border-top:1px solid rgba(255,255,255,0.06);">
+                        <td style="padding:8px 14px;color:#b8c8e8;font-weight:500;">Complejidad logística</td>
+                        <td style="padding:8px;text-align:center;border-left:1px solid rgba(255,255,255,0.05);">Alta</td>
+                        <td style="padding:8px;text-align:center;border-left:1px solid rgba(255,255,255,0.05);">Media</td>
+                        <td style="padding:8px;text-align:center;border-left:1px solid rgba(255,255,255,0.05);">Media</td>
+                        <td style="padding:8px;text-align:center;border-left:1px solid rgba(255,255,255,0.05);">Baja</td>
+                    </tr>
+                    <tr style="border-top:1px solid rgba(255,255,255,0.06);">
+                        <td style="padding:8px 14px;color:#b8c8e8;font-weight:500;">Impacto en cierre</td>
+                        <td style="padding:8px;text-align:center;border-left:1px solid rgba(255,255,255,0.05);color:#e8d48a;">⭐⭐⭐⭐</td>
+                        <td style="padding:8px;text-align:center;border-left:1px solid rgba(255,255,255,0.05);color:#7dd9a0;">⭐⭐⭐⭐</td>
+                        <td style="padding:8px;text-align:center;border-left:1px solid rgba(255,255,255,0.05);color:#b0a8f0;">⭐⭐⭐</td>
+                        <td style="padding:8px;text-align:center;border-left:1px solid rgba(255,255,255,0.05);color:#f28080;">⭐</td>
+                    </tr>
+                    <tr style="background:rgba(255,255,255,0.02);border-top:1px solid rgba(255,255,255,0.06);">
+                        <td style="padding:8px 14px;color:#b8c8e8;font-weight:500;">Experiencia de marca</td>
+                        <td style="padding:8px;text-align:center;border-left:1px solid rgba(255,255,255,0.05);color:#e8d48a;">⭐⭐⭐⭐</td>
+                        <td style="padding:8px;text-align:center;border-left:1px solid rgba(255,255,255,0.05);color:#7dd9a0;">⭐⭐⭐⭐⭐</td>
+                        <td style="padding:8px;text-align:center;border-left:1px solid rgba(255,255,255,0.05);color:#b0a8f0;">⭐⭐⭐⭐⭐</td>
+                        <td style="padding:8px;text-align:center;border-left:1px solid rgba(255,255,255,0.05);color:#f28080;">⭐</td>
+                    </tr>
+                    <tr style="background:rgba(201,168,76,0.06);border-top:1px solid rgba(201,168,76,0.2);">
+                        <td style="padding:10px 14px;color:#e8d48a;font-weight:700;">Recomendación</td>
+                        <td style="padding:10px;text-align:center;border-left:1px solid rgba(255,255,255,0.05);color:#e8d48a;font-weight:700;">✅ Sí</td>
+                        <td style="padding:10px;text-align:center;border-left:1px solid rgba(255,255,255,0.05);color:#7dd9a0;font-weight:700;">✅ Sí</td>
+                        <td style="padding:10px;text-align:center;border-left:1px solid rgba(255,255,255,0.05);color:#b0a8f0;font-weight:700;">🔶 Eval.</td>
+                        <td style="padding:10px;text-align:center;border-left:1px solid rgba(255,255,255,0.05);color:#f28080;font-weight:700;">Solo si &lt;5 conf.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="slide-label">AURUS · Comparativa</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     SLIDE 9 — LOGÍSTICA COMÚN + KPIs
+═══════════════════════════════════════════ -->
+<div class="slide slide-9" data-slide="9">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:380px;height:380px;top:-90px;right:-80px;background:#c9a84c;opacity:0.09;"></div>
+        <div class="blob" style="width:240px;height:240px;bottom:-60px;left:-40px;background:#4a9e6b;opacity:0.07;"></div>
+    </div>
+    <div class="content">
+        <div class="accent-line reveal"></div>
+        <h2 class="reveal" style="font-family:'Playfair Display',serif;font-size:clamp(1.5rem,3vw,2.2rem);font-weight:700;margin-bottom:1.2rem;">Logística Común & KPIs</h2>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+            <div>
+                <div class="glass-card reveal" style="margin-bottom:12px;">
+                    <div style="font-weight:700;font-size:0.85rem;color:#e8d48a;margin-bottom:8px;">🚐 Transporte & Puntos de Recojo</div>
+                    <div style="display:flex;flex-direction:column;gap:5px;">
+                        <div style="display:flex;gap:8px;align-items:flex-start;font-size:0.78rem;color:#b8c8e8;">
+                            <span style="color:#c9a84c;flex-shrink:0;">📍</span> Oficina AURUS (punto principal)
+                        </div>
+                        <div style="display:flex;gap:8px;align-items:flex-start;font-size:0.78rem;color:#b8c8e8;">
+                            <span style="color:#c9a84c;flex-shrink:0;">📍</span> Óvalo de Santa Anita
+                        </div>
+                        <div style="display:flex;gap:8px;align-items:flex-start;font-size:0.78rem;color:#b8c8e8;">
+                            <span style="color:#c9a84c;flex-shrink:0;">📍</span> Jockey Plaza
+                        </div>
+                        <div style="display:flex;gap:8px;align-items:flex-start;font-size:0.78rem;color:#b8c8e8;">
+                            <span style="color:#c9a84c;flex-shrink:0;">📍</span> Puruchuco
+                        </div>
+                        <div style="display:flex;gap:8px;align-items:flex-start;font-size:0.78rem;color:#b8c8e8;">
+                            <span style="color:#c9a84c;flex-shrink:0;">⛽</span> Punto Repsol (10:30 am)
+                        </div>
+                        <div style="margin-top:6px;font-size:0.78rem;color:#7a90b8;">Minivanes según confirmados. Calcular al corte del jue. 12 de junio.</div>
+                    </div>
+                </div>
+                <div class="glass-card reveal">
+                    <div style="font-weight:700;font-size:0.85rem;color:#e8d48a;margin-bottom:8px;">📋 Materiales Requeridos</div>
+                    <div style="font-size:0.78rem;color:#b8c8e8;line-height:1.7;">
+                        🎫 Credenciales · 📁 Brochures y planos · 📱 Video demostrativo<br>
+                        📝 Formulario de registro · 🛍️ Merchandising · 🎯 Banners AURUS<br>
+                        🍽️ Material de catering (según idea elegida) · 📊 Presentación PPT
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <div class="glass-card reveal" style="margin-bottom:12px;">
+                    <div style="font-weight:700;font-size:0.85rem;color:#e8d48a;margin-bottom:8px;">📊 KPIs del Evento</div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+                        <div style="background:rgba(201,168,76,0.08);border-radius:10px;padding:8px;text-align:center;">
+                            <div class="kpi-num" style="font-size:1.6rem;">20+</div>
+                            <div style="font-size:0.68rem;color:#7a90b8;margin-top:2px;">Registros meta</div>
+                        </div>
+                        <div style="background:rgba(74,158,107,0.08);border-radius:10px;padding:8px;text-align:center;">
+                            <div class="kpi-num" style="font-size:1.6rem;color:#7dd9a0;">70%</div>
+                            <div style="font-size:0.68rem;color:#7a90b8;margin-top:2px;">Tasa asistencia</div>
+                        </div>
+                        <div style="background:rgba(123,104,238,0.08);border-radius:10px;padding:8px;text-align:center;">
+                            <div class="kpi-num" style="font-size:1.6rem;color:#b0a8f0;">30%</div>
+                            <div style="font-size:0.68rem;color:#7a90b8;margin-top:2px;">Tasa de cierre</div>
+                        </div>
+                        <div style="background:rgba(224,58,58,0.08);border-radius:10px;padding:8px;text-align:center;">
+                            <div class="kpi-num" style="font-size:1.6rem;color:#f28080;">1</div>
+                            <div style="font-size:0.68rem;color:#7a90b8;margin-top:2px;">Separación mínima</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="glass-card reveal">
+                    <div style="font-weight:700;font-size:0.85rem;color:#e8d48a;margin-bottom:6px;">👥 Responsables</div>
+                    <div style="font-size:0.76rem;color:#b8c8e8;line-height:1.7;">
+                        <strong style="color:#c9a84c;">Coord. Marketing</strong> · Diseñador · Content Manager<br>
+                        <strong style="color:#c9a84c;">Asesores Comerciales</strong> · Gerencia Comercial<br>
+                        <strong style="color:#c9a84c;">Gerencia Marketing</strong> · Proveedor transporte
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="slide-label">AURUS · Logística & KPIs</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     SLIDE 10 — RECOMENDACIÓN FINAL
+═══════════════════════════════════════════ -->
+<div class="slide slide-11" data-slide="11">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:500px;height:500px;top:-120px;right:-100px;background:#c9a84c;opacity:0.13;"></div>
+        <div class="blob" style="width:320px;height:320px;bottom:-80px;left:-60px;background:#4a9e6b;opacity:0.10;"></div>
+        <div class="blob" style="width:210px;height:210px;top:40%;left:10%;background:#e8d48a;opacity:0.07;"></div>
+    </div>
+    <canvas class="particle-canvas" style="position:absolute;inset:0;z-index:1;"></canvas>
+    <div class="content">
+        <div class="accent-line reveal"></div>
+        <h2 class="reveal" style="font-family:'Playfair Display',serif;font-size:clamp(1.5rem,3.5vw,2.5rem);font-weight:700;margin-bottom:0.4rem;">Recomendación Final</h2>
+        <p class="reveal" style="color:#7a90b8;font-size:0.85rem;margin-bottom:1.4rem;">Propuesta del equipo de Marketing para decisión de Gerencia</p>
+
+        <div style="display:grid;grid-template-columns:1.3fr 1fr;gap:16px;align-items:start;">
+            <div>
+                <div class="glass-card reveal" style="border:1px solid rgba(201,168,76,0.3);background:rgba(201,168,76,0.08);margin-bottom:12px;">
+                    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+                        <div style="font-size:1.6rem;">🏆</div>
+                        <div style="font-weight:800;font-size:1rem;color:#e8d48a;">Opción Recomendada: Idea 2</div>
+                    </div>
+                    <div style="font-size:0.82rem;color:#b8c8e8;line-height:1.6;margin-bottom:10px;">
+                        <strong style="color:#e8d48a;">Salida Directa + Choripanes</strong> combina la logística más eficiente con la mayor carga emocional para el Día del Padre. La parrilla en campo crea un momento festivo y memorable que elimina barreras y prepara al lead para el cierre.
+                    </div>
+                    <div style="display:flex;gap:7px;flex-wrap:wrap;">
+                        <span class="tag" style="font-size:0.66rem;">🌭 Alto impacto emocional</span>
+                        <span class="tag green" style="font-size:0.66rem;">⚡ Logística ágil</span>
+                        <span class="tag" style="font-size:0.66rem;">💰 Costo controlado</span>
+                    </div>
+                </div>
+                <div class="glass-card reveal" style="border:1px solid rgba(123,104,238,0.25);background:rgba(123,104,238,0.07);">
+                    <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+                        <div style="font-size:1.3rem;">🥈</div>
+                        <div style="font-weight:700;font-size:0.9rem;color:#b0a8f0;">Alternativa Premium: Idea 3</div>
+                    </div>
+                    <div style="font-size:0.78rem;color:#b8c8e8;line-height:1.5;">
+                        La Casa de los Panes si se quiere una experiencia de marca más diferenciada. Ideal si el presupuesto lo permite y se prioriza la percepción de calidad vs. volumen de leads.
+                    </div>
+                </div>
+            </div>
+
+            <div style="display:flex;flex-direction:column;gap:11px;">
+                <div class="glass-card reveal">
+                    <div style="font-weight:700;font-size:0.82rem;color:#e8d48a;margin-bottom:6px;">📅 Próximos Pasos</div>
+                    <div style="font-size:0.76rem;color:#b8c8e8;line-height:1.8;">
+                        <span style="color:#c9a84c;">Lun 9 Jun</span> · Confirmación de idea por Gerencia<br>
+                        <span style="color:#c9a84c;">Mar 10 Jun</span> · Activar pauta y piezas gráficas<br>
+                        <span style="color:#c9a84c;">Mié 11 Jun</span> · Zoom + Live TikTok convocatoria<br>
+                        <span style="color:#c9a84c;">Jue 12 Jun</span> · Corte de confirmados + vans<br>
+                        <span style="color:#c9a84c;">Dom 14 Jun</span> · 🏆 Evento Día del Padre
+                    </div>
+                </div>
+                <div class="glass-card reveal">
+                    <div style="font-weight:700;font-size:0.82rem;color:#e8d48a;margin-bottom:6px;">✅ Decisión Requerida</div>
+                    <div style="font-size:0.76rem;color:#b8c8e8;line-height:1.6;">
+                        Aprobación de Gerencia sobre la idea seleccionada para proceder con coordinación, materiales, catering y pauta digital de la semana del evento.
+                    </div>
+                </div>
+                <div class="glass-card reveal" style="text-align:center;background:rgba(201,168,76,0.07);border-color:rgba(201,168,76,0.2);">
+                    <div style="font-size:1.8rem;margin-bottom:4px;">⚽👔</div>
+                    <div style="font-size:0.78rem;color:#e8d48a;font-weight:600;">Día del Padre · Mundial 2026</div>
+                    <div style="font-size:0.7rem;color:#7a90b8;margin-top:2px;">¡Hagamos que este domingo sea memorable!</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="slide-label">AURUS · Recomendación</div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     SLIDE 10 — INCENTIVOS & SORTEO
+═══════════════════════════════════════════ -->
+<div class="slide slide-10" data-slide="10">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:450px;height:450px;top:-120px;right:-100px;background:#c9a84c;opacity:0.13;"></div>
+        <div class="blob" style="width:300px;height:300px;bottom:-80px;left:-60px;background:#4a9e6b;opacity:0.10;"></div>
+        <div class="blob" style="width:200px;height:200px;top:35%;left:8%;background:#7b68ee;opacity:0.08;"></div>
+    </div>
+    <div class="content">
+        <div class="accent-line reveal"></div>
+        <h2 class="reveal" style="font-family:'Playfair Display',serif;font-size:clamp(1.5rem,3.5vw,2.4rem);font-weight:700;margin-bottom:0.3rem;">Incentivos por Separación</h2>
+        <p class="reveal" style="color:#7a90b8;font-size:0.85rem;margin-bottom:1.4rem;">Cada papá que separe su lote en el evento recibe beneficios exclusivos</p>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:14px;">
+
+            <!-- Kit Mundialeros -->
+            <div class="glass-card reveal" style="border:1px solid rgba(201,168,76,0.35);background:rgba(201,168,76,0.08);position:relative;overflow:hidden;">
+                <div style="position:absolute;top:-18px;right:-18px;font-size:5rem;opacity:0.08;line-height:1;">⚽</div>
+                <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
+                    <div style="font-size:2.4rem;">🎁</div>
+                    <div>
+                        <div style="font-weight:800;font-size:1rem;color:#e8d48a;line-height:1.1;">Kit Mundialeros AURUS</div>
+                        <div style="font-size:0.72rem;color:#7a90b8;margin-top:2px;">Entrega inmediata al momento de separar</div>
+                    </div>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:6px;">
+                    <div style="background:rgba(255,255,255,0.06);border-radius:12px;padding:10px 8px;text-align:center;border:1px solid rgba(255,255,255,0.08);">
+                        <div style="font-size:1.8rem;margin-bottom:4px;">☕</div>
+                        <div style="font-size:0.72rem;color:#e8d48a;font-weight:600;">Taza AURUS</div>
+                        <div style="font-size:0.62rem;color:#7a90b8;margin-top:2px;">Branded premium</div>
+                    </div>
+                    <div style="background:rgba(255,255,255,0.06);border-radius:12px;padding:10px 8px;text-align:center;border:1px solid rgba(255,255,255,0.08);">
+                        <div style="font-size:1.8rem;margin-bottom:4px;">🍺</div>
+                        <div style="font-size:0.72rem;color:#e8d48a;font-weight:600;">Lata de Cerveza</div>
+                        <div style="font-size:0.62rem;color:#7a90b8;margin-top:2px;">Día del Padre</div>
+                    </div>
+                    <div style="background:rgba(255,255,255,0.06);border-radius:12px;padding:10px 8px;text-align:center;border:1px solid rgba(255,255,255,0.08);">
+                        <div style="font-size:1.8rem;margin-bottom:4px;">🍬</div>
+                        <div style="font-size:0.72rem;color:#e8d48a;font-weight:600;">Dulces</div>
+                        <div style="font-size:0.62rem;color:#7a90b8;margin-top:2px;">Mix sorpresa</div>
+                    </div>
+                </div>
+                <div style="margin-top:10px;padding:8px 10px;background:rgba(201,168,76,0.1);border-radius:8px;border:1px solid rgba(201,168,76,0.2);">
+                    <div style="font-size:0.74rem;color:#b8c8e8;line-height:1.5;">
+                        <strong style="color:#e8d48a;">⚡ Estrategia:</strong> El kit se entrega en el momento de la separación, frente al grupo. Esto genera presión social positiva y motiva a otros leads a decidir.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sorteo Full Day -->
+            <div class="glass-card reveal" style="border:1px solid rgba(74,158,107,0.35);background:rgba(74,158,107,0.08);position:relative;overflow:hidden;">
+                <div style="position:absolute;top:-18px;right:-18px;font-size:5rem;opacity:0.08;line-height:1;">🏆</div>
+                <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
+                    <div style="font-size:2.4rem;">🎰</div>
+                    <div>
+                        <div style="font-weight:800;font-size:1rem;color:#7dd9a0;line-height:1.1;">Sorteo: 2 Full Days</div>
+                        <div style="font-size:0.72rem;color:#7a90b8;margin-top:2px;">Solo para quienes separen en el evento</div>
+                    </div>
+                </div>
+
+                <div style="background:rgba(255,255,255,0.05);border-radius:12px;padding:12px;border:1px solid rgba(74,158,107,0.2);margin-bottom:10px;">
+                    <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
+                        <div style="font-size:1.6rem;">🌿</div>
+                        <div>
+                            <div style="font-weight:700;font-size:0.85rem;color:#7dd9a0;">Full Day en Cieneguilla</div>
+                            <div style="font-size:0.7rem;color:#7a90b8;">Premio: 2 paquetes full day (valor real percibido alto)</div>
+                        </div>
+                    </div>
+                    <div style="font-size:0.74rem;color:#b8c8e8;line-height:1.5;">El sorteo se realiza al final del evento con todos los que hayan separado presentes. Genera emoción colectiva y cierra el evento con energía positiva.</div>
+                </div>
+
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+                    <div style="background:rgba(74,158,107,0.1);border-radius:8px;padding:8px;text-align:center;border:1px solid rgba(74,158,107,0.18);">
+                        <div style="font-size:1.2rem;margin-bottom:2px;">🎟️</div>
+                        <div style="font-size:0.68rem;color:#7dd9a0;font-weight:600;">1 boleto por separación</div>
+                    </div>
+                    <div style="background:rgba(74,158,107,0.1);border-radius:8px;padding:8px;text-align:center;border:1px solid rgba(74,158,107,0.18);">
+                        <div style="font-size:1.2rem;margin-bottom:2px;">🏆</div>
+                        <div style="font-size:0.68rem;color:#7dd9a0;font-weight:600;">2 ganadores del sorteo</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Impacto comercial -->
+        <div class="glass-card reveal" style="background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.18);border-radius:12px;">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+                <div style="font-size:1.3rem;">📣</div>
+                <div style="font-weight:700;font-size:0.85rem;color:#e8d48a;">Impacto Comercial & Comunicación</div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
+                <div style="font-size:0.76rem;color:#b8c8e8;line-height:1.5;">
+                    <strong style="color:#c9a84c;">Antes del evento</strong><br>
+                    Comunicar kit + sorteo en pauta, WhatsApp y convocatoria. Usar en guion del viernes (Zoom / Live TikTok) como CTA principal.
+                </div>
+                <div style="font-size:0.76rem;color:#b8c8e8;line-height:1.5;">
+                    <strong style="color:#c9a84c;">Durante el evento</strong><br>
+                    Asesor menciona el beneficio al cierre. Kit se entrega en público. Sorteo al final con toda la asistencia presente como testigos.
+                </div>
+                <div style="font-size:0.76rem;color:#b8c8e8;line-height:1.5;">
+                    <strong style="color:#c9a84c;">Después del evento</strong><br>
+                    Publicar foto/video del ganador en redes. Contenido del kit en stories. Usar como prueba social para siguiente convocatoria.
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="slide-label">AURUS · Incentivos</div>
+</div>
+
+</div><!-- end .deck -->
+
+<!-- NAVIGATION -->
+<div class="nav-controls">
+    <button class="nav-btn" onclick="changeSlide(-1)">&#8249;</button>
+    <div class="slide-dots" id="dots"></div>
+    <button class="nav-btn" onclick="changeSlide(1)">&#8250;</button>
+    <span class="slide-counter" id="counter">1 / 10</span>
+</div>
+
+<script>
+    let current = 1;
+    const total = document.querySelectorAll('.slide').length;
+    const dotsContainer = document.getElementById('dots');
+    const counter = document.getElementById('counter');
+    for (let i = 1; i <= total; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'dot' + (i === 1 ? ' active' : '');
+        dot.onclick = () => goToSlide(i);
+        dotsContainer.appendChild(dot);
+    }
+    function goToSlide(n) {
+        const prev = document.querySelector('.slide.active');
+        const next = document.querySelector(`.slide[data-slide="${n}"]`);
+        if (prev) prev.classList.remove('active');
+        if (next) { next.classList.add('active'); animateSlide(next); }
+        current = n; updateNav();
+    }
+    function changeSlide(dir) {
+        let next = current + dir;
+        if (next < 1) next = total;
+        if (next > total) next = 1;
+        goToSlide(next);
+    }
+    function updateNav() {
+        document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i + 1 === current));
+        counter.textContent = current + ' / ' + total;
+    }
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); changeSlide(1); }
+        if (e.key === 'ArrowLeft') { e.preventDefault(); changeSlide(-1); }
+    });
+    let touchStartX = 0;
+    document.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; });
+    document.addEventListener('touchend', (e) => { const diff = touchStartX - e.changedTouches[0].clientX; if (Math.abs(diff) > 50) changeSlide(diff > 0 ? 1 : -1); });
+
+    function animateSlide(slide) {
+        slide.querySelectorAll('.reveal').forEach((el, i) => {
+            el.style.transition = 'none';
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(18px)';
+            el.offsetHeight;
+            const delay = i * 0.07;
+            el.style.transition = `opacity 0.38s ease ${delay}s, transform 0.38s ease ${delay}s`;
+            el.style.opacity = '1';
+            el.style.transform = 'translateY(0)';
+        });
+    }
+
+    /* Mouse spotlight */
+    document.addEventListener('mousemove', (e) => {
+        const sp = document.querySelector('.mouse-spotlight');
+        if (sp) sp.style.background = `radial-gradient(600px circle at ${e.clientX}px ${e.clientY}px, rgba(201,168,76,0.055), transparent 40%)`;
+    });
+
+    /* Particles */
+    window.initParticles = function(canvas, opts) {
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight;
+        const interactive = opts.interactive !== false;
+        const count = opts.count || 45;
+        let mx = -1000, my = -1000;
+        const particles = Array.from({ length: count }, () => ({
+            x: Math.random() * canvas.width, y: Math.random() * canvas.height,
+            vx: (Math.random() - 0.5) * 0.28, vy: (Math.random() - 0.5) * 0.28,
+            size: Math.random() * 2.2 + 0.7, alpha: Math.random() * 0.3 + 0.08
+        }));
+        if (interactive) {
+            canvas.addEventListener('mousemove', (e) => { const r = canvas.getBoundingClientRect(); mx = e.clientX - r.left; my = e.clientY - r.top; });
+            canvas.addEventListener('mouseleave', () => { mx = -1000; my = -1000; });
+        }
+        (function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                if (interactive) { const dx = p.x - mx, dy = p.y - my, d = Math.sqrt(dx*dx+dy*dy); if (d < 110) { const f = (110-d)/110*1.8; p.vx += (dx/d)*f*0.1; p.vy += (dy/d)*f*0.1; } }
+                p.vx *= 0.98; p.vy *= 0.98; p.x += p.vx; p.y += p.vy;
+                if (p.x < 0) p.x = canvas.width; if (p.x > canvas.width) p.x = 0;
+                if (p.y < 0) p.y = canvas.height; if (p.y > canvas.height) p.y = 0;
+                ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI*2);
+                ctx.fillStyle = `rgba(201,168,76,${p.alpha})`; ctx.fill();
+            });
+            requestAnimationFrame(animate);
+        })();
+    };
+    document.querySelectorAll('.particle-canvas').forEach(c => window.initParticles(c, { interactive: true, count: 45 }));
+
+    /* Animate first slide */
+    try { animateSlide(document.querySelector('.slide.active')); } catch(e) {}
+</script>
+</body>
+</html>
