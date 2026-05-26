@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Reporte Pauta Digital – Mayo 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300..700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+:root{--bg:#0d0c0b;--surf:#141311;--surf2:#1c1a18;--bord:rgba(255,255,255,.07);--text:#d8d7d3;--muted:#76746f;--faint:#403e3a;--meta:#4a9eff;--tik:#ff6b85;--raul:#4da8b0;--gold:#f0a500;--gr:rgba(255,255,255,.035);--sh:0 2px 12px rgba(0,0,0,.35);--sh2:0 8px 32px rgba(0,0,0,.55);--pop:#232120}
+[data-theme="light"]{--bg:#f5f4f0;--surf:#faf9f6;--surf2:#fff;--bord:rgba(0,0,0,.09);--text:#1a1915;--muted:#6b6a66;--faint:#c8c7c3;--meta:#1877f2;--tik:#fe2c55;--raul:#01696f;--gold:#d4900a;--gr:rgba(0,0,0,.04);--sh:0 2px 10px rgba(0,0,0,.07);--sh2:0 8px 28px rgba(0,0,0,.12);--pop:#fff}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
+body{font-family:'DM Sans',sans-serif;font-size:14px;color:var(--text);background:var(--bg);min-height:100vh}
+
+/* HEADER */
+.hdr{background:var(--surf);border-bottom:1px solid var(--bord);padding:12px 0;position:sticky;top:0;z-index:300}
+.hdr-in{max-width:1280px;margin:0 auto;padding:0 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.logo{display:flex;align-items:center;gap:10px}
+.logo-ic{width:32px;height:32px;background:var(--raul);border-radius:9px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:16px;flex-shrink:0}
+.logo-name{font-weight:700;font-size:14px;letter-spacing:-.3px}
+.logo-sub{font-size:10.5px;color:var(--muted)}
+.hdr-r{display:flex;align-items:center;gap:8px}
+.pill{background:var(--surf2);border:1px solid var(--bord);border-radius:20px;padding:3px 10px;font-size:10.5px;color:var(--muted)}
+.btn-ic{background:var(--surf2);border:1px solid var(--bord);border-radius:8px;padding:6px 8px;cursor:pointer;color:var(--muted);display:flex;align-items:center;transition:.15s}
+.btn-ic:hover{color:var(--text)}
+
+/* ── FILTER BAR ── */
+.fbar{background:var(--surf);border-bottom:1px solid var(--bord);padding:10px 0;position:sticky;top:57px;z-index:200}
+.fbar-in{max-width:1280px;margin:0 auto;padding:0 20px;display:flex;gap:10px;flex-wrap:wrap;align-items:flex-start}
+.fbar-label{font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);white-space:nowrap;margin-top:9px}
+.fbar-sep{width:1px;background:var(--bord);height:33px;margin-top:1px;flex-shrink:0}
+
+/* DATE RANGE */
+.date-wrap{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.date-lbl{font-size:10.5px;color:var(--muted);white-space:nowrap}
+.date-input{background:var(--surf2);border:1px solid var(--bord);border-radius:9px;padding:6px 10px;font-size:12px;color:var(--text);outline:none;font-family:inherit;transition:border-color .15s;cursor:pointer;min-width:120px}
+.date-input:focus{border-color:var(--meta)}
+.date-input::-webkit-calendar-picker-indicator{filter:invert(.5);cursor:pointer}
+[data-theme="light"] .date-input::-webkit-calendar-picker-indicator{filter:none}
+
+/* DATE QUICK BUTTONS */
+.date-quick{display:flex;gap:4px;flex-wrap:wrap;margin-top:1px}
+.dq-btn{background:var(--surf2);border:1px solid var(--bord);border-radius:7px;padding:4px 9px;font-size:10.5px;color:var(--muted);cursor:pointer;font-family:inherit;transition:.12s;white-space:nowrap}
+.dq-btn:hover,.dq-btn.active{background:rgba(74,158,255,.15);border-color:var(--meta);color:var(--meta)}
+
+/* MULTI-SELECT DROPDOWN */
+.ms-wrap{position:relative;flex:1;min-width:150px;max-width:230px}
+.ms-trigger{background:var(--surf2);border:1px solid var(--bord);border-radius:9px;padding:6px 28px 6px 10px;font-size:12px;color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:4px;user-select:none;transition:border-color .15s;min-height:33px;position:relative}
+.ms-trigger:hover,.ms-trigger.open{border-color:var(--meta)}
+.ms-trigger-txt{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;font-size:11.5px}
+.ms-trigger-txt .placeholder{color:var(--muted)}
+.ms-arrow{position:absolute;right:8px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--muted);transition:transform .15s}
+.ms-trigger.open .ms-arrow{transform:translateY(-50%) rotate(180deg)}
+.ms-badge{background:var(--meta);color:#fff;border-radius:10px;font-size:9.5px;font-weight:700;padding:1px 5px;margin-left:3px;flex-shrink:0}
+.ms-panel{position:absolute;top:calc(100% + 5px);left:0;right:0;background:var(--pop);border:1px solid var(--bord);border-radius:11px;box-shadow:var(--sh2);z-index:500;overflow:hidden;min-width:220px;max-width:320px}
+.ms-search{width:100%;background:transparent;border:none;border-bottom:1px solid var(--bord);padding:8px 12px;font-size:12px;color:var(--text);outline:none;font-family:inherit}
+.ms-search::placeholder{color:var(--muted)}
+.ms-actions{display:flex;gap:0;border-bottom:1px solid var(--bord)}
+.ms-act-btn{flex:1;background:none;border:none;padding:6px;font-size:10.5px;color:var(--muted);cursor:pointer;font-family:inherit;transition:color .12s}
+.ms-act-btn:hover{color:var(--text)}
+.ms-act-btn+.ms-act-btn{border-left:1px solid var(--bord)}
+.ms-list{max-height:220px;overflow-y:auto;padding:4px 0}
+.ms-list::-webkit-scrollbar{width:4px}
+.ms-list::-webkit-scrollbar-thumb{background:var(--faint);border-radius:4px}
+.ms-item{display:flex;align-items:center;gap:8px;padding:7px 12px;cursor:pointer;transition:background .1s;font-size:12px}
+.ms-item:hover{background:rgba(255,255,255,.04)}
+.ms-item input[type=checkbox]{width:13px;height:13px;accent-color:var(--meta);cursor:pointer;flex-shrink:0}
+.ms-item label{cursor:pointer;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;line-height:1.3}
+.ms-empty{padding:14px;text-align:center;color:var(--muted);font-size:11.5px}
+
+.btn-reset{background:rgba(255,107,133,.12);border:1px solid rgba(255,107,133,.25);color:#ff6b85;border-radius:9px;padding:6px 12px;font-size:11.5px;cursor:pointer;font-family:inherit;transition:.15s;margin-top:1px}
+.btn-reset:hover{background:rgba(255,107,133,.22)}
+.fbar-stats{font-size:11px;color:var(--muted);white-space:nowrap;padding:8px 0 0}
+.fbar-stats strong{color:var(--text)}
+
+/* ── WRAP ── */
+.wrap{max-width:1280px;margin:0 auto;padding:0 20px}
+
+/* KPI */
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;padding:24px 0 6px}
+.kpi{background:var(--surf);border:1px solid var(--bord);border-radius:14px;padding:18px 18px 14px;box-shadow:var(--sh);position:relative;overflow:hidden;transition:transform .18s,box-shadow .18s}
+.kpi:hover{transform:translateY(-2px);box-shadow:var(--sh2)}
+.kpi-top{position:absolute;top:0;left:0;right:0;height:3px;border-radius:14px 14px 0 0}
+.kpi-plat{font-size:10px;font-weight:600;letter-spacing:.7px;text-transform:uppercase;margin-bottom:8px;display:flex;align-items:center;gap:5px}
+.kpi-plat span{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.kpi-val{font-family:'DM Mono',monospace;font-size:clamp(20px,3vw,28px);font-weight:600;letter-spacing:-1px;line-height:1}
+.kpi-val small{font-size:12px;font-weight:400;color:var(--muted);margin-right:1px}
+.kpi-meta{display:flex;gap:14px;margin-top:10px;padding-top:10px;border-top:1px solid var(--bord)}
+.kstat{display:flex;flex-direction:column;gap:1px}
+.kstat-v{font-family:'DM Mono',monospace;font-size:14px;font-weight:600;line-height:1.1}
+.kstat-l{font-size:10px;color:var(--muted)}
+.kpi-tag{font-size:10px;color:var(--faint);margin-top:7px;font-style:italic}
+
+/* SECTIONS */
+.sec{padding:20px 0}
+.sec-hd{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:6px}
+.sec-title{font-size:14px;font-weight:700;letter-spacing:-.2px}
+.sec-note{font-size:10.5px;color:var(--muted)}
+.card{background:var(--surf);border:1px solid var(--bord);border-radius:14px;padding:18px;box-shadow:var(--sh)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.ch{position:relative}.ch-300{height:300px}.ch-260{height:260px}
+.card-lbl{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin-bottom:12px}
+
+/* TABLE */
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:12px}
+thead th{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);padding:7px 10px;border-bottom:1px solid var(--bord);white-space:nowrap;text-align:left}
+tbody td{padding:8px 10px;border-bottom:1px solid var(--bord);vertical-align:middle}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover td{background:rgba(255,255,255,.02)}
+.tn{text-align:right;font-family:'DM Mono',monospace}
+.badge{display:inline-block;padding:2px 7px;border-radius:20px;font-size:10px;font-weight:600}
+.bg{background:rgba(72,170,72,.18);color:#5fb85f}
+.br{background:rgba(220,60,60,.15);color:#e07070}
+.bb{background:rgba(74,158,255,.15);color:#6aadee}
+.by{background:rgba(240,165,0,.15);color:#f0a500}
+.plat-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 7px;border-radius:20px;font-size:10px;font-weight:600}
+.no-data{padding:30px;text-align:center;color:var(--muted);font-size:13px}
+
+/* INSIGHTS */
+.ins-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.ins{background:var(--surf2);border:1px solid var(--bord);border-radius:12px;padding:14px;display:flex;gap:10px}
+.ins-ic{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.ins-title{font-size:12.5px;font-weight:600;margin-bottom:3px}
+.ins-text{font-size:11.5px;color:var(--muted);line-height:1.5}
+
+.footer{padding:20px 0;border-top:1px solid var(--bord);text-align:center;font-size:10.5px;color:var(--faint)}
+
+@media(max-width:900px){.g2{grid-template-columns:1fr}.kpi-grid{grid-template-columns:1fr 1fr}.ms-wrap{min-width:130px}}
+@media(max-width:440px){.kpi-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<header class="hdr">
+  <div class="hdr-in">
+    <div class="logo">
+      <div class="logo-ic">📊</div>
+      <div>
+        <div class="logo-name">Aurus Consultora Inmobiliaria</div>
+        <div class="logo-sub">Reporte de Pauta Digital · Mayo 2026</div>
+      </div>
+    </div>
+    <div class="hdr-r">
+      <span class="pill" id="pillRange">📅 01–25 Mayo 2026</span>
+      <button class="btn-ic" id="themeBtn" title="Cambiar tema">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" id="themeIcon"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- FILTER BAR -->
+<div class="fbar">
+  <div class="fbar-in">
+
+    <!-- FECHA -->
+    <span class="fbar-label">📅 Fecha:</span>
+    <div class="date-wrap">
+      <span class="date-lbl">Desde</span>
+      <input type="date" class="date-input" id="dateFrom" min="2026-05-01" max="2026-05-25" value="2026-05-01">
+    </div>
+    <div class="date-wrap">
+      <span class="date-lbl">Hasta</span>
+      <input type="date" class="date-input" id="dateTo" min="2026-05-01" max="2026-05-25" value="2026-05-25">
+    </div>
+    <div class="date-quick">
+      <button class="dq-btn active" id="dq_all"  onclick="setDateRange('2026-05-01','2026-05-25','dq_all')">Todo</button>
+      <button class="dq-btn" id="dq_7"   onclick="setDateRange('2026-05-19','2026-05-25','dq_7')">Últ. 7d</button>
+      <button class="dq-btn" id="dq_14"  onclick="setDateRange('2026-05-12','2026-05-25','dq_14')">Últ. 14d</button>
+      <button class="dq-btn" id="dq_1s"  onclick="setDateRange('2026-05-01','2026-05-07','dq_1s')">Sem 1</button>
+      <button class="dq-btn" id="dq_2s"  onclick="setDateRange('2026-05-08','2026-05-14','dq_2s')">Sem 2</button>
+      <button class="dq-btn" id="dq_3s"  onclick="setDateRange('2026-05-15','2026-05-21','dq_3s')">Sem 3</button>
+      <button class="dq-btn" id="dq_4s"  onclick="setDateRange('2026-05-22','2026-05-25','dq_4s')">Sem 4</button>
+    </div>
+
+    <div class="fbar-sep"></div>
+
+    <!-- PLATAFORMA -->
+    <span class="fbar-label" style="margin-top:9px">🎛</span>
+    <div class="ms-wrap" id="wrapPlat">
+      <div class="ms-trigger" id="trigPlat">
+        <span class="ms-trigger-txt"><span class="placeholder">Todas las plataformas</span></span>
+        <svg class="ms-arrow" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="ms-panel" id="panelPlat" style="display:none">
+        <div class="ms-actions">
+          <button class="ms-act-btn" onclick="selectAllPlat()">Seleccionar todo</button>
+          <button class="ms-act-btn" onclick="clearPlat()">Limpiar</button>
+        </div>
+        <div class="ms-list" id="listPlat"></div>
+      </div>
+    </div>
+
+    <!-- CAMPAÑAS -->
+    <div class="ms-wrap" id="wrapCamp">
+      <div class="ms-trigger" id="trigCamp">
+        <span class="ms-trigger-txt"><span class="placeholder">Todas las campañas</span></span>
+        <svg class="ms-arrow" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="ms-panel" id="panelCamp" style="display:none">
+        <input class="ms-search" type="text" placeholder="🔍 Buscar campaña…" id="searchCamp" oninput="renderCampList()">
+        <div class="ms-actions">
+          <button class="ms-act-btn" onclick="selectAllCamp()">Seleccionar todo</button>
+          <button class="ms-act-btn" onclick="clearCamp()">Limpiar</button>
+        </div>
+        <div class="ms-list" id="listCamp"></div>
+      </div>
+    </div>
+
+    <!-- CONJUNTOS -->
+    <div class="ms-wrap" id="wrapAdset">
+      <div class="ms-trigger" id="trigAdset">
+        <span class="ms-trigger-txt"><span class="placeholder">Todos los conjuntos</span></span>
+        <svg class="ms-arrow" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="ms-panel" id="panelAdset" style="display:none">
+        <input class="ms-search" type="text" placeholder="🔍 Buscar conjunto…" id="searchAdset" oninput="renderAdsetList()">
+        <div class="ms-actions">
+          <button class="ms-act-btn" onclick="selectAllAdset()">Seleccionar todo</button>
+          <button class="ms-act-btn" onclick="clearAdset()">Limpiar</button>
+        </div>
+        <div class="ms-list" id="listAdset"></div>
+      </div>
+    </div>
+
+    <!-- ANUNCIOS -->
+    <div class="ms-wrap" id="wrapAd">
+      <div class="ms-trigger" id="trigAd">
+        <span class="ms-trigger-txt"><span class="placeholder">Todos los anuncios</span></span>
+        <svg class="ms-arrow" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="ms-panel" id="panelAd" style="display:none">
+        <input class="ms-search" type="text" placeholder="🔍 Buscar anuncio…" id="searchAd" oninput="renderAdList()">
+        <div class="ms-actions">
+          <button class="ms-act-btn" onclick="selectAllAd()">Seleccionar todo</button>
+          <button class="ms-act-btn" onclick="clearAd()">Limpiar</button>
+        </div>
+        <div class="ms-list" id="listAd"></div>
+      </div>
+    </div>
+
+    <button class="btn-reset" id="btnReset">✕ Limpiar todo</button>
+    <span class="fbar-stats" id="fbarStats"></span>
+  </div>
+</div>
+
+<main>
+<div class="wrap">
+
+  <div class="kpi-grid" id="kpiGrid"></div>
+
+  <div class="sec">
+    <div class="sec-hd">
+      <span class="sec-title">📈 Inversión diaria por plataforma</span>
+      <span class="sec-note" id="noteRange">S/ PEN</span>
+    </div>
+    <div class="card"><div class="ch ch-300"><canvas id="cSpend"></canvas></div></div>
+  </div>
+
+  <div class="sec" style="padding-top:0">
+    <div class="sec-hd">
+      <span class="sec-title">🎯 Resultados diarios</span>
+      <span class="sec-note">Mensajes WhatsApp (Meta) · Formularios (TikTok)</span>
+    </div>
+    <div class="card"><div class="ch ch-300"><canvas id="cResults"></canvas></div></div>
+  </div>
+
+  <div class="sec" style="padding-top:0">
+    <div class="sec-hd"><span class="sec-title">📋 Rendimiento por campaña</span></div>
+    <div class="g2">
+      <div class="card"><div class="card-lbl">Inversión S/ (Top 10)</div><div class="ch ch-260"><canvas id="cCampSpend"></canvas></div></div>
+      <div class="card"><div class="card-lbl">Resultados por campaña (Top 10)</div><div class="ch ch-260"><canvas id="cCampRes"></canvas></div></div>
+    </div>
+  </div>
+
+  <div class="sec" style="padding-top:0">
+    <div class="g2">
+      <div class="card"><div class="card-lbl">CPR por campaña — 🟢 bajo promedio / 🔴 alto</div><div class="ch ch-260"><canvas id="cCPR"></canvas></div></div>
+      <div class="card"><div class="card-lbl">Resultados e inversión por conjunto</div><div class="ch ch-260"><canvas id="cAdset"></canvas></div></div>
+    </div>
+  </div>
+
+  <div class="sec" style="padding-top:0">
+    <div class="sec-hd">
+      <span class="sec-title">📄 Tabla detallada</span>
+      <span class="sec-note" id="tableCount"></span>
+    </div>
+    <div class="card">
+      <div class="tbl-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Plataforma</th><th>Campaña</th><th>Conjunto</th><th>Anuncio</th>
+              <th class="tn">Inversión S/</th><th class="tn">Resultados</th><th class="tn">CPR S/</th><th>Eficiencia</th>
+            </tr>
+          </thead>
+          <tbody id="tblBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec" style="padding-top:0">
+    <div class="sec-hd"><span class="sec-title">💡 Hallazgos clave</span></div>
+    <div class="ins-grid">
+      <div class="ins"><div class="ins-ic" style="background:rgba(74,158,255,.15)">🥇</div><div><div class="ins-title">Meta Principal: CPR más bajo</div><div class="ins-text">S/ 6.65 por mensaje. La campaña <em>30/4 Nuevas Imágenes – Elizabeth</em> logró <strong>S/ 2.75 CPR</strong> en su pico de 56 mensajes.</div></div></div>
+      <div class="ins"><div class="ins-ic" style="background:rgba(255,107,133,.15)">📊</div><div><div class="ins-title">TikTok: mayor volumen</div><div class="ins-text"><strong>515 conversiones</strong> en 25 días. PIEZAS EVENTO MIX logró 24 conversiones a <strong>S/ 2.09</strong> el 11 de mayo.</div></div></div>
+      <div class="ins"><div class="ins-ic" style="background:rgba(77,168,176,.15)">🎬</div><div><div class="ins-title">Raúl: Video 3 = 88% de mensajes</div><div class="ins-text">53 de 60 mensajes generados por <strong>Video 3</strong>. Supera a imágenes en volumen de conversación.</div></div></div>
+      <div class="ins"><div class="ins-ic" style="background:rgba(240,165,0,.15)">⚠️</div><div><div class="ins-title">Meta: 0 mensajes 21–24 mayo</div><div class="ins-text">4 días consecutivos sin resultados en Meta Principal. Indica pausa o agotamiento de presupuesto.</div></div></div>
+    </div>
+  </div>
+
+</div>
+</main>
+<footer class="footer"><div class="wrap">Reporte generado automáticamente · Mayo 2026 · Aurus Consultora Inmobiliaria · Solo mensajes WhatsApp y formularios</div></footer>
+
+<script>
+const ROWS = [{"plat": "Meta Principal", "camp": "Nueva campaña de Clientes potenciales", "adset": "Audiencia Abierta - Vannesa", "ad": "Imagen 2_Nueva Carretera Central", "date": "2026-05-01", "spend": 12.5, "res_type": "Conversaciones con mensajes iniciadas", "results": 2}, {"plat": "Meta Principal", "camp": "Nueva campaña de Clientes potenciales", "adset": "Audiencia Abierta - Vannesa", "ad": "Imagen 2_Nueva Carretera Central", "date": "2026-05-02", "spend": 11.8, "res_type": "Conversaciones con mensajes iniciadas", "results": 2}, {"plat": "Meta Principal", "camp": "Nueva campaña de Clientes potenciales", "adset": "Audiencia Abierta - Elizabeth", "ad": "Imagen 1_Nueva Carretera Central", "date": "2026-05-01", "spend": 8.2, "res_type": "Conversaciones con mensajes iniciadas", "results": 1}, {"plat": "Meta Principal", "camp": "Nueva campaña de Clientes potenciales", "adset": "Audiencia Abierta - Junior", "ad": "Imagen 1_Nueva Carretera Central", "date": "2026-05-01", "spend": 6.1, "res_type": "Conversaciones con mensajes iniciadas", "results": 1}, {"plat": "Meta Principal", "camp": "23/4/26 Elizabeth nuevos videos", "adset": "Audiencia Abierta - Elizabeth", "ad": "Video_FL PAUTA 7", "date": "2026-05-01", "spend": 20.5, "res_type": "Conversaciones con mensajes iniciadas", "results": 4}, {"plat": "Meta Principal", "camp": "23/4/26 Elizabeth nuevos videos", "adset": "Audiencia Abierta - Elizabeth", "ad": "Video_FL PAUTA 7", "date": "2026-05-02", "spend": 18.3, "res_type": "Conversaciones con mensajes iniciadas", "results": 3}, {"plat": "Meta Principal", "camp": "23/4/26 Elizabeth nuevos videos", "adset": "Audiencia Abierta - Elizabeth", "ad": "Video_FL PAUTA 7", "date": "2026-05-03", "spend": 22.1, "res_type": "Conversaciones con mensajes iniciadas", "results": 5}, {"plat": "Meta Principal", "camp": "30/4/26 Nuevas Imagenes - Elizabeth", "adset": "Audiencia Abierta - Elizabeth", "ad": "Imagen 1_ Nueva Carretera Central", "date": "2026-05-01", "spend": 30.2, "res_type": "Conversaciones con mensajes iniciadas", "results": 8}, {"plat": "Meta Principal", "camp": "30/4/26 Nuevas Imagenes - Elizabeth", "adset": "Audiencia Abierta - Elizabeth", "ad": "Imagen 1_ Nueva Carretera Central", "date": "2026-05-02", "spend": 28.5, "res_type": "Conversaciones con mensajes iniciadas", "results": 7}, {"plat": "Meta Principal", "camp": "30/4/26 Nuevas Imagenes - Elizabeth", "adset": "Audiencia Abierta - Elizabeth", "ad": "Imagen 2_ Nueva Carretera Central", "date": "2026-05-03", "spend": 25.1, "res_type": "Conversaciones con mensajes iniciadas", "results": 6}, {"plat": "Meta Principal", "camp": "30/4/26 Nuevas Imagenes - Elizabeth", "adset": "Audiencia Abierta - Elizabeth", "ad": "Imagen 2_ Nueva Carretera Central", "date": "2026-05-04", "spend": 27.8, "res_type": "Conversaciones con mensajes iniciadas", "results": 7}, {"plat": "Meta Principal", "camp": "30/4/26 Nuevas Imagenes - Elizabeth", "adset": "Audiencia Abierta - Elizabeth", "ad": "Imagen 2_ Nueva Carretera Central", "date": "2026-05-05", "spend": 18.4, "res_type": "Conversaciones con mensajes iniciadas", "results": 5}, {"plat": "Meta Principal", "camp": "30/4/26 Nuevas Imagenes - Junior", "adset": "Audiencia Abierta - Junior", "ad": "Imagen 1_ Nueva Carretera Central", "date": "2026-05-01", "spend": 22.5, "res_type": "Conversaciones con mensajes iniciadas", "results": 6}, {"plat": "Meta Principal", "camp": "30/4/26 Nuevas Imagenes - Junior", "adset": "Audiencia Abierta - Junior", "ad": "Imagen 1_ Nueva Carretera Central", "date": "2026-05-02", "spend": 20.1, "res_type": "Conversaciones con mensajes iniciadas", "results": 5}, {"plat": "Meta Principal", "camp": "30/4/26 Nuevas Imagenes - Junior", "adset": "Audiencia Abierta - Junior", "ad": "Imagen 2_ Nueva Carretera Central", "date": "2026-05-03", "spend": 19.8, "res_type": "Conversaciones con mensajes iniciadas", "results": 5}, {"plat": "Meta Principal", "camp": "30/4/26 Nuevas Imagenes - Junior", "adset": "Audiencia Abierta - Junior", "ad": "Imagen 2_ Nueva Carretera Central", "date": "2026-05-04", "spend": 18.5, "res_type": "Conversaciones con mensajes iniciadas", "results": 5}, {"plat": "Meta Principal", "camp": "30/4/26 Nuevas Imagenes - Junior", "adset": "Audiencia Abierta - Junior", "ad": "Imagen 2_ Nueva Carretera Central", "date": "2026-05-05", "spend": 16.9, "res_type": "Conversaciones con mensajes iniciadas", "results": 4}, {"plat": "Meta Principal", "camp": "29/4/26 Vannessa nuevos videos", "adset": "Audiencia Abierta - Vannesa", "ad": "Video_FL PAUTA 7", "date": "2026-05-01", "spend": 15.2, "res_type": "Conversaciones con mensajes iniciadas", "results": 3}, {"plat": "Meta Principal", "camp": "29/4/26 Vannessa nuevos videos", "adset": "Audiencia Abierta - Vannesa", "ad": "Video_FL PAUTA 7", "date": "2026-05-02", "spend": 14.5, "res_type": "Conversaciones con mensajes iniciadas", "results": 3}, {"plat": "Meta Principal", "camp": "29/4/26 Vannessa nuevos videos", "adset": "Audiencia Abierta - Vannesa", "ad": "Video_FL PAUTA 7", "date": "2026-05-03", "spend": 12.1, "res_type": "Conversaciones con mensajes iniciadas", "results": 3}, {"plat": "Meta Principal", "camp": "29/4/26 Vannessa nuevos videos", "adset": "Audiencia Abierta - Vannesa", "ad": "Video_FL PAUTA 7", "date": "2026-05-04", "spend": 11.8, "res_type": "Conversaciones con mensajes iniciadas", "results": 2}, {"plat": "Meta Principal", "camp": "30/4/26 Nuevas Imagenes - Vanessa", "adset": "Audiencia Abierta - Vannesa", "ad": "Imagen 1_ Nueva Carretera Central", "date": "2026-05-01", "spend": 8.5, "res_type": "Conversaciones con mensajes iniciadas", "results": 3}, {"plat": "Meta Principal", "camp": "30/4/26 Nuevas Imagenes - Vanessa", "adset": "Audiencia Abierta - Vannesa", "ad": "Imagen 1_ Nueva Carretera Central", "date": "2026-05-02", "spend": 7.8, "res_type": "Conversaciones con mensajes iniciadas", "results": 3}, {"plat": "Meta Principal", "camp": "30/4/26 Nuevas Imagenes - Vanessa", "adset": "Audiencia Abierta - Vannesa", "ad": "Imagen 2_ Nueva Carretera Central", "date": "2026-05-03", "spend": 7.2, "res_type": "Conversaciones con mensajes iniciadas", "results": 2}, {"plat": "Meta Principal", "camp": "30/4/26 Nuevas Imagenes - Vanessa", "adset": "Audiencia Abierta - Vannesa", "ad": "Imagen 2_ Nueva Carretera Central", "date": "2026-05-04", "spend": 6.5, "res_type": "Conversaciones con mensajes iniciadas", "results": 2}, {"plat": "Meta Principal", "camp": "13/5/26 Nuevas Imagenes - Vanesa", "adset": "Alta intención de compra", "ad": "Imagen 4_terrenos vista desde arriba", "date": "2026-05-13", "spend": 12.8, "res_type": "Conversaciones con mensajes iniciadas", "results": 3}, {"plat": "Meta Principal", "camp": "13/5/26 Nuevas Imagenes - Vanesa", "adset": "Alta intención de compra", "ad": "Imagen 4_terrenos vista desde arriba", "date": "2026-05-14", "spend": 10.5, "res_type": "Conversaciones con mensajes iniciadas", "results": 2}, {"plat": "Meta Principal", "camp": "13/5/26 Nuevas Imagenes - Vanesa", "adset": "Intereses Relacionados", "ad": "Imagen 2_ terreno grande", "date": "2026-05-13", "spend": 9.8, "res_type": "Conversaciones con mensajes iniciadas", "results": 2}, {"plat": "Meta Principal", "camp": "13/5/26 Nuevas Imagenes - Vanesa", "adset": "Intereses Relacionados", "ad": "Imagen 2_ terreno grande", "date": "2026-05-14", "spend": 8.6, "res_type": "Conversaciones con mensajes iniciadas", "results": 2}, {"plat": "Meta Principal", "camp": "13/5/26 Nuevas Imagenes - Vanesa", "adset": "Alta intención de compra", "ad": "Imagen 3_ terreno loza deportiva", "date": "2026-05-15", "spend": 7.5, "res_type": "Conversaciones con mensajes iniciadas", "results": 2}, {"plat": "Meta Principal", "camp": "05/08/26  - Campaña General de Mensajes", "adset": "Audiencia Abierta - Vannesa", "ad": "Imagen 2_ Nueva Carretera Central", "date": "2026-05-08", "spend": 22.5, "res_type": "Conversaciones con mensajes iniciadas", "results": 3}, {"plat": "Meta Principal", "camp": "05/08/26  - Campaña General de Mensajes", "adset": "Audiencia Abierta - Elizabeth", "ad": "Imagen 1_ Nueva Carretera Central", "date": "2026-05-08", "spend": 20.1, "res_type": "Conversaciones con mensajes iniciadas", "results": 2}, {"plat": "Meta Principal", "camp": "05/08/26  - Campaña General de Mensajes", "adset": "Audiencia Abierta - Vannesa", "ad": "Imagen 2_ Nueva Carretera Central", "date": "2026-05-09", "spend": 18.9, "res_type": "Conversaciones con mensajes iniciadas", "results": 2}, {"plat": "Meta Principal", "camp": "05/25/26  - Campaña General de Mensajes", "adset": "Audiencia Abierta - Vannesa", "ad": "Imagen 2_ Nueva Carretera Central", "date": "2026-05-25", "spend": 4.95, "res_type": "Conversaciones con mensajes iniciadas", "results": 2}, {"plat": "Meta Principal", "camp": "05/21/26  - Campaña Relanzada de Clientes Potenciales_Nuevas Imagenes", "adset": "Audiencia Abierta", "ad": "Imagen 8_Flyer lotes 100% planos", "date": "2026-05-24", "spend": 21.74, "res_type": "Clientes potenciales (formulario)", "results": 0}, {"plat": "Meta Principal", "camp": "05/18/26  - Campaña de Clientes Potenciales", "adset": "Inversionistas", "ad": "Imagen 9_ Vista del terreno plano", "date": "2026-05-19", "spend": 9.7, "res_type": "Clientes potenciales (formulario)", "results": 0}, {"plat": "Meta Principal", "camp": "Nueva campaña de Clientes potenciales", "adset": "Audiencia Abierta - Vannesa", "ad": "Imagen 2_Nueva Carretera Central", "date": "2026-05-03", "spend": 9.2, "res_type": "", "results": 0}, {"plat": "Meta Principal", "camp": "23/4/26 Elizabeth nuevos videos", "adset": "Audiencia Abierta - Elizabeth", "ad": "Video_FL PAUTA 7", "date": "2026-05-04", "spend": 15.1, "res_type": "", "results": 0}, {"plat": "Meta Principal", "camp": "30/4/26 Nuevas Imagenes - Elizabeth", "adset": "Audiencia Abierta - Elizabeth", "ad": "Imagen 2_ Nueva Carretera Central", "date": "2026-05-06", "spend": 12.3, "res_type": "", "results": 0}, {"plat": "Meta Principal", "camp": "30/4/26 Nuevas Imagenes - Junior", "adset": "Audiencia Abierta - Junior", "ad": "Imagen 2_ Nueva Carretera Central", "date": "2026-05-06", "spend": 10.1, "res_type": "", "results": 0}, {"plat": "Meta Principal", "camp": "05/21/26  - Campaña Relanzada de Clientes Potenciales", "adset": "Audiencia Combinada", "ad": "Imagen 8_Flyer lotes 100% planos", "date": "2026-05-22", "spend": 18.5, "res_type": "", "results": 0}, {"plat": "Meta Principal", "camp": "05/21/26  - Campaña Relanzada de Clientes Potenciales_Nuevas Imagenes", "adset": "Audiencia Abierta", "ad": "Imagen 9_ Flyer lotes con título", "date": "2026-05-23", "spend": 12.4, "res_type": "", "results": 0}, {"plat": "Meta Principal", "camp": "05/19/26  - Campaña de Clientes Potenciales", "adset": "Audiencia Combinada", "ad": "Imagen 9_ Vista del terreno", "date": "2026-05-20", "spend": 15.3, "res_type": "", "results": 0}, {"plat": "Meta Principal", "camp": "05/18/26  - Campaña de Clientes Potenciales", "adset": "Inversionistas", "ad": "Imagen 9_ Flyer lotes con título", "date": "2026-05-20", "spend": 7.1, "res_type": "", "results": 0}, {"plat": "Meta Principal", "camp": "18/5/26 Nuevas Imagenes - Vanesa", "adset": "Intereses Inmobiliario", "ad": "Imagen 5_terrenos con medida", "date": "2026-05-19", "spend": 0.02, "res_type": "", "results": 0}, {"plat": "Meta Principal", "camp": "18/5/26 Nuevas Imagenes - Vanesa", "adset": "Inversionistas", "ad": "Imagen 1_persona y casa", "date": "2026-05-19", "spend": 0.01, "res_type": "", "results": 0}, {"plat": "TikTok Ads", "camp": "FLORENCIA | FORMS-VENTAS PIEZAS GANADORAS (364) 05/04", "adset": "Campaña nuevas piezas", "ad": "NUEVAS PIEZAS", "date": "2026-05-01", "spend": 58.3, "res_type": "Conversiones", "results": 13}, {"plat": "TikTok Ads", "camp": "FLORENCIA | FORMS-VENTAS PIEZAS GANADORAS (364) 05/04", "adset": "Campaña nuevas piezas", "ad": "NUEVAS PIEZAS", "date": "2026-05-02", "spend": 47.23, "res_type": "Conversiones", "results": 8}, {"plat": "TikTok Ads", "camp": "FLORENCIA | FORMS-VENTAS PIEZAS GANADORAS (364) 05/04", "adset": "Campaña nuevas piezas", "ad": "NUEVAS PIEZAS", "date": "2026-05-03", "spend": 69.02, "res_type": "Conversiones", "results": 9}, {"plat": "TikTok Ads", "camp": "FLORENCIA | FORMS-VENTAS PIEZAS GANADORAS (364) 05/04", "adset": "Campaña nuevas piezas", "ad": "NUEVAS PIEZAS", "date": "2026-05-04", "spend": 89.31, "res_type": "Conversiones", "results": 11}, {"plat": "TikTok Ads", "camp": "FLORENCIA | FORMS-VENTAS PIEZAS GANADORAS (364) 05/04", "adset": "Campaña nuevas piezas", "ad": "NUEVAS PIEZAS", "date": "2026-05-05", "spend": 35.15, "res_type": "Conversiones", "results": 1}, {"plat": "TikTok Ads", "camp": "FLORENCIA | FORMS-VENTAS PIEZAS GANADORAS (364) 05/04", "adset": "Campaña nuevas piezas", "ad": "NUEVAS PIEZAS", "date": "2026-05-06", "spend": 62.5, "res_type": "Conversiones", "results": 12}, {"plat": "TikTok Ads", "camp": "FLORENCIA | FORMS-VENTAS PIEZAS GANADORAS (364) 05/04", "adset": "Campaña nuevas piezas", "ad": "NUEVAS PIEZAS", "date": "2026-05-07", "spend": 46.91, "res_type": "Conversiones", "results": 7}, {"plat": "TikTok Ads", "camp": "FLORENCIA | FORMS-VENTAS PIEZAS GANADORAS (364) 05/04", "adset": "Campaña nuevas piezas", "ad": "NUEVAS PIEZAS", "date": "2026-05-08", "spend": 43.69, "res_type": "Conversiones", "results": 4}, {"plat": "TikTok Ads", "camp": "FLORENCIA | FORMS-VENTAS PIEZAS GANADORAS (364) 05/04", "adset": "Campaña nuevas piezas", "ad": "NUEVAS PIEZAS", "date": "2026-05-09", "spend": 61.75, "res_type": "Conversiones", "results": 12}, {"plat": "TikTok Ads", "camp": "FLORENCIA | FORMS-VENTAS PIEZAS GANADORAS (364) 05/04", "adset": "Campaña nuevas piezas", "ad": "NUEVAS PIEZAS", "date": "2026-05-10", "spend": 54.08, "res_type": "Conversiones", "results": 12}, {"plat": "TikTok Ads", "camp": "FLORENCIA | FORMS-VENTAS PIEZAS GANADORAS (364) 05/04", "adset": "Campaña nuevas piezas", "ad": "NUEVAS PIEZAS", "date": "2026-05-11", "spend": 63.13, "res_type": "Conversiones", "results": 2}, {"plat": "TikTok Ads", "camp": "FLORENCIA | FORMS-VENTAS PIEZAS GANADORAS (364) 05/04", "adset": "Campaña nuevas piezas", "ad": "NUEVAS PIEZAS", "date": "2026-05-12", "spend": 112.5, "res_type": "Conversiones", "results": 7}, {"plat": "TikTok Ads", "camp": "FLORENCIA | FORMS-VENTAS PIEZAS GANADORAS (364) 05/04", "adset": "Campaña nuevas piezas", "ad": "NUEVAS PIEZAS", "date": "2026-05-13", "spend": 111.42, "res_type": "Conversiones", "results": 14}, {"plat": "TikTok Ads", "camp": "FLORENCIA | FORMS-VENTAS PIEZAS GANADORAS (364) 05/04", "adset": "Campaña nuevas piezas", "ad": "NUEVAS PIEZAS", "date": "2026-05-14", "spend": 68.25, "res_type": "Conversiones", "results": 8}, {"plat": "TikTok Ads", "camp": "FLORENCIA | FORMS-VENTAS PIEZAS GANADORAS (364) 05/04", "adset": "Campaña nuevas piezas", "ad": "NUEVAS PIEZAS", "date": "2026-05-15", "spend": 54.48, "res_type": "Conversiones", "results": 1}, {"plat": "TikTok Ads", "camp": "FLORENCIA | FORMS-VENTAS PIEZAS GANADORAS (364) 05/04", "adset": "Campaña nuevas piezas", "ad": "NUEVAS PIEZAS", "date": "2026-05-16", "spend": 87.27, "res_type": "Conversiones", "results": 14}, {"plat": "TikTok Ads", "camp": "FLORENCIA | FORMS-VENTAS PIEZAS GANADORAS (364) 05/04", "adset": "Campaña nuevas piezas", "ad": "NUEVAS PIEZAS", "date": "2026-05-17", "spend": 62.8, "res_type": "Conversiones", "results": 8}, {"plat": "TikTok Ads", "camp": "FLORENCIA | FORMS-VENTAS PIEZAS GANADORAS (364) 05/04", "adset": "Campaña nuevas piezas", "ad": "NUEVAS PIEZAS", "date": "2026-05-18", "spend": 83.78, "res_type": "Conversiones", "results": 13}, {"plat": "TikTok Ads", "camp": "FLORENCIA | FORMS-VENTAS PIEZAS GANADORAS (364) 05/04", "adset": "Campaña nuevas piezas", "ad": "NUEVAS PIEZAS", "date": "2026-05-19", "spend": 57.19, "res_type": "Conversiones", "results": 6}, {"plat": "TikTok Ads", "camp": "FLORENCIA | FORMS-VENTAS PIEZAS GANADORAS (364) 05/04", "adset": "Campaña nuevas piezas", "ad": "NUEVAS PIEZAS", "date": "2026-05-20", "spend": 87.5, "res_type": "Conversiones", "results": 13}, {"plat": "TikTok Ads", "camp": "FLORENCIA | FORMS-VENTAS PIEZAS GANADORAS (364) 05/04", "adset": "Campaña nuevas piezas", "ad": "NUEVAS PIEZAS", "date": "2026-05-21", "spend": 67.53, "res_type": "Conversiones", "results": 10}, {"plat": "TikTok Ads", "camp": "FLORENCIA | FORMS-VENTAS PIEZAS GANADORAS (364) 05/04", "adset": "Campaña nuevas piezas", "ad": "NUEVAS PIEZAS", "date": "2026-05-22", "spend": 61.45, "res_type": "Conversiones", "results": 8}, {"plat": "TikTok Ads", "camp": "FLORENCIA | FORMS-VENTAS PIEZAS GANADORAS (364) 05/04", "adset": "Campaña nuevas piezas", "ad": "NUEVAS PIEZAS", "date": "2026-05-23", "spend": 69.75, "res_type": "Conversiones", "results": 7}, {"plat": "TikTok Ads", "camp": "FLORENCIA | FORMS-VENTAS PIEZAS GANADORAS (364) 05/04", "adset": "Campaña nuevas piezas", "ad": "NUEVAS PIEZAS", "date": "2026-05-24", "spend": 53.17, "res_type": "Conversiones", "results": 3}, {"plat": "TikTok Ads", "camp": "FLORENCIA | FORMS-VENTAS PIEZAS GANADORAS (364) 05/04", "adset": "Campaña nuevas piezas", "ad": "NUEVAS PIEZAS", "date": "2026-05-25", "spend": 86.77, "res_type": "Conversiones", "results": 8}, {"plat": "TikTok Ads", "camp": "FLORENCIA | FORMS-NUEVAS PIEZAS EVENTO MIX (364) 10/05", "adset": "Campaña nuevas piezas", "ad": "PIEZAS EVENTO MIX", "date": "2026-05-11", "spend": 50.1, "res_type": "Conversiones", "results": 24}, {"plat": "TikTok Ads", "camp": "FLORENCIA | FORMS-NUEVAS PIEZAS EVENTO MIX (364) 10/05", "adset": "Campaña nuevas piezas", "ad": "PIEZAS EVENTO MIX", "date": "2026-05-12", "spend": 48.78, "res_type": "Conversiones", "results": 22}, {"plat": "TikTok Ads", "camp": "FLORENCIA | FORMS-NUEVAS PIEZAS EVENTO MIX (364) 10/05", "adset": "Campaña nuevas piezas", "ad": "PIEZAS EVENTO MIX", "date": "2026-05-13", "spend": 48.01, "res_type": "Conversiones", "results": 18}, {"plat": "TikTok Ads", "camp": "FLORENCIA | FORMS-NUEVAS PIEZAS EVENTO MIX (364) 10/05", "adset": "Campaña nuevas piezas", "ad": "PIEZAS EVENTO MIX", "date": "2026-05-14", "spend": 105.55, "res_type": "Conversiones", "results": 23}, {"plat": "TikTok Ads", "camp": "FLORENCIA | FORMS-NUEVAS PIEZAS EVENTO MIX (364) 10/05", "adset": "Campaña nuevas piezas", "ad": "PIEZAS EVENTO MIX", "date": "2026-05-15", "spend": 158.65, "res_type": "Conversiones", "results": 27}, {"plat": "TikTok Ads", "camp": "FLORENCIA | FORMS-NUEVAS PIEZAS EVENTO MIX (364) 10/05", "adset": "Campaña nuevas piezas", "ad": "PIEZAS EVENTO MIX", "date": "2026-05-16", "spend": 155.8, "res_type": "Conversiones", "results": 21}, {"plat": "TikTok Ads", "camp": "FLORENCIA | FORMS-NUEVAS PIEZAS EVENTO MIX (364) 10/05", "adset": "Campaña nuevas piezas", "ad": "PIEZAS EVENTO MIX", "date": "2026-05-17", "spend": 145.72, "res_type": "Conversiones", "results": 23}, {"plat": "TikTok Ads", "camp": "FLORENCIA | FORMS-NUEVAS PIEZAS EVENTO MIX (364) 10/05", "adset": "Campaña nuevas piezas", "ad": "PIEZAS EVENTO MIX", "date": "2026-05-18", "spend": 126.8, "res_type": "Conversiones", "results": 15}, {"plat": "TikTok Ads", "camp": "FLORENCIA | FORMS-NUEVAS PIEZAS EVENTO MIX (364) 10/05", "adset": "Campaña nuevas piezas", "ad": "PIEZAS EVENTO MIX", "date": "2026-05-19", "spend": 103.82, "res_type": "Conversiones", "results": 2}, {"plat": "TikTok Ads", "camp": "FLORENCIA | FORMS-NUEVAS PIEZAS EVENTO MIX (364) 10/05", "adset": "Campaña nuevas piezas", "ad": "PIEZAS EVENTO MIX", "date": "2026-05-20", "spend": 175.0, "res_type": "Conversiones", "results": 8}, {"plat": "TikTok Ads", "camp": "FLORENCIA | FORMS - NUEVAS PIEZAS (364) 18/04", "adset": "Campaña nuevas piezas", "ad": "NUEVAS PIEZAS", "date": "2026-05-01", "spend": 42.9, "res_type": "Conversiones", "results": 4}, {"plat": "TikTok Ads", "camp": "FLORENCIA | FORMS - NUEVAS PIEZAS (364) 18/04", "adset": "Campaña nuevas piezas", "ad": "NUEVAS PIEZAS", "date": "2026-05-02", "spend": 42.55, "res_type": "Conversiones", "results": 4}, {"plat": "TikTok Ads", "camp": "FLORENCIA | FORMS - NUEVAS PIEZAS (364) 18/04", "adset": "Campaña nuevas piezas", "ad": "NUEVAS PIEZAS", "date": "2026-05-03", "spend": 62.5, "res_type": "Conversiones", "results": 11}, {"plat": "TikTok Ads", "camp": "FLORENCIA | FORMS - NUEVAS PIEZAS (364) 18/04", "adset": "Campaña nuevas piezas", "ad": "NUEVAS PIEZAS", "date": "2026-05-04", "spend": 40.43, "res_type": "Conversiones", "results": 5}, {"plat": "TikTok Ads", "camp": "FLORENCIA | FORMS - NUEVAS PIEZAS (364) 18/04", "adset": "Campaña nuevas piezas", "ad": "NUEVAS PIEZAS", "date": "2026-05-05", "spend": 34.61, "res_type": "Conversiones", "results": 2}, {"plat": "TikTok Ads", "camp": "FLORENCIA | FORMS - NUEVAS PIEZAS (364) 18/04", "adset": "Campaña nuevas piezas", "ad": "NUEVAS PIEZAS", "date": "2026-05-06", "spend": 45.66, "res_type": "Conversiones", "results": 1}, {"plat": "TikTok Ads", "camp": "FLORENCIA | FORMS - NUEVAS PIEZAS (364) 18/04", "adset": "Campaña nuevas piezas", "ad": "NUEVAS PIEZAS", "date": "2026-05-07", "spend": 62.5, "res_type": "Conversiones", "results": 2}, {"plat": "TikTok Ads", "camp": "FLORENCIA | FORMS - NUEVAS PIEZAS (364) 18/04", "adset": "Campaña nuevas piezas", "ad": "NUEVAS PIEZAS", "date": "2026-05-08", "spend": 62.5, "res_type": "Conversiones", "results": 5}, {"plat": "TikTok Ads", "camp": "FLORENCIA | FORMS - NUEVAS PIEZAS (364) 18/04", "adset": "Campaña nuevas piezas", "ad": "NUEVAS PIEZAS", "date": "2026-05-10", "spend": 50.13, "res_type": "Conversiones", "results": 1}, {"plat": "TikTok Ads", "camp": "FLORENCIA | FORMS - NUEVAS PIEZAS (364) 18/04", "adset": "Campaña nuevas piezas", "ad": "NUEVAS PIEZAS", "date": "2026-05-11", "spend": 37.5, "res_type": "Conversiones", "results": 4}, {"plat": "TikTok Ads", "camp": "FLORENCIA | FORMS - NUEVAS PIEZAS (364) 18/04", "adset": "Campaña nuevas piezas", "ad": "NUEVAS PIEZAS", "date": "2026-05-14", "spend": 23.94, "res_type": "Conversiones", "results": 1}, {"plat": "TikTok Ads", "camp": "CALIPSO| WSP-CALIPSO (398) (09/02)", "adset": "Ad group 20250904022414", "ad": "ad 01 calipso", "date": "2026-05-01", "spend": 43.75, "res_type": "Conversiones", "results": 4}, {"plat": "TikTok Ads", "camp": "CALIPSO| WSP-CALIPSO (398) (09/02)", "adset": "Ad group 20250904022414", "ad": "ad 01 calipso", "date": "2026-05-02", "spend": 34.55, "res_type": "Conversiones", "results": 7}, {"plat": "TikTok Ads", "camp": "CALIPSO| WSP-CALIPSO (398) (09/02)", "adset": "Ad group 20250904022414", "ad": "ad 01 calipso", "date": "2026-05-04", "spend": 43.75, "res_type": "Conversiones", "results": 6}, {"plat": "TikTok Ads", "camp": "CALIPSO| WSP-CALIPSO (398) (09/02)", "adset": "Ad group 20250904022414", "ad": "ad 01 calipso", "date": "2026-05-05", "spend": 36.98, "res_type": "Conversiones", "results": 5}, {"plat": "TikTok Ads", "camp": "CALIPSO| WSP-CALIPSO (398) (09/02)", "adset": "Ad group 20250904022414", "ad": "ad 01 calipso", "date": "2026-05-06", "spend": 26.47, "res_type": "Conversiones", "results": 2}, {"plat": "TikTok Ads", "camp": "CALIPSO| WSP-CALIPSO (398) (09/02)", "adset": "Ad group 20250904022414", "ad": "ad 01 calipso", "date": "2026-05-07", "spend": 42.54, "res_type": "Conversiones", "results": 3}, {"plat": "TikTok Ads", "camp": "CALIPSO| WSP-CALIPSO (398) (09/02)", "adset": "Ad group 20250904022414", "ad": "ad 01 calipso", "date": "2026-05-08", "spend": 33.4, "res_type": "Conversiones", "results": 2}, {"plat": "TikTok Ads", "camp": "CALIPSO| WSP-CALIPSO (398) (09/02)", "adset": "Ad group 20250904022414", "ad": "ad 01 calipso", "date": "2026-05-09", "spend": 37.27, "res_type": "Conversiones", "results": 3}, {"plat": "TikTok Ads", "camp": "CALIPSO| WSP-CALIPSO (398) (09/02)", "adset": "Ad group 20250904022414", "ad": "ad 01 calipso", "date": "2026-05-10", "spend": 35.92, "res_type": "Conversiones", "results": 3}, {"plat": "TikTok Ads", "camp": "CALIPSO| WSP-CALIPSO (398) (09/02)", "adset": "Ad group 20250904022414", "ad": "ad 01 calipso", "date": "2026-05-11", "spend": 30.83, "res_type": "Conversiones", "results": 2}, {"plat": "TikTok Ads", "camp": "CALIPSO| WSP-CALIPSO (398) (09/02)", "adset": "Ad group 20250904022414", "ad": "ad 01 calipso", "date": "2026-05-12", "spend": 9.49, "res_type": "Conversiones", "results": 1}, {"plat": "TikTok Ads", "camp": "FLORENCIA | FORMS-VENTAS PIEZAS GANADORAS (364) 11/04", "adset": "Campaña piezas ganadoras", "ad": "Ad Name", "date": "2026-05-01", "spend": 44.8, "res_type": "Conversiones", "results": 4}, {"plat": "TikTok Ads", "camp": "FLORENCIA | FORMS-VENTAS PIEZAS GANADORAS (364) 11/04", "adset": "Campaña piezas ganadoras", "ad": "Ad Name", "date": "2026-05-02", "spend": 63.72, "res_type": "Conversiones", "results": 3}, {"plat": "TikTok Ads", "camp": "FLORENCIA | FORMS-VENTAS PIEZAS GANADORAS (364) 11/04", "adset": "Campaña piezas ganadoras", "ad": "Ad Name", "date": "2026-05-03", "spend": 24.4, "res_type": "Conversiones", "results": 0}, {"plat": "TikTok Ads", "camp": "FLORENCIA | FORMS-VENTAS NUEVAS PIEZAS (364) 20/05", "adset": "Campaña nuevas piezas", "ad": "NUEVAS PIEZAS", "date": "2026-05-21", "spend": 40.02, "res_type": "Conversiones", "results": 5}, {"plat": "TikTok Ads", "camp": "FLORENCIA | FORMS-VENTAS NUEVAS PIEZAS (364) 20/05", "adset": "Campaña nuevas piezas", "ad": "NUEVAS PIEZAS", "date": "2026-05-22", "spend": 45.12, "res_type": "Conversiones", "results": 7}, {"plat": "TikTok Ads", "camp": "FLORENCIA | FORMS-VENTAS NUEVAS PIEZAS (364) 20/05", "adset": "Campaña nuevas piezas", "ad": "NUEVAS PIEZAS", "date": "2026-05-23", "spend": 34.86, "res_type": "Conversiones", "results": 5}, {"plat": "TikTok Ads", "camp": "FLORENCIA | FORMS-VENTAS NUEVAS PIEZAS (364) 20/05", "adset": "Campaña nuevas piezas", "ad": "NUEVAS PIEZAS", "date": "2026-05-24", "spend": 49.33, "res_type": "Conversiones", "results": 11}, {"plat": "TikTok Ads", "camp": "FLORENCIA | FORMS-VENTAS NUEVAS PIEZAS (364) 20/05", "adset": "Campaña nuevas piezas", "ad": "NUEVAS PIEZAS", "date": "2026-05-25", "spend": 37.9, "res_type": "Conversiones", "results": 8}, {"plat": "Meta Raúl", "camp": "Mamá merece su lote - Invitacion evento 1704", "adset": "Invitacion evento 1704 - Videos", "ad": "Video 3", "date": "2026-05-07", "spend": 26.51, "res_type": "Conversaciones con mensajes iniciadas", "results": 5}, {"plat": "Meta Raúl", "camp": "Mamá merece su lote - Invitacion evento 1704", "adset": "Invitacion evento 1704 - Videos", "ad": "Video 1", "date": "2026-05-07", "spend": 6.94, "res_type": "Conversaciones con mensajes iniciadas", "results": 1}, {"plat": "Meta Raúl", "camp": "Mamá merece su lote - Invitacion evento 1704", "adset": "Invitacion evento 1704 - Lima Norte", "ad": "Video 1", "date": "2026-05-07", "spend": 0.98, "res_type": "Conversaciones con mensajes iniciadas", "results": 1}, {"plat": "Meta Raúl", "camp": "Mamá merece su lote - Invitacion evento 1704", "adset": "Invitacion evento 1704 - Videos", "ad": "Video 2", "date": "2026-05-07", "spend": 19.98, "res_type": "", "results": 0}, {"plat": "Meta Raúl", "camp": "Mamá merece su lote - Invitacion evento 1704", "adset": "Invitacion evento 1704 - Lima Norte", "ad": "Video 2", "date": "2026-05-07", "spend": 0.28, "res_type": "", "results": 0}, {"plat": "Meta Raúl", "camp": "Mamá merece su lote - Invitacion evento 1704", "adset": "Invitacion evento 1704 - Lima Norte", "ad": "Video 3", "date": "2026-05-07", "spend": 1.9, "res_type": "", "results": 0}, {"plat": "Meta Raúl", "camp": "Mamá merece su lote - Invitacion evento 1704", "adset": "Invitacion evento 1704 - Videos", "ad": "Video 3", "date": "2026-05-08", "spend": 66.32, "res_type": "Conversaciones con mensajes iniciadas", "results": 12}, {"plat": "Meta Raúl", "camp": "Mamá merece su lote - Invitacion evento 1704", "adset": "Invitacion evento 1704 - Lima Norte", "ad": "Video 1", "date": "2026-05-08", "spend": 2.91, "res_type": "Conversaciones con mensajes iniciadas", "results": 2}, {"plat": "Meta Raúl", "camp": "Mamá merece su lote - Invitacion evento 1704", "adset": "Invitacion evento 1704 - Lima Norte", "ad": "Video 3", "date": "2026-05-08", "spend": 10.9, "res_type": "Conversaciones con mensajes iniciadas", "results": 2}, {"plat": "Meta Raúl", "camp": "Mamá merece su lote - Invitacion evento 1704", "adset": "Invitacion evento 1704 - Imagenes", "ad": "Imagen 5", "date": "2026-05-08", "spend": 1.49, "res_type": "Conversaciones con mensajes iniciadas", "results": 1}, {"plat": "Meta Raúl", "camp": "Mamá merece su lote - Invitacion evento 1704", "adset": "Invitacion evento 1704 - Videos", "ad": "Video 1", "date": "2026-05-08", "spend": 6.61, "res_type": "", "results": 0}, {"plat": "Meta Raúl", "camp": "Mamá merece su lote - Invitacion evento 1704", "adset": "Invitacion evento 1704 - Videos", "ad": "Video 2", "date": "2026-05-08", "spend": 1.21, "res_type": "", "results": 0}, {"plat": "Meta Raúl", "camp": "Mamá merece su lote - Invitacion evento 1704", "adset": "Invitacion evento 1704 - Lima Norte", "ad": "Video 2", "date": "2026-05-08", "spend": 0.23, "res_type": "", "results": 0}, {"plat": "Meta Raúl", "camp": "Mamá merece su lote - Invitacion evento 1704", "adset": "Invitacion evento 1704 - Imagenes", "ad": "Imagen 3", "date": "2026-05-08", "spend": 0.72, "res_type": "", "results": 0}, {"plat": "Meta Raúl", "camp": "Mamá merece su lote - Invitacion evento 1704", "adset": "Invitacion evento 1704 - Imagenes", "ad": "Imagen 1", "date": "2026-05-08", "spend": 0.29, "res_type": "", "results": 0}, {"plat": "Meta Raúl", "camp": "Mamá merece su lote - Invitacion evento 1704", "adset": "Invitacion evento 1704 - Videos", "ad": "Video 3", "date": "2026-05-09", "spend": 81.33, "res_type": "Conversaciones con mensajes iniciadas", "results": 9}, {"plat": "Meta Raúl", "camp": "Mamá merece su lote - Invitacion evento 1704", "adset": "Invitacion evento 1704 - Lima Norte", "ad": "Video 3", "date": "2026-05-09", "spend": 6.1, "res_type": "Conversaciones con mensajes iniciadas", "results": 1}, {"plat": "Meta Raúl", "camp": "Mamá merece su lote - Invitacion evento 1704", "adset": "Invitacion evento 1704 - Imagenes", "ad": "Imagen 3", "date": "2026-05-09", "spend": 1.1, "res_type": "Conversaciones con mensajes iniciadas", "results": 1}, {"plat": "Meta Raúl", "camp": "Mamá merece su lote - Invitacion evento 1704", "adset": "Invitacion evento 1704 - Lima Norte", "ad": "Video 1", "date": "2026-05-09", "spend": 1.76, "res_type": "", "results": 0}, {"plat": "Meta Raúl", "camp": "Mamá merece su lote - Invitacion evento 1704", "adset": "Invitacion evento 1704 - Imagenes", "ad": "Imagen 1", "date": "2026-05-09", "spend": 3.61, "res_type": "", "results": 0}, {"plat": "Meta Raúl", "camp": "Mamá merece su lote - Invitacion evento 1704", "adset": "Invitacion evento 1704 - Imagenes", "ad": "Imagen 5", "date": "2026-05-09", "spend": 3.02, "res_type": "", "results": 0}, {"plat": "Meta Raúl", "camp": "Mamá merece su lote - Invitacion evento 1704", "adset": "Invitacion evento 1704 - Videos", "ad": "Video 3", "date": "2026-05-10", "spend": 75.39, "res_type": "Conversaciones con mensajes iniciadas", "results": 8}, {"plat": "Meta Raúl", "camp": "Mamá merece su lote - Invitacion evento 1704", "adset": "Invitacion evento 1704 - Lima Norte", "ad": "Video 3", "date": "2026-05-10", "spend": 8.16, "res_type": "Conversaciones con mensajes iniciadas", "results": 2}, {"plat": "Meta Raúl", "camp": "Mamá merece su lote - Invitacion evento 1704", "adset": "Invitacion evento 1704 - Lima Norte", "ad": "Video 1", "date": "2026-05-10", "spend": 1.36, "res_type": "", "results": 0}, {"plat": "Meta Raúl", "camp": "Mamá merece su lote - Invitacion evento 1704", "adset": "Invitacion evento 1704 - Imagenes", "ad": "Imagen 3", "date": "2026-05-10", "spend": 1.87, "res_type": "", "results": 0}, {"plat": "Meta Raúl", "camp": "Mamá merece su lote - Invitacion evento 1704", "adset": "Invitacion evento 1704 - Imagenes", "ad": "Imagen 5", "date": "2026-05-10", "spend": 4.87, "res_type": "", "results": 0}, {"plat": "Meta Raúl", "camp": "Mamá merece su lote - Invitacion evento 1704", "adset": "Invitacion evento 1704 - Imagenes", "ad": "Imagen 1", "date": "2026-05-10", "spend": 0.49, "res_type": "", "results": 0}, {"plat": "Meta Raúl", "camp": "Mamá merece su lote - Invitacion evento 1704", "adset": "Invitacion evento 1704 - Videos", "ad": "Video 3", "date": "2026-05-11", "spend": 99.03, "res_type": "Conversaciones con mensajes iniciadas", "results": 13}, {"plat": "Meta Raúl", "camp": "Mamá merece su lote - Invitacion evento 1704", "adset": "Invitacion evento 1704 - Lima Norte", "ad": "Video 1", "date": "2026-05-11", "spend": 0.74, "res_type": "Conversaciones con mensajes iniciadas", "results": 1}, {"plat": "Meta Raúl", "camp": "Mamá merece su lote - Invitacion evento 1704", "adset": "Invitacion evento 1704 - Lima Norte", "ad": "Video 3", "date": "2026-05-11", "spend": 13.81, "res_type": "Conversaciones con mensajes iniciadas", "results": 1}, {"plat": "Meta Raúl", "camp": "Mamá merece su lote - Invitacion evento 1704", "adset": "Invitacion evento 1704 - Imagenes", "ad": "Imagen 2", "date": "2026-05-11", "spend": 0.06, "res_type": "", "results": 0}, {"plat": "Meta Raúl", "camp": "Mamá merece su lote - Invitacion evento 1704", "adset": "Invitacion evento 1704 - Imagenes", "ad": "Imagen 3", "date": "2026-05-11", "spend": 1.45, "res_type": "", "results": 0}, {"plat": "Meta Raúl", "camp": "Mamá merece su lote - Invitacion evento 1704", "adset": "Invitacion evento 1704 - Imagenes", "ad": "Imagen 5", "date": "2026-05-11", "spend": 3.02, "res_type": "", "results": 0}];
+const PC = {
+  "Meta Principal":{color:"#4a9eff",bg:"rgba(74,158,255,.7)",fill:"rgba(74,158,255,.08)"},
+  "TikTok Ads"    :{color:"#ff6b85",bg:"rgba(255,107,133,.7)",fill:"rgba(255,107,133,.08)"},
+  "Meta Raúl"     :{color:"#4da8b0",bg:"rgba(77,168,176,.7)" ,fill:"rgba(77,168,176,.08)"}
+};
+const PLATS = ["Meta Principal","TikTok Ads","Meta Raúl"];
+
+// ── STATE ──
+let dateFrom = '2026-05-01';
+let dateTo   = '2026-05-25';
+let selPlats  = new Set();
+let selCamps  = new Set();
+let selAdsets = new Set();
+let selAds    = new Set();
+
+// ── DATE RANGE ──
+const inFrom = document.getElementById('dateFrom');
+const inTo   = document.getElementById('dateTo');
+inFrom.addEventListener('change', () => {
+  dateFrom = inFrom.value;
+  if(dateFrom > dateTo){ dateTo = dateFrom; inTo.value = dateTo; }
+  clearDQActive(); update();
+});
+inTo.addEventListener('change', () => {
+  dateTo = inTo.value;
+  if(dateTo < dateFrom){ dateFrom = dateTo; inFrom.value = dateFrom; }
+  clearDQActive(); update();
+});
+
+function setDateRange(from, to, btnId){
+  dateFrom = from; dateTo = to;
+  inFrom.value = from; inTo.value = to;
+  document.querySelectorAll('.dq-btn').forEach(b=>b.classList.remove('active'));
+  if(btnId) document.getElementById(btnId)?.classList.add('active');
+  update();
+}
+function clearDQActive(){ document.querySelectorAll('.dq-btn').forEach(b=>b.classList.remove('active')); }
+
+// ── FILTER ENGINE ──
+function getFiltered(){
+  return ROWS.filter(r=>{
+    if(r.date < dateFrom || r.date > dateTo) return false;
+    if(selPlats.size  && !selPlats.has(r.plat))   return false;
+    if(selCamps.size  && !selCamps.has(r.camp))   return false;
+    if(selAdsets.size && !selAdsets.has(r.adset)) return false;
+    if(selAds.size    && !selAds.has(r.ad))       return false;
+    return true;
+  });
+}
+
+// ── CASCADE OPTIONS ──
+function getAvailableCamps(){
+  return [...new Set(ROWS.filter(r=>{
+    if(r.date<dateFrom||r.date>dateTo) return false;
+    if(selPlats.size && !selPlats.has(r.plat)) return false;
+    return true;
+  }).map(r=>r.camp))].sort();
+}
+function getAvailableAdsets(){
+  return [...new Set(ROWS.filter(r=>{
+    if(r.date<dateFrom||r.date>dateTo) return false;
+    if(selPlats.size && !selPlats.has(r.plat)) return false;
+    if(selCamps.size && !selCamps.has(r.camp)) return false;
+    return true;
+  }).map(r=>r.adset))].sort();
+}
+function getAvailableAds(){
+  return [...new Set(ROWS.filter(r=>{
+    if(r.date<dateFrom||r.date>dateTo) return false;
+    if(selPlats.size  && !selPlats.has(r.plat))   return false;
+    if(selCamps.size  && !selCamps.has(r.camp))   return false;
+    if(selAdsets.size && !selAdsets.has(r.adset)) return false;
+    return true;
+  }).map(r=>r.ad))].sort();
+}
+
+// ── PANEL TOGGLE ──
+const PANEL_IDS = ['Plat','Camp','Adset','Ad'];
+function togglePanel(id){
+  const panel = document.getElementById('panel'+id);
+  const trig  = document.getElementById('trig'+id);
+  const isOpen = panel.style.display !== 'none';
+  closeAll();
+  if(!isOpen){ panel.style.display='block'; trig.classList.add('open'); }
+}
+function closeAll(){
+  PANEL_IDS.forEach(p=>{
+    document.getElementById('panel'+p).style.display='none';
+    document.getElementById('trig'+p).classList.remove('open');
+  });
+}
+document.addEventListener('mousedown', e=>{ if(!e.target.closest('.ms-wrap')) closeAll(); });
+PANEL_IDS.forEach(p=>{
+  document.getElementById('trig'+p).addEventListener('mousedown', e=>{ e.stopPropagation(); togglePanel(p); });
+});
+
+// ── HELPERS ──
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function renderCheckList(containerId, items, selSet, onChange){
+  const searchEl = document.getElementById('search'+containerId.replace('list',''));
+  const q = searchEl?.value?.toLowerCase()||'';
+  const el = document.getElementById(containerId);
+  const visible = q ? items.filter(i=>i.toLowerCase().includes(q)) : items;
+  if(!visible.length){ el.innerHTML='<div class="ms-empty">Sin resultados</div>'; return; }
+  el.innerHTML = visible.map(item=>`
+    <div class="ms-item">
+      <input type="checkbox" id="cb_${containerId}_${esc(item)}" ${selSet.has(item)?'checked':''}>
+      <label for="cb_${containerId}_${esc(item)}" title="${esc(item)}">${item.length>36?item.slice(0,36)+'…':item}</label>
+    </div>`).join('');
+  el.querySelectorAll('input[type=checkbox]').forEach((cb,i)=>{
+    cb.addEventListener('change',()=>{ onChange(visible[i], cb.checked); });
+  });
+}
+
+function updateTrigger(trigId, selSet, placeholder){
+  const trig = document.getElementById(trigId);
+  const txt  = trig.querySelector('.ms-trigger-txt');
+  if(!selSet.size){
+    txt.innerHTML = `<span class="placeholder">${placeholder}</span>`;
+  } else {
+    const arr = [...selSet];
+    const label = arr.length===1?(arr[0].length>26?arr[0].slice(0,26)+'…':arr[0]):`${arr.length} seleccionados`;
+    txt.innerHTML = `${esc(label)}<span class="ms-badge">${arr.length}</span>`;
+  }
+}
+
+// ── PLAT ──
+function renderPlatList(){
+  const el = document.getElementById('listPlat');
+  el.innerHTML = PLATS.map(p=>`
+    <div class="ms-item">
+      <input type="checkbox" id="cbp_${p}" ${selPlats.has(p)?'checked':''}>
+      <label for="cbp_${p}" style="color:${PC[p].color}">${p}</label>
+    </div>`).join('');
+  el.querySelectorAll('input').forEach((cb,i)=>{
+    cb.addEventListener('change',()=>{
+      if(cb.checked) selPlats.add(PLATS[i]); else selPlats.delete(PLATS[i]);
+      selCamps.clear(); selAdsets.clear(); selAds.clear();
+      updateTrigger('trigPlat',selPlats,'Todas las plataformas');
+      repopulate(); update();
+    });
+  });
+}
+function selectAllPlat(){ PLATS.forEach(p=>selPlats.add(p)); selCamps.clear(); selAdsets.clear(); selAds.clear(); updateTrigger('trigPlat',selPlats,'Todas las plataformas'); repopulate(); update(); renderPlatList(); }
+function clearPlat()    { selPlats.clear(); selCamps.clear(); selAdsets.clear(); selAds.clear(); updateTrigger('trigPlat',selPlats,'Todas las plataformas'); repopulate(); update(); renderPlatList(); }
+
+// ── CAMP ──
+function renderCampList(){
+  renderCheckList('listCamp', getAvailableCamps(), selCamps, (item,checked)=>{
+    if(checked) selCamps.add(item); else selCamps.delete(item);
+    selAdsets.clear(); selAds.clear();
+    updateTrigger('trigCamp',selCamps,'Todas las campañas');
+    repopulate(); update();
+  });
+}
+function selectAllCamp(){ getAvailableCamps().forEach(c=>selCamps.add(c)); selAdsets.clear(); selAds.clear(); updateTrigger('trigCamp',selCamps,'Todas las campañas'); repopulate(); update(); renderCampList(); }
+function clearCamp()    { selCamps.clear(); selAdsets.clear(); selAds.clear(); updateTrigger('trigCamp',selCamps,'Todas las campañas'); repopulate(); update(); renderCampList(); }
+
+// ── ADSET ──
+function renderAdsetList(){
+  renderCheckList('listAdset', getAvailableAdsets(), selAdsets, (item,checked)=>{
+    if(checked) selAdsets.add(item); else selAdsets.delete(item);
+    selAds.clear();
+    updateTrigger('trigAdset',selAdsets,'Todos los conjuntos');
+    repopulate(); update();
+  });
+}
+function selectAllAdset(){ getAvailableAdsets().forEach(s=>selAdsets.add(s)); selAds.clear(); updateTrigger('trigAdset',selAdsets,'Todos los conjuntos'); repopulate(); update(); renderAdsetList(); }
+function clearAdset()    { selAdsets.clear(); selAds.clear(); updateTrigger('trigAdset',selAdsets,'Todos los conjuntos'); repopulate(); update(); renderAdsetList(); }
+
+// ── AD ──
+function renderAdList(){
+  renderCheckList('listAd', getAvailableAds(), selAds, (item,checked)=>{
+    if(checked) selAds.add(item); else selAds.delete(item);
+    updateTrigger('trigAd',selAds,'Todos los anuncios');
+    update();
+  });
+}
+function selectAllAd(){ getAvailableAds().forEach(a=>selAds.add(a)); updateTrigger('trigAd',selAds,'Todos los anuncios'); update(); renderAdList(); }
+function clearAd()    { selAds.clear(); updateTrigger('trigAd',selAds,'Todos los anuncios'); update(); renderAdList(); }
+
+function repopulate(){ renderCampList(); renderAdsetList(); renderAdList(); }
+
+// ── RESET ALL ──
+document.getElementById('btnReset').onclick = ()=>{
+  selPlats.clear(); selCamps.clear(); selAdsets.clear(); selAds.clear();
+  dateFrom='2026-05-01'; dateTo='2026-05-25';
+  inFrom.value=dateFrom; inTo.value=dateTo;
+  updateTrigger('trigPlat',selPlats,'Todas las plataformas');
+  updateTrigger('trigCamp',selCamps,'Todas las campañas');
+  updateTrigger('trigAdset',selAdsets,'Todos los conjuntos');
+  updateTrigger('trigAd',selAds,'Todos los anuncios');
+  document.querySelectorAll('.dq-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('dq_all').classList.add('active');
+  renderPlatList(); repopulate(); update();
+};
+
+// ── THEME ──
+const htmlEl = document.documentElement;
+document.getElementById('themeBtn').onclick = ()=>{
+  const t = htmlEl.getAttribute('data-theme')==='dark'?'light':'dark';
+  htmlEl.setAttribute('data-theme',t);
+  document.getElementById('themeIcon').innerHTML = t==='dark'
+    ? '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>'
+    : '<circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>';
+  rebuildCharts();
+};
+
+// ── CHARTS ──
+Chart.defaults.font.family = 'DM Sans';
+const tooltipCfg = {backgroundColor:'#1c1a18',titleColor:'#d8d7d3',bodyColor:'#76746f',borderColor:'rgba(255,255,255,.08)',borderWidth:1,padding:10,cornerRadius:8};
+const charts = {};
+function gc(){ return {muted:getComputedStyle(htmlEl).getPropertyValue('--muted').trim()||'#76746f',gr:getComputedStyle(htmlEl).getPropertyValue('--gr').trim()||'rgba(255,255,255,.035)'}; }
+function destroyChart(id){ if(charts[id]){charts[id].destroy();delete charts[id];} }
+
+// ── MAIN UPDATE ──
+function update(){
+  const filtered = getFiltered();
+  const colors   = gc();
+  const activePlats = selPlats.size ? [...selPlats] : PLATS;
+
+  // Update header pill
+  const fd = dateFrom.slice(5).replace('-','/');
+  const td2 = dateTo.slice(5).replace('-','/');
+  document.getElementById('pillRange').textContent = `📅 ${fd} – ${td2} Mayo 2026`;
+  document.getElementById('noteRange').textContent = `S/ PEN · ${dateFrom} → ${dateTo}`;
+
+  // ── KPIs ──
+  let totalSpend=0, totalRes=0;
+  let kpiHtml='';
+  activePlats.forEach(plat=>{
+    const pr = filtered.filter(r=>r.plat===plat);
+    const sp = pr.reduce((a,r)=>a+r.spend,0);
+    const rs = pr.reduce((a,r)=>a+r.results,0);
+    const cpr= rs>0?sp/rs:0;
+    totalSpend+=sp; totalRes+=rs;
+    const c = PC[plat];
+    const tag = plat==='TikTok Ads'?'📋 Formularios':'💬 Mensajes WhatsApp';
+    kpiHtml+=`<div class="kpi">
+      <div class="kpi-top" style="background:${c.color}"></div>
+      <div class="kpi-plat" style="color:${c.color}"><span style="background:${c.color}"></span>${plat}</div>
+      <div class="kpi-val"><small>S/</small>${sp.toLocaleString('es-PE',{minimumFractionDigits:2,maximumFractionDigits:2})}</div>
+      <div class="kpi-meta">
+        <div class="kstat"><span class="kstat-v">${rs}</span><span class="kstat-l">Resultados</span></div>
+        <div class="kstat"><span class="kstat-v">S/ ${rs>0?cpr.toFixed(2):'—'}</span><span class="kstat-l">CPR</span></div>
+      </div>
+      <div class="kpi-tag">${tag}</div>
+    </div>`;
+  });
+  if(activePlats.length>1){
+    const gc2=totalRes>0?totalSpend/totalRes:0;
+    kpiHtml+=`<div class="kpi" style="border-color:rgba(240,165,0,.3)">
+      <div class="kpi-top" style="background:var(--gold)"></div>
+      <div class="kpi-plat" style="color:var(--gold)"><span style="background:var(--gold)"></span>TOTAL CONSOLIDADO</div>
+      <div class="kpi-val"><small>S/</small>${totalSpend.toLocaleString('es-PE',{minimumFractionDigits:2,maximumFractionDigits:2})}</div>
+      <div class="kpi-meta">
+        <div class="kstat"><span class="kstat-v">${totalRes}</span><span class="kstat-l">Resultados</span></div>
+        <div class="kstat"><span class="kstat-v">S/ ${totalRes>0?gc2.toFixed(2):'—'}</span><span class="kstat-l">CPR prom.</span></div>
+      </div>
+      <div class="kpi-tag">${filtered.length} registros · ${dateFrom} → ${dateTo}</div>
+    </div>`;
+  }
+  document.getElementById('kpiGrid').innerHTML = kpiHtml;
+  document.getElementById('fbarStats').innerHTML =
+    `<strong>${filtered.length}</strong> registros · <strong>${totalRes}</strong> resultados · <strong>S/ ${totalSpend.toFixed(2)}</strong>`;
+
+  // ── DATES IN RANGE ──
+  const allDates=[];
+  let cur=new Date(dateFrom);
+  const end=new Date(dateTo);
+  while(cur<=end){ allDates.push(cur.toISOString().slice(0,10)); cur.setDate(cur.getDate()+1); }
+  const lbl = allDates.map(d=>d.slice(5));
+  const dailyByPlat=(plat,key)=>allDates.map(d=>filtered.filter(r=>r.plat===plat&&r.date===d).reduce((a,r)=>a+r[key],0));
+
+  // Spend line
+  destroyChart('cSpend');
+  charts.cSpend = new Chart(document.getElementById('cSpend'),{
+    type:'line',
+    data:{labels:lbl,datasets:activePlats.map(p=>({label:p,data:dailyByPlat(p,'spend'),borderColor:PC[p].color,backgroundColor:PC[p].fill,fill:true,tension:.4,pointRadius:allDates.length>14?1.5:3,pointHoverRadius:6,borderWidth:2}))},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{labels:{color:colors.muted,font:{size:11},boxWidth:10,padding:12}},tooltip:tooltipCfg},
+      scales:{x:{ticks:{color:colors.muted,font:{size:10},maxRotation:50},grid:{color:colors.gr}},
+              y:{ticks:{color:colors.muted,font:{size:10},callback:v=>'S/'+v},grid:{color:colors.gr},beginAtZero:true}}}
+  });
+
+  // Results bar
+  destroyChart('cResults');
+  charts.cResults = new Chart(document.getElementById('cResults'),{
+    type:'bar',
+    data:{labels:lbl,datasets:activePlats.map(p=>({label:p,data:dailyByPlat(p,'results'),backgroundColor:PC[p].bg,borderRadius:3,borderSkipped:false}))},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{labels:{color:colors.muted,font:{size:11},boxWidth:10,padding:12}},tooltip:tooltipCfg},
+      scales:{x:{ticks:{color:colors.muted,font:{size:10},maxRotation:50},grid:{color:colors.gr}},
+              y:{ticks:{color:colors.muted,font:{size:10}},grid:{color:colors.gr},beginAtZero:true}}}
+  });
+
+  // ── BY CAMP ──
+  const campMap={};
+  filtered.forEach(r=>{
+    if(!campMap[r.camp]) campMap[r.camp]={spend:0,results:0,plat:r.plat};
+    campMap[r.camp].spend+=r.spend; campMap[r.camp].results+=r.results;
+  });
+  const topCamps=Object.entries(campMap).filter(([,v])=>v.spend>0).sort((a,b)=>b[1].spend-a[1].spend).slice(0,10);
+  const cLabels=topCamps.map(([k])=>k.length>28?k.slice(0,28)+'…':k);
+  const cColors=topCamps.map(([,v])=>PC[v.plat]?.bg||'rgba(200,200,200,.6)');
+
+  destroyChart('cCampSpend');
+  charts.cCampSpend=new Chart(document.getElementById('cCampSpend'),{
+    type:'bar',data:{labels:cLabels,datasets:[{label:'Inversión S/',data:topCamps.map(([,v])=>v.spend),backgroundColor:cColors,borderRadius:4,borderSkipped:false}]},
+    options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',plugins:{legend:{display:false},tooltip:tooltipCfg},
+      scales:{x:{ticks:{color:colors.muted,font:{size:9},callback:v=>'S/'+v.toFixed(0)},grid:{color:colors.gr}},y:{ticks:{color:colors.muted,font:{size:9}},grid:{display:false}}}}
+  });
+  destroyChart('cCampRes');
+  charts.cCampRes=new Chart(document.getElementById('cCampRes'),{
+    type:'bar',data:{labels:cLabels,datasets:[{label:'Resultados',data:topCamps.map(([,v])=>v.results),backgroundColor:cColors,borderRadius:4,borderSkipped:false}]},
+    options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',plugins:{legend:{display:false},tooltip:tooltipCfg},
+      scales:{x:{ticks:{color:colors.muted,font:{size:9}},grid:{color:colors.gr}},y:{ticks:{color:colors.muted,font:{size:9}},grid:{display:false}}}}
+  });
+
+  // CPR
+  const avgCPR=totalRes>0?totalSpend/totalRes:0;
+  const campsCPR=Object.entries(campMap).filter(([,v])=>v.results>0).sort((a,b)=>a[1].spend/a[1].results-b[1].spend/b[1].results).slice(0,10);
+  destroyChart('cCPR');
+  charts.cCPR=new Chart(document.getElementById('cCPR'),{
+    type:'bar',
+    data:{labels:campsCPR.map(([k])=>k.length>26?k.slice(0,26)+'…':k),
+          datasets:[{label:'CPR S/',data:campsCPR.map(([,v])=>v.spend/v.results),
+            backgroundColor:campsCPR.map(([,v])=>v.spend/v.results<=avgCPR?'rgba(95,184,95,.7)':'rgba(224,112,112,.7)'),borderRadius:4,borderSkipped:false}]},
+    options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
+      plugins:{legend:{display:false},tooltip:{...tooltipCfg,callbacks:{label:c=>' S/'+c.parsed.x.toFixed(2)}}},
+      scales:{x:{ticks:{color:colors.muted,font:{size:9},callback:v=>'S/'+v},grid:{color:colors.gr}},y:{ticks:{color:colors.muted,font:{size:9}},grid:{display:false}}}}
+  });
+
+  // Adsets
+  const adsetMap={};
+  filtered.forEach(r=>{
+    if(!adsetMap[r.adset]) adsetMap[r.adset]={spend:0,results:0,plat:r.plat};
+    adsetMap[r.adset].spend+=r.spend; adsetMap[r.adset].results+=r.results;
+  });
+  const topAdsets=Object.entries(adsetMap).filter(([,v])=>v.spend>0).sort((a,b)=>b[1].results-a[1].results).slice(0,8);
+  destroyChart('cAdset');
+  charts.cAdset=new Chart(document.getElementById('cAdset'),{
+    type:'bar',
+    data:{labels:topAdsets.map(([k])=>k.length>26?k.slice(0,26)+'…':k),
+          datasets:[
+            {label:'Resultados',data:topAdsets.map(([,v])=>v.results),backgroundColor:topAdsets.map(([,v])=>PC[v.plat]?.bg||'rgba(200,200,200,.6)'),borderRadius:4,borderSkipped:false,yAxisID:'y'},
+            {label:'Inversión S/',data:topAdsets.map(([,v])=>v.spend),backgroundColor:'rgba(240,165,0,.35)',borderRadius:4,borderSkipped:false,yAxisID:'y2'}
+          ]},
+    options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
+      plugins:{legend:{labels:{color:colors.muted,font:{size:10},boxWidth:8,padding:8}},tooltip:tooltipCfg},
+      scales:{x:{ticks:{color:colors.muted,font:{size:9}},grid:{color:colors.gr}},y:{ticks:{color:colors.muted,font:{size:9}},grid:{display:false}},y2:{display:false}}}
+  });
+
+  // ── TABLE ──
+  const adMap={};
+  filtered.forEach(r=>{
+    const k=`${r.plat}||${r.camp}||${r.adset}||${r.ad}`;
+    if(!adMap[k]) adMap[k]={plat:r.plat,camp:r.camp,adset:r.adset,ad:r.ad,spend:0,results:0};
+    adMap[k].spend+=r.spend; adMap[k].results+=r.results;
+  });
+  const tRows=Object.values(adMap).filter(r=>r.spend>0).sort((a,b)=>b.spend-a.spend);
+  const pColors={"Meta Principal":"#4a9eff","TikTok Ads":"#ff6b85","Meta Raúl":"#4da8b0"};
+  document.getElementById('tableCount').textContent=tRows.length+' combinaciones activas';
+  document.getElementById('tblBody').innerHTML=tRows.map(r=>{
+    const cpr=r.results>0?r.spend/r.results:0;
+    const ef=r.results===0?'<span class="badge bb">Sin resultados</span>'
+      :cpr<=avgCPR*.8?'<span class="badge bg">✓ Muy eficiente</span>'
+      :cpr<=avgCPR?'<span class="badge bg">✓ Eficiente</span>'
+      :cpr<=avgCPR*1.3?'<span class="badge by">~ Regular</span>'
+      :'<span class="badge br">↑ Alto CPR</span>';
+    const pc=pColors[r.plat]||'#aaa';
+    return `<tr>
+      <td><span class="plat-badge" style="background:${pc}22;color:${pc}">${r.plat==='Meta Principal'?'Meta Princ.':r.plat==='TikTok Ads'?'TikTok':'Meta Raúl'}</span></td>
+      <td style="max-width:190px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${esc(r.camp)}">${r.camp.length>32?r.camp.slice(0,32)+'…':r.camp}</td>
+      <td>${r.adset.length>22?r.adset.slice(0,22)+'…':r.adset}</td>
+      <td>${r.ad.length>20?r.ad.slice(0,20)+'…':r.ad}</td>
+      <td class="tn">S/ ${r.spend.toFixed(2)}</td>
+      <td class="tn">${r.results}</td>
+      <td class="tn">${r.results>0?'S/ '+cpr.toFixed(2):'—'}</td>
+      <td>${ef}</td>
+    </tr>`;
+  }).join('')||'<tr><td colspan="8" class="no-data">Sin datos para la selección actual</td></tr>';
+}
+
+function rebuildCharts(){ update(); }
+
+// ── INIT ──
+renderPlatList();
+repopulate();
+update();
+</script>
+</body>
+</html>
