@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang='es'>
+<head>
+  <meta charset='UTF-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+  <title>Dashboard Marketing Inmobiliario</title>
+  <script src='https://cdn.plot.ly/plotly-2.35.2.min.js'></script>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; background: #f6f8fb; color: #1f2937; }
+    .wrap { max-width: 1400px; margin: 0 auto; padding: 20px; }
+    h1 { margin: 0 0 8px; }
+    p.sub { margin: 0 0 20px; color: #4b5563; }
+    .kpis { display:grid; grid-template-columns: repeat(auto-fit,minmax(180px,1fr)); gap:16px; margin-bottom:20px; }
+    .card { background:#fff; border-radius:16px; padding:18px; box-shadow: 0 4px 14px rgba(0,0,0,.06); }
+    .label { font-size: 13px; color:#6b7280; margin-bottom:8px; }
+    .value { font-size: 30px; font-weight: 700; }
+    .small { font-size: 12px; color:#6b7280; margin-top:6px; }
+    .grid { display:grid; grid-template-columns: 1fr 1fr; gap:18px; }
+    .full { grid-column: 1 / -1; }
+    .chart { background:#fff; border-radius:16px; padding:10px; box-shadow: 0 4px 14px rgba(0,0,0,.06); }
+    .controls { display:flex; gap:10px; flex-wrap:wrap; margin: 8px 0 18px; }
+    select { padding:10px 12px; border-radius:10px; border:1px solid #d1d5db; background:#fff; }
+    table { width:100%; border-collapse: collapse; font-size: 14px; background:#fff; border-radius:16px; overflow:hidden; }
+    th, td { padding: 10px 12px; border-bottom:1px solid #e5e7eb; text-align:left; }
+    th { background:#111827; color:#fff; position: sticky; top: 0; }
+    .table-wrap { max-height: 380px; overflow:auto; border-radius:16px; box-shadow: 0 4px 14px rgba(0,0,0,.06); }
+    @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+<div class='wrap'>
+  <h1>Dashboard de Marketing y Funnel</h1>
+  <p class='sub'>Periodo enero a mayo. Funnel: Leads → Citas → Visitas → Separaciones → Ventas.</p>
+  <div class='kpis'>
+    <div class='card'><div class='label'>Leads totales</div><div class='value'>7,646</div><div class='small'>Meta referencial: 2,000</div></div>
+    <div class='card'><div class='label'>Citas totales</div><div class='value'>290</div><div class='small'>Conversión lead a cita</div></div>
+    <div class='card'><div class='label'>Tasa evaluados</div><div class='value'>3.79%</div><div class='small'>Citas / Leads</div></div>
+    <div class='card'><div class='label'>Gasto total</div><div class='value'>S/. 47,541.91</div><div class='small'>Pauta con data disponible</div></div>
+    <div class='card'><div class='label'>CPL total</div><div class='value'>S/. 6.22</div><div class='small'>Gasto / Leads</div></div>
+    <div class='card'><div class='label'>ROAS total</div><div class='value'>43.10x</div><div class='small'>Ingresos / Gasto</div></div>
+  </div>
+  <div class='controls'>
+    <select id='projectSelect'>
+      <option value='TODOS'>Todos los proyectos</option>
+      <option value='FLORENCIA'>Florencia</option>
+      <option value='CALIPSO'>Calipso</option>
+      <option value='TAMBO'>Tambo</option>
+      <option value='TERRAZAS'>Terrazas</option>
+    </select>
+  </div>
+  <div class='grid'>
+    <div class='chart'><div id='chart1'></div></div>
+    <div class='chart'><div id='chart2'></div></div>
+    <div class='chart'><div id='chart3'></div></div>
+    <div class='chart'><div id='chart4'></div></div>
+    <div class='chart full'><div id='chart5'></div></div>
+    <div class='chart full'>
+      <h3 style='padding:10px 12px 0; margin:0;'>Detalle mensual</h3>
+      <div class='table-wrap'><table id='detailTable'></table></div>
+    </div>
+  </div>
+</div>
+<script>
+const base = [{"Mes": "Enero", "Proyecto": "CALIPSO", "Leads": 542.0, "Citas": 6.0, "Visitas": 1.0, "Separaciones": 0.0, "Ventas": 0.0, "Gasto": 1861.13, "MesNum": 1, "Ingresos": 0.0, "Tasa_Evaluados": 1.107011070110701, "CPL": 3.4338191881918823, "ROAS": 0.0}, {"Mes": "Enero", "Proyecto": "FLORENCIA", "Leads": 1347.0, "Citas": 77.0, "Visitas": 25.0, "Separaciones": 15.0, "Ventas": 12.0, "Gasto": 8241.76, "MesNum": 1, "Ingresos": 847500.0, "Tasa_Evaluados": 5.716406829992576, "CPL": 6.118604305864885, "ROAS": 102.82997806293801}, {"Mes": "Enero", "Proyecto": "TAMBO", "Leads": 0.0, "Citas": 14.0, "Visitas": 3.0, "Separaciones": 1.0, "Ventas": 1.0, "Gasto": 0.0, "MesNum": 1, "Ingresos": 70500.0, "Tasa_Evaluados": NaN, "CPL": NaN, "ROAS": NaN}, {"Mes": "Febrero", "Proyecto": "CALIPSO", "Leads": 356.0, "Citas": 9.0, "Visitas": 0.0, "Separaciones": 0.0, "Ventas": 0.0, "Gasto": 1758.41, "MesNum": 2, "Ingresos": 0.0, "Tasa_Evaluados": 2.528089887640449, "CPL": 4.93935393258427, "ROAS": 0.0}, {"Mes": "Febrero", "Proyecto": "FLORENCIA", "Leads": 1408.0, "Citas": 48.0, "Visitas": 15.0, "Separaciones": 3.0, "Ventas": 3.0, "Gasto": 7467.29, "MesNum": 2, "Ingresos": 211500.0, "Tasa_Evaluados": 3.4090909090909087, "CPL": 5.303473011363637, "ROAS": 28.323528348303064}, {"Mes": "Febrero", "Proyecto": "TAMBO", "Leads": 0.0, "Citas": 12.0, "Visitas": 3.0, "Separaciones": 0.0, "Ventas": 0.0, "Gasto": 0.0, "MesNum": 2, "Ingresos": 0.0, "Tasa_Evaluados": NaN, "CPL": NaN, "ROAS": NaN}, {"Mes": "Marzo", "Proyecto": "CALIPSO", "Leads": 304.0, "Citas": 14.0, "Visitas": 3.0, "Separaciones": 0.0, "Ventas": 1.0, "Gasto": 3578.8, "MesNum": 3, "Ingresos": 70000.0, "Tasa_Evaluados": 4.605263157894736, "CPL": 11.772368421052633, "ROAS": 19.55962892589695}, {"Mes": "Marzo", "Proyecto": "FLORENCIA", "Leads": 988.0, "Citas": 60.0, "Visitas": 25.0, "Separaciones": 5.0, "Ventas": 1.0, "Gasto": 6854.51, "MesNum": 3, "Ingresos": 72500.0, "Tasa_Evaluados": 6.0728744939271255, "CPL": 6.937763157894737, "ROAS": 10.576977785428863}, {"Mes": "Marzo", "Proyecto": "TAMBO", "Leads": 0.0, "Citas": 8.0, "Visitas": 4.0, "Separaciones": 0.0, "Ventas": 2.0, "Gasto": 0.0, "MesNum": 3, "Ingresos": 140000.0, "Tasa_Evaluados": NaN, "CPL": NaN, "ROAS": NaN}, {"Mes": "Marzo", "Proyecto": "TERRAZAS", "Leads": 0.0, "Citas": 0.0, "Visitas": 0.0, "Separaciones": 0.0, "Ventas": 1.0, "Gasto": 0.0, "MesNum": 3, "Ingresos": 70000.0, "Tasa_Evaluados": NaN, "CPL": NaN, "ROAS": NaN}, {"Mes": "Abril", "Proyecto": "CALIPSO", "Leads": 159.0, "Citas": 0.0, "Visitas": 0.0, "Separaciones": 0.0, "Ventas": 0.0, "Gasto": 838.83, "MesNum": 4, "Ingresos": 0.0, "Tasa_Evaluados": 0.0, "CPL": 5.2756603773584905, "ROAS": 0.0}, {"Mes": "Abril", "Proyecto": "FLORENCIA", "Leads": 1077.0, "Citas": 29.0, "Visitas": 7.0, "Separaciones": 10.0, "Ventas": 2.0, "Gasto": 7086.44, "MesNum": 4, "Ingresos": 145000.0, "Tasa_Evaluados": 2.692664809656453, "CPL": 6.579795728876508, "ROAS": 20.461614012113277}, {"Mes": "Abril", "Proyecto": "TAMBO", "Leads": 0.0, "Citas": 7.0, "Visitas": 1.0, "Separaciones": 0.0, "Ventas": 1.0, "Gasto": 0.0, "MesNum": 4, "Ingresos": 70000.0, "Tasa_Evaluados": NaN, "CPL": NaN, "ROAS": NaN}, {"Mes": "Mayo", "Proyecto": "CALIPSO", "Leads": 35.0, "Citas": 0.0, "Visitas": 0.0, "Separaciones": 0.0, "Ventas": 0.0, "Gasto": 399.54, "MesNum": 5, "Ingresos": 0.0, "Tasa_Evaluados": 0.0, "CPL": 11.415428571428572, "ROAS": 0.0}, {"Mes": "Mayo", "Proyecto": "FLORENCIA", "Leads": 1430.0, "Citas": 5.0, "Visitas": 2.0, "Separaciones": 4.0, "Ventas": 3.0, "Gasto": 9455.2, "MesNum": 5, "Ingresos": 212000.0, "Tasa_Evaluados": 0.34965034965034963, "CPL": 6.612027972027972, "ROAS": 22.42152466367713}, {"Mes": "Mayo", "Proyecto": "TAMBO", "Leads": 0.0, "Citas": 1.0, "Visitas": 0.0, "Separaciones": 0.0, "Ventas": 2.0, "Gasto": 0.0, "MesNum": 5, "Ingresos": 140000.0, "Tasa_Evaluados": NaN, "CPL": NaN, "ROAS": NaN}];
+const monthlyTotal = [{"Mes": "Enero", "MesNum": 1, "Leads": 1889.0, "Citas": 97.0, "Visitas": 29.0, "Separaciones": 16.0, "Ventas": 13.0, "Gasto": 10102.890000000001, "Ingresos": 918000.0, "Tasa_Evaluados": 5.13499205929063, "CPL": 5.34827421916358, "ROAS": 90.86508909826792}, {"Mes": "Febrero", "MesNum": 2, "Leads": 1764.0, "Citas": 69.0, "Visitas": 18.0, "Separaciones": 3.0, "Ventas": 3.0, "Gasto": 9225.7, "Ingresos": 211500.0, "Tasa_Evaluados": 3.9115646258503403, "CPL": 5.22998866213152, "ROAS": 22.925089695090886}, {"Mes": "Marzo", "MesNum": 3, "Leads": 1292.0, "Citas": 82.0, "Visitas": 32.0, "Separaciones": 5.0, "Ventas": 5.0, "Gasto": 10433.310000000001, "Ingresos": 352500.0, "Tasa_Evaluados": 6.3467492260061915, "CPL": 8.075317337461302, "ROAS": 33.786018051797555}, {"Mes": "Abril", "MesNum": 4, "Leads": 1236.0, "Citas": 36.0, "Visitas": 8.0, "Separaciones": 10.0, "Ventas": 3.0, "Gasto": 7925.2699999999995, "Ingresos": 215000.0, "Tasa_Evaluados": 2.912621359223301, "CPL": 6.412030744336569, "ROAS": 27.1284132906513}, {"Mes": "Mayo", "MesNum": 5, "Leads": 1465.0, "Citas": 6.0, "Visitas": 2.0, "Separaciones": 4.0, "Ventas": 5.0, "Gasto": 9854.740000000002, "Ingresos": 352000.0, "Tasa_Evaluados": 0.40955631399317405, "CPL": 6.726784982935155, "ROAS": 35.7188520448028}];
+const projSummary = [{"Proyecto": "CALIPSO", "Leads": 1396.0, "Citas": 29.0, "Visitas": 4.0, "Separaciones": 0.0, "Ventas": 1.0, "Gasto": 8436.710000000001, "Ingresos": 70000.0, "Tasa_Evaluados": 2.0773638968481376, "CPL": 6.043488538681949, "ROAS": 8.29707314818217}, {"Proyecto": "FLORENCIA", "Leads": 6250.0, "Citas": 219.0, "Visitas": 74.0, "Separaciones": 37.0, "Ventas": 21.0, "Gasto": 39105.2, "Ingresos": 1488500.0, "Tasa_Evaluados": 3.504, "CPL": 6.256831999999999, "ROAS": 38.063991489622865}, {"Proyecto": "TAMBO", "Leads": 0.0, "Citas": 42.0, "Visitas": 11.0, "Separaciones": 1.0, "Ventas": 6.0, "Gasto": 0.0, "Ingresos": 420500.0, "Tasa_Evaluados": NaN, "CPL": NaN, "ROAS": NaN}, {"Proyecto": "TERRAZAS", "Leads": 0.0, "Citas": 0.0, "Visitas": 0.0, "Separaciones": 0.0, "Ventas": 1.0, "Gasto": 0.0, "Ingresos": 70000.0, "Tasa_Evaluados": NaN, "CPL": NaN, "ROAS": NaN}];
+function money(v) { return 'S/. ' + Number(v).toLocaleString('es-PE', {minimumFractionDigits:2, maximumFractionDigits:2}); }
+function num(v) { return Number(v).toLocaleString('es-PE'); }
+function pct(v) { return (v==null || isNaN(v)) ? '-' : Number(v).toFixed(2) + '%'; }
+function mult(v) { return (v==null || isNaN(v)) ? '-' : Number(v).toFixed(2) + 'x'; }
+function filterData(project) {
+  if (project === 'TODOS') return base.slice().sort((a,b)=>a.MesNum-b.MesNum);
+  return base.filter(r => r.Proyecto === project).sort((a,b)=>a.MesNum-b.MesNum);
+}
+function aggregate(rows) {
+  const map = new Map();
+  rows.forEach(r => {
+    if (!map.has(r.Mes)) map.set(r.Mes, {Mes:r.Mes, MesNum:r.MesNum, Leads:0, Citas:0, Visitas:0, Separaciones:0, Ventas:0, Gasto:0, Ingresos:0});
+    const x = map.get(r.Mes);
+    ['Leads','Citas','Visitas','Separaciones','Ventas','Gasto','Ingresos'].forEach(k => x[k] += Number(r[k]||0));
+  });
+  return Array.from(map.values()).sort((a,b)=>a.MesNum-b.MesNum).map(r => ({
+    Mes:r.Mes, Proyecto:'', Leads:r.Leads, Citas:r.Citas, Visitas:r.Visitas, Separaciones:r.Separaciones, Ventas:r.Ventas, Gasto:r.Gasto, Ingresos:r.Ingresos,
+    Tasa_Evaluados: r.Leads ? r.Citas / r.Leads * 100 : null,
+    CPL: r.Leads ? r.Gasto / r.Leads : null,
+    ROAS: r.Gasto ? r.Ingresos / r.Gasto : null
+  }));
+}
+function buildTable(rows) {
+  const headers = ['Mes','Proyecto','Leads','Citas','Visitas','Separaciones','Ventas','Gasto','Ingresos','Tasa Eval.','CPL','ROAS'];
+  let html = '<thead><tr>' + headers.map(h => '<th>' + h + '</th>').join('') + '</tr></thead><tbody>';
+  rows.forEach(r => {
+    html += '<tr>' +
+      '<td>' + r.Mes + '</td>' +
+      '<td>' + r.Proyecto + '</td>' +
+      '<td>' + num(r.Leads) + '</td>' +
+      '<td>' + num(r.Citas) + '</td>' +
+      '<td>' + num(r.Visitas) + '</td>' +
+      '<td>' + num(r.Separaciones) + '</td>' +
+      '<td>' + num(r.Ventas) + '</td>' +
+      '<td>' + money(r.Gasto) + '</td>' +
+      '<td>' + money(r.Ingresos) + '</td>' +
+      '<td>' + pct(r.Tasa_Evaluados) + '</td>' +
+      '<td>' + ((r.CPL==null || isNaN(r.CPL)) ? '-' : money(r.CPL)) + '</td>' +
+      '<td>' + mult(r.ROAS) + '</td>' +
+      '</tr>';
+  });
+  html += '</tbody>';
+  document.getElementById('detailTable').innerHTML = html;
+}
+function render(project) {
+  const rows = filterData(project || 'TODOS');
+  const agg = aggregate(rows);
+  Plotly.newPlot('chart1', [
+    {x: agg.map(r=>r.Mes), y: agg.map(r=>r.Leads), type:'bar', name:'Leads'},
+    {x: agg.map(r=>r.Mes), y: agg.map(r=>r.Citas), type:'bar', name:'Citas'},
+    {x: agg.map(r=>r.Mes), y: agg.map(r=>r.Visitas), type:'bar', name:'Visitas'}
+  ], {title:'Volumen del funnel por mes', barmode:'group', legend:{orientation:'h', y:1.12}, xaxis:{title:'Mes'}, yaxis:{title:'Cantidad'}});
+  Plotly.newPlot('chart2', [
+    {x: agg.map(r=>r.Mes), y: agg.map(r=>r.Tasa_Evaluados), type:'scatter', mode:'lines+markers', fill:'tozeroy', name:'Tasa evaluados'}
+  ], {title:'Tasa lead a cita por mes', xaxis:{title:'Mes'}, yaxis:{title:'Porcentaje'}});
+  Plotly.newPlot('chart3', [
+    {x: agg.map(r=>r.Mes), y: agg.map(r=>r.CPL), type:'scatter', mode:'lines+markers', fill:'tozeroy', name:'CPL'}
+  ], {title:'Costo por lead por mes', xaxis:{title:'Mes'}, yaxis:{title:'Soles'}});
+  Plotly.newPlot('chart4', [
+    {x: agg.map(r=>r.Mes), y: agg.map(r=>r.ROAS), type:'scatter', mode:'lines+markers', fill:'tozeroy', name:'ROAS'}
+  ], {title:'ROAS por mes', xaxis:{title:'Mes'}, yaxis:{title:'Multiplicador'}});
+  const sums = {};
+  rows.forEach(r => {
+    if (!sums[r.Proyecto]) sums[r.Proyecto] = {Leads:0,Ventas:0,Gasto:0};
+    sums[r.Proyecto].Leads += Number(r.Leads||0);
+    sums[r.Proyecto].Ventas += Number(r.Ventas||0);
+    sums[r.Proyecto].Gasto += Number(r.Gasto||0);
+  });
+  const pnames = Object.keys(sums);
+  Plotly.newPlot('chart5', [
+    {x: pnames, y: pnames.map(p=>sums[p].Leads), type:'bar', name:'Leads'},
+    {x: pnames, y: pnames.map(p=>sums[p].Ventas), type:'bar', name:'Ventas'},
+    {x: pnames, y: pnames.map(p=>sums[p].Gasto), type:'bar', name:'Gasto'}
+  ], {title:'Mix acumulado por proyecto', barmode:'group', legend:{orientation:'h', y:1.12}, xaxis:{title:'Proyecto'}, yaxis:{title:'Valor'}});
+  buildTable(rows);
+}
+document.getElementById('projectSelect').addEventListener('change', function(e) { render(e.target.value); });
+render('TODOS');
+</script>
+</body>
+</html>
