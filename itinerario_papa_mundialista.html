@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Itinerario – Papá Mundialista | Domingo 14</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&display=swap');
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background: linear-gradient(135deg, #0a3d62 0%, #1e5f74 50%, #0a3d62 100%);
+      min-height: 100vh;
+      padding: 30px 16px 50px;
+    }
+
+    /* ── HERO HEADER ── */
+    .hero {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    .hero .badge {
+      display: inline-block;
+      background: #f9ca24;
+      color: #0a3d62;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      padding: 6px 20px;
+      border-radius: 30px;
+      margin-bottom: 16px;
+    }
+    .hero h1 {
+      font-size: clamp(2rem, 6vw, 3.8rem);
+      font-weight: 900;
+      color: #ffffff;
+      line-height: 1.1;
+      text-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    }
+    .hero h1 span { color: #f9ca24; }
+    .hero .subtitle {
+      margin-top: 12px;
+      font-size: 1rem;
+      color: rgba(255,255,255,0.75);
+      font-weight: 600;
+      letter-spacing: 1px;
+    }
+    .soccer-icons {
+      font-size: 2rem;
+      margin-top: 14px;
+      letter-spacing: 8px;
+    }
+
+    /* ── CARD CONTAINER ── */
+    .container {
+      max-width: 780px;
+      margin: 0 auto;
+    }
+
+    /* ── TIMELINE ── */
+    .timeline {
+      position: relative;
+      padding-left: 60px;
+    }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 26px;
+      top: 0; bottom: 0;
+      width: 4px;
+      background: linear-gradient(180deg, #f9ca24, #f0932b, #eb4d4b, #6ab04c, #f9ca24);
+      border-radius: 4px;
+    }
+
+    /* ── ITEM ── */
+    .item {
+      position: relative;
+      background: rgba(255,255,255,0.06);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 18px;
+      padding: 22px 24px 22px 28px;
+      margin-bottom: 20px;
+      transition: transform 0.2s, background 0.2s;
+    }
+    .item:hover {
+      transform: translateX(4px);
+      background: rgba(255,255,255,0.11);
+    }
+
+    /* color accent left border per step */
+    .item:nth-child(1) { border-left: 4px solid #f9ca24; }
+    .item:nth-child(2) { border-left: 4px solid #f0932b; }
+    .item:nth-child(3) { border-left: 4px solid #6ab04c; }
+    .item:nth-child(4) { border-left: 4px solid #22a6b3; }
+    .item:nth-child(5) { border-left: 4px solid #e056fd; }
+    .item:nth-child(6) { border-left: 4px solid #eb4d4b; }
+    .item:nth-child(7) { border-left: 4px solid #badc58; }
+
+    /* dot on the timeline line */
+    .item::before {
+      content: '';
+      position: absolute;
+      left: -46px;
+      top: 26px;
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      border: 3px solid #0a3d62;
+    }
+    .item:nth-child(1)::before { background: #f9ca24; }
+    .item:nth-child(2)::before { background: #f0932b; }
+    .item:nth-child(3)::before { background: #6ab04c; }
+    .item:nth-child(4)::before { background: #22a6b3; }
+    .item:nth-child(5)::before { background: #e056fd; }
+    .item:nth-child(6)::before { background: #eb4d4b; }
+    .item:nth-child(7)::before { background: #badc58; }
+
+    .item-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+    }
+    .item-icon {
+      font-size: 1.9rem;
+      line-height: 1;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .item-content { flex: 1; }
+    .item-time {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.55);
+      margin-bottom: 4px;
+    }
+    .item-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 6px;
+    }
+    .item-desc {
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.7);
+      line-height: 1.55;
+    }
+
+    /* sub-list of pickup points */
+    .pickup-list {
+      list-style: none;
+      margin-top: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .pickup-list li {
+      background: rgba(249,202,36,0.15);
+      border: 1px solid rgba(249,202,36,0.4);
+      color: #f9ca24;
+      font-size: 0.78rem;
+      font-weight: 600;
+      padding: 5px 12px;
+      border-radius: 20px;
+    }
+    .pickup-list li::before { content: '📍 '; }
+
+    /* ── FOOTER ── */
+    .footer {
+      text-align: center;
+      margin-top: 42px;
+      color: rgba(255,255,255,0.45);
+      font-size: 0.78rem;
+      letter-spacing: 1px;
+    }
+    .footer strong { color: rgba(255,255,255,0.7); }
+  </style>
+</head>
+<body>
+
+  <!-- ─── HERO ─── -->
+  <div class="hero">
+    <div class="badge">⚽ Evento Especial · Domingo 14</div>
+    <h1>Papá <span>Mundialista</span></h1>
+    <p class="subtitle">Itinerario Oficial del Día</p>
+    <div class="soccer-icons">🏆⚽👨‍👧‍👦🌟</div>
+  </div>
+
+  <!-- ─── TIMELINE ─── -->
+  <div class="container">
+    <div class="timeline">
+
+      <!-- 1 -->
+      <div class="item">
+        <div class="item-header">
+          <div class="item-icon">🚌</div>
+          <div class="item-content">
+            <div class="item-time">9:30 AM</div>
+            <div class="item-title">Salida desde la Oficina</div>
+            <div class="item-desc">El bus parte puntualmente hacia los puntos de recojo. ¡Listos para una gran jornada!</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2 -->
+      <div class="item">
+        <div class="item-header">
+          <div class="item-icon">📍</div>
+          <div class="item-content">
+            <div class="item-time">9:30 AM – 10:15 AM</div>
+            <div class="item-title">Recojo en Puntos de Encuentro</div>
+            <div class="item-desc">Recogemos a todos los asistentes en los siguientes puntos:</div>
+            <ul class="pickup-list">
+              <li>Jockey Plaza</li>
+              <li>Óvalo Santa Anita</li>
+              <li>Real Plaza Puruchuco</li>
+              <li>Grifo REPSOL de Cineguilla</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3 -->
+      <div class="item">
+        <div class="item-header">
+          <div class="item-icon">🛣️</div>
+          <div class="item-content">
+            <div class="item-time">10:15 AM</div>
+            <div class="item-title">Rumbo al Proyecto Inmobiliario</div>
+            <div class="item-desc">Iniciamos el recorrido hacia nuestro destino. Tiempo estimado de viaje: 30 minutos.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4 -->
+      <div class="item">
+        <div class="item-header">
+          <div class="item-icon">🌿</div>
+          <div class="item-content">
+            <div class="item-time">10:45 AM</div>
+            <div class="item-title">Paseo por el Parque de Cieneguilla</div>
+            <div class="item-desc">Disfrutamos del paisaje y el aire puro del Valle de Cieneguilla durante el trayecto. Una pausa perfecta para relajarse en familia.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5 -->
+      <div class="item">
+        <div class="item-header">
+          <div class="item-icon">🏘️</div>
+          <div class="item-content">
+            <div class="item-time">11:15 AM</div>
+            <div class="item-title">Llegada al Proyecto</div>
+            <div class="item-desc">Bienvenida oficial al proyecto inmobiliario. ¡El lugar ideal para construir el hogar de tus sueños!</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6 -->
+      <div class="item">
+        <div class="item-header">
+          <div class="item-icon">🗺️</div>
+          <div class="item-content">
+            <div class="item-time">11:15 AM – 12:00 PM</div>
+            <div class="item-title">Presentación de los Lotes</div>
+            <div class="item-desc">Nuestros asesores guiarán a las familias por el proyecto, mostrando los lotes disponibles, ubicaciones, áreas y las increíbles oportunidades de inversión.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 7 -->
+      <div class="item">
+        <div class="item-header">
+          <div class="item-icon">🌭</div>
+          <div class="item-content">
+            <div class="item-time">12:00 PM</div>
+            <div class="item-title">¡Aperitivo: Hora de los Choripanes! 🎉</div>
+            <div class="item-desc">Cerramos la mañana con un delicioso aperitivo de choripanes para todos. ¡Celebremos el Día del Padre al estilo mundialista!</div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /timeline -->
+
+    <!-- ─── FOOTER ─── -->
+    <div class="footer">
+      <p>⚽ &nbsp;<strong>Papá Mundialista</strong>&nbsp; · Domingo 14 · ¡Gracias por ser parte de esta gran celebración! ⚽</p>
+    </div>
+
+  </div><!-- /container -->
+
+</body>
+</html>
