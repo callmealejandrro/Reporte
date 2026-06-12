@@ -91,7 +91,6 @@
       background: rgba(255,255,255,0.11);
     }
 
-    /* color accent left border per step */
     .item:nth-child(1) { border-left: 4px solid #f9ca24; }
     .item:nth-child(2) { border-left: 4px solid #f0932b; }
     .item:nth-child(3) { border-left: 4px solid #6ab04c; }
@@ -100,7 +99,6 @@
     .item:nth-child(6) { border-left: 4px solid #eb4d4b; }
     .item:nth-child(7) { border-left: 4px solid #badc58; }
 
-    /* dot on the timeline line */
     .item::before {
       content: '';
       position: absolute;
@@ -150,7 +148,6 @@
       line-height: 1.55;
     }
 
-    /* sub-list of pickup points */
     .pickup-list {
       list-style: none;
       margin-top: 10px;
@@ -168,6 +165,186 @@
       border-radius: 20px;
     }
     .pickup-list li::before { content: '📍 '; }
+
+    /* ══════════════════════════════════════
+       SECCIÓN DE BENEFICIOS / KITS
+    ══════════════════════════════════════ */
+    .benefits-section {
+      margin-top: 50px;
+    }
+    .benefits-title {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+    .benefits-title .section-badge {
+      display: inline-block;
+      background: rgba(249,202,36,0.2);
+      border: 1px solid rgba(249,202,36,0.5);
+      color: #f9ca24;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      padding: 5px 18px;
+      border-radius: 30px;
+      margin-bottom: 12px;
+    }
+    .benefits-title h2 {
+      font-size: clamp(1.5rem, 4vw, 2.4rem);
+      font-weight: 900;
+      color: #ffffff;
+    }
+    .benefits-title h2 span { color: #f9ca24; }
+    .benefits-title p {
+      margin-top: 8px;
+      font-size: 0.88rem;
+      color: rgba(255,255,255,0.6);
+    }
+
+    /* Cards de beneficio */
+    .benefits-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    @media (max-width: 580px) {
+      .benefits-grid { grid-template-columns: 1fr; }
+    }
+
+    .benefit-card {
+      border-radius: 20px;
+      padding: 28px 24px;
+      position: relative;
+      overflow: hidden;
+    }
+    .benefit-card::before {
+      content: '';
+      position: absolute;
+      top: -30px; right: -30px;
+      width: 120px; height: 120px;
+      border-radius: 50%;
+      opacity: 0.08;
+    }
+
+    /* Card 1: Separación */
+    .card-separacion {
+      background: linear-gradient(135deg, rgba(240,147,43,0.25), rgba(249,202,36,0.15));
+      border: 1px solid rgba(240,147,43,0.45);
+    }
+    .card-separacion::before { background: #f0932b; }
+    .card-separacion .card-tag {
+      background: rgba(240,147,43,0.25);
+      border: 1px solid rgba(240,147,43,0.5);
+      color: #f0932b;
+    }
+
+    /* Card 2: Compra */
+    .card-compra {
+      background: linear-gradient(135deg, rgba(106,176,76,0.25), rgba(186,220,88,0.15));
+      border: 1px solid rgba(106,176,76,0.45);
+    }
+    .card-compra::before { background: #6ab04c; }
+    .card-compra .card-tag {
+      background: rgba(106,176,76,0.25);
+      border: 1px solid rgba(106,176,76,0.5);
+      color: #badc58;
+    }
+
+    .card-tag {
+      display: inline-block;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 4px 14px;
+      border-radius: 20px;
+      margin-bottom: 14px;
+    }
+
+    .card-main-icon {
+      font-size: 3rem;
+      margin-bottom: 10px;
+      display: block;
+    }
+
+    .benefit-card h3 {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: #ffffff;
+      margin-bottom: 8px;
+      line-height: 1.2;
+    }
+    .benefit-card .card-subtitle {
+      font-size: 0.78rem;
+      color: rgba(255,255,255,0.55);
+      margin-bottom: 16px;
+      font-weight: 600;
+    }
+
+    /* Kit contents list */
+    .kit-items {
+      list-style: none;
+      margin-bottom: 16px;
+    }
+    .kit-items li {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.84rem;
+      color: rgba(255,255,255,0.82);
+      padding: 7px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      font-weight: 600;
+    }
+    .kit-items li:last-child { border-bottom: none; }
+    .kit-items li .kit-icon { font-size: 1.2rem; }
+
+    /* bolsa aurus highlight */
+    .bag-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(249,202,36,0.12);
+      border: 1px solid rgba(249,202,36,0.35);
+      color: #f9ca24;
+      font-size: 0.8rem;
+      font-weight: 700;
+      padding: 6px 14px;
+      border-radius: 10px;
+      margin-bottom: 14px;
+      width: 100%;
+    }
+
+    /* Sorteo banner */
+    .sorteo-banner {
+      background: linear-gradient(135deg, rgba(235,77,75,0.3), rgba(224,86,253,0.2));
+      border: 1px solid rgba(235,77,75,0.5);
+      border-radius: 14px;
+      padding: 14px 16px;
+      margin-top: 6px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .sorteo-banner .sorteo-icon { font-size: 2rem; flex-shrink: 0; }
+    .sorteo-banner .sorteo-text { }
+    .sorteo-banner .sorteo-text strong {
+      display: block;
+      color: #ffffff;
+      font-size: 0.88rem;
+      font-weight: 800;
+    }
+    .sorteo-banner .sorteo-text span {
+      color: rgba(255,255,255,0.6);
+      font-size: 0.75rem;
+    }
+    .sorteo-tv {
+      font-size: 1.05rem;
+      font-weight: 900;
+      color: #f9ca24;
+      display: block;
+      margin-top: 2px;
+    }
 
     /* ── FOOTER ── */
     .footer {
@@ -218,7 +395,6 @@
               <li>Jockey Plaza</li>
               <li>Óvalo Santa Anita</li>
               <li>Real Plaza Puruchuco</li>
-              <li>Grifo REPSOL de Cineguilla</li>
             </ul>
           </div>
         </div>
@@ -285,6 +461,68 @@
       </div>
 
     </div><!-- /timeline -->
+
+
+    <!-- ══════════════════════════════════════
+         SECCIÓN BENEFICIOS & KITS
+    ══════════════════════════════════════ -->
+    <div class="benefits-section">
+      <div class="benefits-title">
+        <div class="section-badge">🎁 Beneficios del Evento</div>
+        <h2>¡Tu <span>Regalo</span> te Espera!</h2>
+        <p>Separando o comprando tu lote en el evento, te llevas premios exclusivos 🏆</p>
+      </div>
+
+      <div class="benefits-grid">
+
+        <!-- CARD 1: SEPARACIÓN -->
+        <div class="benefit-card card-separacion">
+          <div class="card-tag">🏠 Por Separación</div>
+          <span class="card-main-icon">🛍️</span>
+          <h3>Kit Mundialero Aurus</h3>
+          <p class="card-subtitle">¡Gratis por separar tu lote!</p>
+
+          <div class="bag-label">
+            🎒 Bolsa Aurus exclusiva
+          </div>
+
+          <ul class="kit-items">
+            <li><span class="kit-icon">🍺</span> 1 Lata de cerveza</li>
+            <li><span class="kit-icon">🥔</span> 1 Bolsita de Inka Chips</li>
+            <li><span class="kit-icon">☕</span> 1 Taza de Aurus</li>
+          </ul>
+        </div>
+
+        <!-- CARD 2: COMPRA EN EL MOMENTO -->
+        <div class="benefit-card card-compra">
+          <div class="card-tag">⚡ Por Compra Inmediata</div>
+          <span class="card-main-icon">🏆</span>
+          <h3>Kit Mundialero + Sorteo Exclusivo</h3>
+          <p class="card-subtitle">¡Todo lo del kit + una oportunidad única!</p>
+
+          <div class="bag-label">
+            🎒 Bolsa Aurus exclusiva
+          </div>
+
+          <ul class="kit-items">
+            <li><span class="kit-icon">🍺</span> 1 Lata de cerveza</li>
+            <li><span class="kit-icon">🥔</span> 1 Bolsita de Inka Chips</li>
+            <li><span class="kit-icon">☕</span> 1 Taza de Aurus</li>
+          </ul>
+
+          <div class="sorteo-banner">
+            <span class="sorteo-icon">📺</span>
+            <div class="sorteo-text">
+              <strong>¡Participas en el Sorteo!</strong>
+              <span class="sorteo-tv">Smart TV 55" </span>
+              <span>Solo por comprar en el evento</span>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /benefits-grid -->
+    </div><!-- /benefits-section -->
+
 
     <!-- ─── FOOTER ─── -->
     <div class="footer">
