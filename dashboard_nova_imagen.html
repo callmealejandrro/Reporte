@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard Meta Ads — Nova Imagen</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', sans-serif; background: #0f1117; color: #e2e8f0; min-height: 100vh; }
+
+  .header { background: linear-gradient(135deg, #1a1d2e 0%, #16213e 100%); padding: 28px 40px; border-bottom: 1px solid #2d3748; }
+  .header h1 { font-size: 22px; font-weight: 700; color: #fff; }
+  .header p { font-size: 13px; color: #94a3b8; margin-top: 4px; }
+  .badge { display: inline-block; background: #3b82f6; color: #fff; font-size: 11px; padding: 2px 10px; border-radius: 20px; margin-left: 10px; vertical-align: middle; }
+
+  .kpi-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; padding: 28px 40px 0; }
+  .kpi-card { background: #1a1d2e; border: 1px solid #2d3748; border-radius: 12px; padding: 20px; text-align: center; transition: transform .15s; }
+  .kpi-card:hover { transform: translateY(-3px); }
+  .kpi-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #64748b; margin-bottom: 8px; }
+  .kpi-value { font-size: 30px; font-weight: 700; color: #fff; }
+  .kpi-sub { font-size: 12px; color: #94a3b8; margin-top: 4px; }
+  .kpi-card.green .kpi-value { color: #4ade80; }
+  .kpi-card.blue .kpi-value { color: #60a5fa; }
+  .kpi-card.yellow .kpi-value { color: #fbbf24; }
+  .kpi-card.purple .kpi-value { color: #c084fc; }
+  .kpi-card.teal .kpi-value { color: #34d399; }
+
+  .charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding: 24px 40px; }
+  .chart-full { grid-column: 1 / -1; }
+  .chart-card { background: #1a1d2e; border: 1px solid #2d3748; border-radius: 12px; padding: 24px; }
+  .chart-title { font-size: 14px; font-weight: 600; color: #e2e8f0; margin-bottom: 4px; }
+  .chart-sub { font-size: 12px; color: #64748b; margin-bottom: 18px; }
+  canvas { max-height: 280px; }
+
+  .table-card { background: #1a1d2e; border: 1px solid #2d3748; border-radius: 12px; padding: 24px; margin: 0 40px 32px; }
+  .table-title { font-size: 14px; font-weight: 600; color: #e2e8f0; margin-bottom: 16px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { text-align: left; padding: 10px 14px; background: #0f1117; color: #64748b; font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: .5px; border-bottom: 1px solid #2d3748; }
+  td { padding: 12px 14px; border-bottom: 1px solid #1e2535; color: #cbd5e1; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #1e2535; }
+  .pill { display: inline-block; padding: 2px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+  .pill-green { background: #14532d; color: #4ade80; }
+  .pill-red { background: #450a0a; color: #f87171; }
+  .pill-yellow { background: #451a03; color: #fbbf24; }
+  .pill-gray { background: #1e293b; color: #94a3b8; }
+
+  .footer { text-align: center; padding: 20px; color: #334155; font-size: 12px; border-top: 1px solid #1e2535; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>📊 Nova Imagen — Meta Ads Dashboard <span class="badge">CB · WP</span></h1>
+  <p>Período: 31 mayo – 14 junio 2026 &nbsp;·&nbsp; Campaña: Nova Imagen - CB - WP &nbsp;·&nbsp; Objetivo: Conversaciones iniciadas (WhatsApp)</p>
+</div>
+
+<!-- KPI Cards -->
+<div class="kpi-row">
+  <div class="kpi-card blue">
+    <div class="kpi-label">Inversión Total</div>
+    <div class="kpi-value">S/ 692.93</div>
+    <div class="kpi-sub">15 días activos</div>
+  </div>
+  <div class="kpi-card green">
+    <div class="kpi-label">Leads Generados</div>
+    <div class="kpi-value">403</div>
+    <div class="kpi-sub">Conversaciones iniciadas</div>
+  </div>
+  <div class="kpi-card yellow">
+    <div class="kpi-label">CPL Promedio</div>
+    <div class="kpi-value">S/ 1.72</div>
+    <div class="kpi-sub">Costo por lead</div>
+  </div>
+  <div class="kpi-card purple">
+    <div class="kpi-label">Hook Rate</div>
+    <div class="kpi-value">30.2%</div>
+    <div class="kpi-sub">Retención al 75% del video</div>
+  </div>
+  <div class="kpi-card teal">
+    <div class="kpi-label">Retención Total</div>
+    <div class="kpi-value">12.9%</div>
+    <div class="kpi-sub">Vieron el 100% del video</div>
+  </div>
+</div>
+
+<!-- Charts -->
+<div class="charts-grid">
+
+  <!-- Daily CPL trend -->
+  <div class="chart-card chart-full">
+    <div class="chart-title">📈 Tendencia Diaria — Inversión & CPL</div>
+    <div class="chart-sub">Gasto diario (barras) vs. costo por lead (línea)</div>
+    <canvas id="dailyChart"></canvas>
+  </div>
+
+  <!-- CPL por anuncio -->
+  <div class="chart-card">
+    <div class="chart-title">💰 CPL por Anuncio</div>
+    <div class="chart-sub">Costo por lead — S/ menor es mejor</div>
+    <canvas id="cplChart"></canvas>
+  </div>
+
+  <!-- Hook Rate vs Retención -->
+  <div class="chart-card">
+    <div class="chart-title">🎬 Hook Rate vs Retención (solo videos)</div>
+    <div class="chart-sub">% sobre reproducciones de 3 segundos</div>
+    <canvas id="hookChart"></canvas>
+  </div>
+
+  <!-- Inversión vs Resultados bubble -->
+  <div class="chart-card">
+    <div class="chart-title">🎯 Inversión vs Resultados</div>
+    <div class="chart-sub">Tamaño = CPL. Punto ideal: arriba-izquierda</div>
+    <canvas id="bubbleChart"></canvas>
+  </div>
+
+  <!-- Distribución inversión pie -->
+  <div class="chart-card">
+    <div class="chart-title">📊 Distribución de Inversión</div>
+    <div class="chart-sub">% del gasto total por anuncio</div>
+    <canvas id="pieChart"></canvas>
+  </div>
+
+</div>
+
+<!-- Tabla detalle -->
+<div class="table-card">
+  <div class="table-title">📋 Detalle por Anuncio</div>
+  <table>
+    <thead>
+      <tr>
+        <th>Anuncio</th>
+        <th>Inversión (S/)</th>
+        <th>Leads</th>
+        <th>CPL (S/)</th>
+        <th>Rep. 3s</th>
+        <th>Hook Rate 75%</th>
+        <th>Retención 100%</th>
+        <th>Eficiencia</th>
+      </tr>
+    </thead>
+    <tbody id="tableBody"></tbody>
+  </table>
+</div>
+
+<div class="footer">Dashboard generado para Meta Ads · Nova Imagen - CB - WP · 31 May – 14 Jun 2026</div>
+
+<script>
+const COLORS = ['#60a5fa','#4ade80','#fbbf24','#c084fc','#34d399','#f87171','#fb923c'];
+const COLORS_A = ['rgba(96,165,250,.15)','rgba(74,222,128,.15)','rgba(251,191,36,.15)','rgba(192,132,252,.15)','rgba(52,211,153,.15)'];
+
+const anuncios = ["Imagen 1", "Imagen 2", "Video 1", "Video 2", "Video 3", "Video 4", "Video 5"];
+const inversiones = [8.48, 6.58, 335.54, 48.86, 31.08, 8.38, 254.01];
+const resultados = [7, 5, 217, 39, 7, 9, 119];
+const cpls = [1.21, 1.32, 1.55, 1.25, 4.44, 0.93, 2.13];
+const hooks = [0.0, 0.0, 36.1, 23.5, 28.7, 26.8, 24.1];
+const retenciones = [0.0, 0.0, 14.4, 10.1, 17.7, 10.4, 11.5];
+
+const fechas = ["31 May", "01 Jun", "02 Jun", "03 Jun", "04 Jun", "05 Jun", "06 Jun", "07 Jun", "08 Jun", "09 Jun", "10 Jun", "11 Jun", "12 Jun", "13 Jun", "14 Jun"];
+const dailyInv = [48.6, 53.76, 44.68, 48.38, 56.07, 44.48, 41.37, 48.66, 35.03, 43.38, 48.39, 48.78, 38.0, 47.06, 46.29];
+const dailyRes = [9, 11, 10, 13, 66, 57, 35, 42, 25, 25, 35, 16, 14, 25, 20];
+const dailyCpl = [5.4, 4.89, 4.47, 3.72, 0.85, 0.78, 1.18, 1.16, 1.4, 1.74, 1.38, 3.05, 2.71, 1.88, 2.31];
+
+const vidNames = ["Video 1", "Video 2", "Video 3", "Video 4", "Video 5"];
+const vidHooks = [36.1, 23.5, 28.7, 26.8, 24.1];
+const vidRets = [14.4, 10.1, 17.7, 10.4, 11.5];
+const vidCpls = [1.55, 1.25, 4.44, 0.93, 2.13];
+const vidInv = [335.54, 48.86, 31.08, 8.38, 254.01];
+const vidRes = [217, 39, 7, 9, 119];
+
+// Tabla
+const tbody = document.getElementById('tableBody');
+const rep3s = [2, 7, 7394, 1204, 300, 250, 5501];
+anuncios.forEach((name, i) => {
+  const cpl = cpls[i];
+  const hook = hooks[i];
+  const ret = retenciones[i];
+  let badge = '';
+  if (cpl !== null && cpl <= 1.0) badge = '<span class="pill pill-green">⭐ Eficiente</span>';
+  else if (cpl !== null && cpl >= 3.5) badge = '<span class="pill pill-red">⚠️ Alto CPL</span>';
+  else if (cpl !== null) badge = '<span class="pill pill-yellow">✓ Normal</span>';
+  else badge = '<span class="pill pill-gray">— Sin datos</span>';
+
+  tbody.innerHTML += `<tr>
+    <td><strong>${name}</strong></td>
+    <td>S/ ${inversiones[i].toFixed(2)}</td>
+    <td>${resultados[i]}</td>
+    <td>${cpl ? 'S/ ' + cpl.toFixed(2) : '—'}</td>
+    <td>${rep3s[i] > 0 ? rep3s[i].toLocaleString() : '—'}</td>
+    <td>${hook && hook > 0 ? hook + '%' : '—'}</td>
+    <td>${ret && ret > 0 ? ret + '%' : '—'}</td>
+    <td>${badge}</td>
+  </tr>`;
+});
+
+const gridColor = 'rgba(255,255,255,0.06)';
+const tickColor = '#94a3b8';
+const baseOpts = {
+  responsive: true,
+  plugins: { legend: { labels: { color: tickColor, font: { size: 12 } } } },
+  scales: {
+    x: { ticks: { color: tickColor }, grid: { color: gridColor } },
+    y: { ticks: { color: tickColor }, grid: { color: gridColor } }
+  }
+};
+
+// 1. Daily trend
+new Chart(document.getElementById('dailyChart'), {
+  type: 'bar',
+  data: {
+    labels: fechas,
+    datasets: [
+      { label: 'Inversión (S/)', data: dailyInv, backgroundColor: 'rgba(96,165,250,0.5)', borderColor: '#60a5fa', borderWidth: 1, yAxisID: 'y' },
+      { label: 'CPL (S/)', data: dailyCpl, type: 'line', borderColor: '#fbbf24', backgroundColor: 'rgba(251,191,36,0.1)', fill: true, tension: 0.4, pointRadius: 4, pointBackgroundColor: '#fbbf24', yAxisID: 'y1' }
+    ]
+  },
+  options: {
+    responsive: true,
+    interaction: { mode: 'index', intersect: false },
+    plugins: { legend: { labels: { color: tickColor } } },
+    scales: {
+      x: { ticks: { color: tickColor }, grid: { color: gridColor } },
+      y: { ticks: { color: tickColor, callback: v => 'S/ ' + v }, grid: { color: gridColor }, title: { display: true, text: 'Inversión (S/)', color: tickColor } },
+      y1: { position: 'right', ticks: { color: '#fbbf24', callback: v => 'S/ ' + v }, grid: { drawOnChartArea: false }, title: { display: true, text: 'CPL (S/)', color: '#fbbf24' } }
+    }
+  }
+});
+
+// 2. CPL bar
+new Chart(document.getElementById('cplChart'), {
+  type: 'bar',
+  data: {
+    labels: anuncios,
+    datasets: [{ label: 'CPL (S/)', data: cpls, backgroundColor: COLORS.map(c => c + '99'), borderColor: COLORS, borderWidth: 2, borderRadius: 6 }]
+  },
+  options: { ...baseOpts, plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ' S/ ' + ctx.parsed.y.toFixed(2) } } }, scales: { x: { ticks: { color: tickColor }, grid: { color: gridColor } }, y: { ticks: { color: tickColor, callback: v => 'S/ ' + v }, grid: { color: gridColor } } } }
+});
+
+// 3. Hook Rate vs Retención grouped bar
+new Chart(document.getElementById('hookChart'), {
+  type: 'bar',
+  data: {
+    labels: vidNames,
+    datasets: [
+      { label: 'Hook Rate 75% (%)', data: vidHooks, backgroundColor: 'rgba(192,132,252,0.6)', borderColor: '#c084fc', borderWidth: 2, borderRadius: 4 },
+      { label: 'Retención 100% (%)', data: vidRets, backgroundColor: 'rgba(52,211,153,0.6)', borderColor: '#34d399', borderWidth: 2, borderRadius: 4 }
+    ]
+  },
+  options: { ...baseOpts, plugins: { legend: { labels: { color: tickColor } } }, scales: { x: { ticks: { color: tickColor }, grid: { color: gridColor } }, y: { ticks: { color: tickColor, callback: v => v + '%' }, grid: { color: gridColor } } } }
+});
+
+// 4. Bubble inversión vs resultados
+new Chart(document.getElementById('bubbleChart'), {
+  type: 'bubble',
+  data: {
+    datasets: vidNames.map((name, i) => ({
+      label: name,
+      data: [{ x: vidInv[i], y: vidRes[i], r: Math.max(6, Math.min(30, vidCpls[i] * 5)) }],
+      backgroundColor: COLORS[i] + '99',
+      borderColor: COLORS[i],
+      borderWidth: 2
+    }))
+  },
+  options: {
+    responsive: true,
+    plugins: { legend: { labels: { color: tickColor, font: { size: 12 } } }, tooltip: { callbacks: { label: ctx => `${ctx.dataset.label}: S/ ${ctx.parsed.x} inv. · ${ctx.parsed.y} leads · CPL S/ ${vidCpls[vidNames.indexOf(ctx.dataset.label)].toFixed(2)}` } } },
+    scales: { x: { title: { display: true, text: 'Inversión (S/)', color: tickColor }, ticks: { color: tickColor, callback: v => 'S/ '+v }, grid: { color: gridColor } }, y: { title: { display: true, text: 'Leads', color: tickColor }, ticks: { color: tickColor }, grid: { color: gridColor } } }
+  }
+});
+
+// 5. Pie inversión
+new Chart(document.getElementById('pieChart'), {
+  type: 'doughnut',
+  data: {
+    labels: anuncios,
+    datasets: [{ data: inversiones, backgroundColor: COLORS.map(c => c + 'cc'), borderColor: '#1a1d2e', borderWidth: 3 }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { position: 'right', labels: { color: tickColor, font: { size: 12 }, padding: 14 } },
+      tooltip: { callbacks: { label: ctx => ` S/ ${ctx.parsed.toFixed(2)} (${(ctx.parsed / 692.93 * 100).toFixed(1)}%)` } }
+    }
+  }
+});
+</script>
+</body>
+</html>
