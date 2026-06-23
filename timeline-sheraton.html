@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Timeline - Premiacion Sheraton - 25 Julio 2026</title>
+<link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&f[]=cabinet-grotesk@700,800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#0f0e0c;--surface:#181714;--surface2:#1e1c19;--border:#2e2c29;
+  --text:#e8e6e1;--muted:#8a8780;--primary:#c9a84c;--phl:#2a2318;
+  --green:#5a9e6f;--blue:#5591c7;--orange:#c97840;--purple:#9b72cc;--red:#c75a5a;
+  --fd:"Cabinet Grotesk",sans-serif;--fb:"Satoshi",sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--fb);background:var(--bg);color:var(--text);min-height:100dvh;line-height:1.6;font-size:16px}
+.hdr{background:linear-gradient(160deg,#1a1508,#0f0e0c);border-bottom:1px solid var(--border);padding:40px 24px 32px;text-align:center;position:relative;overflow:hidden}
+.hdr::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 60% 60% at 50% 0%,rgba(201,168,76,.10),transparent 70%);pointer-events:none}
+.badge{display:inline-flex;align-items:center;gap:6px;background:var(--phl);border:1px solid rgba(201,168,76,.25);color:var(--primary);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:4px 12px;border-radius:99px;margin-bottom:16px}
+h1{font-family:var(--fd);font-size:clamp(1.8rem,4vw,3rem);font-weight:800;line-height:1.1;margin-bottom:10px}
+h1 span{color:var(--primary)}
+.meta{display:flex;justify-content:center;flex-wrap:wrap;gap:12px;margin-top:16px}
+.chip{display:flex;align-items:center;gap:6px;background:var(--surface);border:1px solid var(--border);border-radius:99px;padding:5px 14px;font-size:13px;color:var(--muted)}
+.leg{max-width:900px;margin:20px auto 0;padding:0 24px;display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.li{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)}
+.dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+main{max-width:900px;margin:0 auto;padding:32px 24px 60px}
+.phase{margin-bottom:28px}
+.ph{display:flex;align-items:center;gap:12px;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+.pi{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.pt{font-family:var(--fd);font-size:1rem;font-weight:700}
+.pm{font-size:12px;color:var(--muted);margin-left:auto;background:var(--surface);border:1px solid var(--border);border-radius:99px;padding:3px 10px;white-space:nowrap}
+.evs{display:flex;flex-direction:column;gap:6px}
+.ev{display:grid;grid-template-columns:80px 1fr auto;align-items:start;gap:12px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 16px;position:relative;overflow:hidden;transition:background .18s,border-color .18s}
+.ev:hover{background:var(--surface2);border-color:rgba(201,168,76,.18)}
+.ev.hl{background:linear-gradient(90deg,rgba(201,168,76,.07),var(--surface));border-color:rgba(201,168,76,.35)}
+.ev.hl::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--primary);border-radius:3px 0 0 3px}
+.et{font-size:14px;font-weight:700;color:var(--primary);font-variant-numeric:tabular-nums;white-space:nowrap;padding-top:1px}
+.ea{font-size:14px;font-weight:500;line-height:1.4}
+.ea small{display:block;font-size:12px;color:var(--muted);font-weight:400;margin-top:2px}
+.eb{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:3px 8px;border-radius:99px;white-space:nowrap;flex-shrink:0;align-self:start}
+.t{background:rgba(90,158,111,.15);color:var(--green);border:1px solid rgba(90,158,111,.3)}
+.c{background:rgba(85,145,199,.15);color:var(--blue);border:1px solid rgba(85,145,199,.3)}
+.m{background:rgba(155,114,204,.15);color:var(--purple);border:1px solid rgba(155,114,204,.3)}
+.l{background:rgba(201,120,64,.15);color:var(--orange);border:1px solid rgba(201,120,64,.3)}
+.a{background:rgba(201,168,76,.15);color:var(--primary);border:1px solid rgba(201,168,76,.3)}
+.s{background:rgba(201,168,76,.22);color:var(--primary);border:1px solid rgba(201,168,76,.55)}
+.pause{background:var(--surface);border:1px dashed var(--border);border-radius:10px;padding:14px 16px;display:flex;align-items:center;gap:12px;margin-bottom:28px;font-size:13px;color:var(--muted)}
+.pause strong{color:var(--text);font-size:14px}
+.pt2{font-weight:700;color:var(--primary);font-size:14px;white-space:nowrap;min-width:80px}
+footer{text-align:center;padding:24px;border-top:1px solid var(--border);color:var(--muted);font-size:13px}
+footer span{color:var(--primary);font-weight:600}
+@media(max-width:600px){.ev{grid-template-columns:60px 1fr}.eb{display:none}}
+</style>
+</head>
+<body>
+<header class="hdr">
+  <div class="badge">&#11088; Premiacion &middot; Jueves 25 de Julio, 2026</div>
+  <h1>Timeline Operativo<br><span>Sheraton Lima</span></h1>
+  <div class="meta">
+    <div class="chip">&#128336; 11:00 AM &mdash; Post ceremonia</div>
+    <div class="chip">&#128101; Alexandra &middot; Aldair &middot; Coordinador &middot; Anfitrion &middot; Logistica</div>
+    <div class="chip">&#128205; Premio Quality Peru 2026 &middot; Premio Marca de Confianza</div>
+  </div>
+</header>
+<div class="leg">
+  <div class="li"><div class="dot" style="background:#5a9e6f"></div>Todos</div>
+  <div class="li"><div class="dot" style="background:#5591c7"></div>Coordinador</div>
+  <div class="li"><div class="dot" style="background:#9b72cc"></div>Alexandra + Aldair</div>
+  <div class="li"><div class="dot" style="background:#c97840"></div>Logistica</div>
+  <div class="li"><div class="dot" style="background:#c9a84c"></div>Anfitrion</div>
+</div>
+<main>
+  <section class="phase">
+    <div class="ph">
+      <div class="pi" style="background:rgba(90,158,111,.15);color:#5a9e6f">&#128295;</div>
+      <div class="pt">FASE 1 &mdash; Montaje e Implementacion</div>
+      <div class="pm">11:00 AM &ndash; 1:00 PM</div>
+    </div>
+    <div class="evs">
+      <div class="ev"><div class="et">10:00 AM</div><div class="ea">Salida desde oficina con todos los materiales<small>Roll screen, banner, merch, flyers, tarjetas, equipo audiovisual</small></div><span class="eb t">Todos</span></div>
+      <div class="ev"><div class="et">11:00 AM</div><div class="ea">Llegada al Sheraton &mdash; check in en el espacio asignado</div><span class="eb t">Todos</span></div>
+      <div class="ev"><div class="et">11:00 AM</div><div class="ea">Montaje de roll screen, banner y disposicion del merch en el stand</div><span class="eb l">Coord + Log</span></div>
+      <div class="ev"><div class="et">11:00 AM</div><div class="ea">Tomas del venue: ambiente, contexto del evento y contenido corporativo</div><span class="eb m">Alexandra + Aldair</span></div>
+      <div class="ev"><div class="et">12:30 PM</div><div class="ea">Stand listo &mdash; revision final de branding y presentacion</div><span class="eb c">Coordinador</span></div>
+      <div class="ev"><div class="et">12:30 PM</div><div class="ea">&#128247; Tomas del stand montado para redes sociales<small>Foto y video del material AURUS ya instalado</small></div><span class="eb m">Alexandra + Aldair</span></div>
+    </div>
+  </section>
+  <section class="phase">
+    <div class="ph">
+      <div class="pi" style="background:rgba(201,168,76,.12);color:#c9a84c">&#127908;</div>
+      <div class="pt">FASE 2 &mdash; Recepcion y Volanteo</div>
+      <div class="pm">1:30 &ndash; 2:50 PM</div>
+    </div>
+    <div class="evs">
+      <div class="ev"><div class="et">1:30 PM</div><div class="ea">Llegada del anfitrion &mdash; briefing de mensajes clave y dinamica de volanteo</div><span class="eb c">Coordinador</span></div>
+      <div class="ev hl"><div class="et">2:00 PM</div><div class="ea">&#9989; Anfitrion listo y activo &mdash; inicio de acreditacion de participantes</div><span class="eb a">Anfitrion</span></div>
+      <div class="ev"><div class="et">2:00 PM</div><div class="ea">Volanteo de flyers y folletos durante el ingreso de participantes</div><span class="eb a">Anfitrion</span></div>
+      <div class="ev"><div class="et">2:00 PM</div><div class="ea">Captura del ingreso, acreditacion y dinamica de volanteo</div><span class="eb m">Alexandra + Aldair</span></div>
+      <div class="ev"><div class="et">2:50 PM</div><div class="ea">Fin de acreditacion &mdash; anfitrion en standby junto al stand</div><span class="eb a">Anfitrion</span></div>
+    </div>
+  </section>
+  <div class="pause">
+    <div class="pt2">2:50 &ndash; 5:20 PM</div>
+    <div><strong>&#9208; TIEMPO MUERTO &mdash; Pausa operativa</strong><div style="margin-top:4px">El equipo descansa, revisa material grabado y recarga equipos. A las 5:10 PM reposicion del merch y verificacion final del stand.</div></div>
+  </div>
+  <section class="phase">
+    <div class="ph">
+      <div class="pi" style="background:rgba(201,120,64,.12);color:#c97840">&#9749;</div>
+      <div class="pt">FASE 3 &mdash; Coffee Break</div>
+      <div class="pm">5:20 &ndash; 6:00 PM</div>
+    </div>
+    <div class="evs">
+      <div class="ev"><div class="et">5:10 PM</div><div class="ea">Reposicion de merch y flyers &mdash; stand listo para el break</div><span class="eb c">Coordinador</span></div>
+      <div class="ev hl"><div class="et">5:20 PM</div><div class="ea">&#9749; Inicio del Coffee Break &mdash; maxima exposicion del stand AURUS</div><span class="eb t">Todos</span></div>
+      <div class="ev"><div class="et">5:20 PM</div><div class="ea">Anfitrion activo: entrega merch, flyers e interactua con asistentes</div><span class="eb a">Anfitrion</span></div>
+      <div class="ev"><div class="et">5:20 PM</div><div class="ea">Captura de interacciones, stand en accion y ambiente del break</div><span class="eb m">Alexandra + Aldair</span></div>
+      <div class="ev"><div class="et">5:20 PM</div><div class="ea">Coordinador presente: relacionarse con socios y representantes clave</div><span class="eb c">Coordinador</span></div>
+      <div class="ev hl"><div class="et">6:00 PM</div><div class="ea"><strong>&#10060; Fin del Coffee Break &mdash; ANFITRION SE RETIRA</strong><small>Su mision termina aqui. Agradecimiento y salida del venue.</small></div><span class="eb a">Anfitrion</span></div>
+    </div>
+  </section>
+  <section class="phase">
+    <div class="ph">
+      <div class="pi" style="background:rgba(201,168,76,.15);color:#c9a84c">&#127942;</div>
+      <div class="pt">FASE 4 &mdash; Ceremonia de Premiacion</div>
+      <div class="pm">6:50 PM &ndash; Termino</div>
+    </div>
+    <div class="evs">
+      <div class="ev"><div class="et">6:50 PM</div><div class="ea">Alexandra y Aldair en posicion frente al escenario &mdash; equipos listos<small>Camara encendida, baterias chequeadas, visibilidad al podio asegurada</small></div><span class="eb m">Alexandra + Aldair</span></div>
+      <div class="ev hl"><div class="et">7:00 PM</div><div class="ea">&#127942; Inicio oficial de la Ceremonia de Premiacion<small>Premio Quality Peru 2026 + Premio Marca de Confianza</small></div><span class="eb s">&#11088; CLAVE</span></div>
+      <div class="ev"><div class="et">Durante</div><div class="ea">Grabacion y fotografia cuando AURUS sea mencionada o premiada</div><span class="eb m">Alexandra + Aldair</span></div>
+      <div class="ev hl"><div class="et">&#128247;</div><div class="ea"><strong>CAPTURA PRIORITARIA: Foto oficial del equipo AURUS con el reconocimiento</strong><small>El momento mas importante del evento para marketing</small></div><span class="eb s">&#11088; PRIORITARIO</span></div>
+      <div class="ev"><div class="et">Post-premio</div><div class="ea">&#9989; Mision cumplida &mdash; equipo de marketing se retira<small>La cena de clausura (20:30h) no es relevante para AURUS</small></div><span class="eb m">Alexandra + Aldair</span></div>
+    </div>
+  </section>
+  <section class="phase">
+    <div class="ph">
+      <div class="pi" style="background:rgba(199,90,90,.12);color:#c75a5a">&#128230;</div>
+      <div class="pt">FASE 5 &mdash; Cierre y Retorno</div>
+      <div class="pm">Post-premio</div>
+    </div>
+    <div class="evs">
+      <div class="ev"><div class="et">Post-premio</div><div class="ea">Desmontaje: recojo de roll screen, banner y merch restante</div><span class="eb l">Coord + Log</span></div>
+      <div class="ev"><div class="et">Post-premio</div><div class="ea">Verificar que no quede ningun material AURUS en el venue</div><span class="eb c">Coordinador</span></div>
+      <div class="ev"><div class="et">Retorno</div><div class="ea">Traslado a oficina con materiales y equipos<small>Entrega de contenido grabado por Alexandra y Aldair en las siguientes 24h</small></div><span class="eb t">Todos</span></div>
+    </div>
+  </section>
+</main>
+<footer>
+  <p>La cena de clausura (20:30h) <strong>no requiere presencia del equipo AURUS</strong>. Una vez grabado el premio, el equipo se retira. &nbsp;&middot;&nbsp; <span>AURUS Constructora</span></p>
+</footer>
+</body>
+</html>
