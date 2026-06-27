@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard Meta Ads — Jun 2026</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+* { box-sizing:border-box; margin:0; padding:0; }
+body { font-family:'Segoe UI',sans-serif; background:#0f1117; color:#e2e8f0; }
+
+.header { background:linear-gradient(135deg,#1a1d2e,#16213e); padding:20px 28px; border-bottom:1px solid #2d3748; display:flex; align-items:center; flex-wrap:wrap; gap:10px; justify-content:space-between; }
+.header h1 { font-size:18px; font-weight:700; color:#fff; }
+.header p { font-size:12px; color:#94a3b8; margin-top:3px; }
+.badges { display:flex; gap:6px; flex-wrap:wrap; margin-top:5px; }
+.badge { color:#fff; font-size:11px; padding:2px 9px; border-radius:20px; }
+.b1{background:#3b82f6;} .b2{background:#16a34a;} .b3{background:#ea580c;}
+
+.layout { display:flex; min-height:calc(100vh - 70px); }
+
+/* ── SIDEBAR ── */
+.sidebar { width:268px; min-width:248px; background:#111827; border-right:1px solid #1e2535; padding:16px 13px; overflow-y:auto; flex-shrink:0; display:flex; flex-direction:column; gap:0; }
+.sidebar::-webkit-scrollbar { width:4px; } .sidebar::-webkit-scrollbar-thumb { background:#2d3748; border-radius:4px; }
+
+.s-section { margin-bottom:14px; }
+.s-title { font-size:10px; text-transform:uppercase; letter-spacing:1px; color:#475569; font-weight:700; margin-bottom:8px; display:flex; align-items:center; gap:6px; }
+.s-title span { flex:1; }
+.s-count { background:#1e2535; color:#64748b; font-size:10px; padding:1px 6px; border-radius:20px; font-weight:400; }
+
+.date-row { display:flex; gap:6px; }
+.date-input { background:#1a1d2e; border:1px solid #2d3748; border-radius:7px; padding:7px 8px; color:#e2e8f0; font-size:12px; width:100%; outline:none; transition:border .15s; }
+.date-input:focus { border-color:#3b82f6; }
+
+.filter-search { background:#1a1d2e; border:1px solid #2d3748; border-radius:7px; padding:6px 9px; color:#e2e8f0; font-size:12px; width:100%; outline:none; margin-bottom:6px; }
+.filter-search::placeholder { color:#475569; }
+
+.sa-row { display:flex; gap:10px; margin-bottom:5px; }
+.sa-btn { font-size:11px; color:#3b82f6; cursor:pointer; }
+.sa-btn:hover { text-decoration:underline; }
+
+.check-list { max-height:115px; overflow-y:auto; display:flex; flex-direction:column; gap:2px; padding-right:2px; }
+.check-list::-webkit-scrollbar { width:3px; } .check-list::-webkit-scrollbar-thumb { background:#2d3748; border-radius:4px; }
+
+.check-item { display:flex; align-items:center; gap:7px; padding:5px 7px; border-radius:6px; cursor:pointer; font-size:12px; color:#cbd5e1; transition:background .12s; user-select:none; }
+.check-item:hover { background:#1e2535; }
+.check-item input { accent-color:#3b82f6; width:13px; height:13px; cursor:pointer; flex-shrink:0; }
+.check-item.disabled { opacity:0.35; pointer-events:none; }
+
+/* cascade indicator */
+.cascade-note { font-size:10px; color:#475569; font-style:italic; margin-bottom:5px; }
+
+.divider { height:1px; background:#1e2535; margin:4px 0 12px; }
+
+.apply-btn { width:100%; padding:10px; background:#3b82f6; color:#fff; border:none; border-radius:8px; font-size:13px; font-weight:600; cursor:pointer; transition:background .2s; margin-top:4px; }
+.apply-btn:hover { background:#2563eb; }
+.reset-btn { width:100%; padding:8px; background:transparent; color:#64748b; border:1px solid #2d3748; border-radius:8px; font-size:12px; cursor:pointer; transition:all .2s; margin-top:6px; }
+.reset-btn:hover { color:#e2e8f0; border-color:#475569; }
+
+/* ── MAIN ── */
+.main { flex:1; padding:20px 24px; overflow-x:hidden; }
+.nav-tabs { display:flex; gap:6px; margin-bottom:18px; flex-wrap:wrap; }
+.tab { padding:8px 16px; font-size:13px; font-weight:600; border-radius:8px; cursor:pointer; color:#64748b; background:transparent; border:1px solid transparent; transition:all .2s; }
+.tab.active { color:#60a5fa; background:#1a1d2e; border-color:#2d3748; }
+.tab:hover:not(.active) { color:#94a3b8; }
+.tab-content { display:none; } .tab-content.active { display:block; }
+
+.kpi-row { display:grid; grid-template-columns:repeat(5,1fr); gap:11px; margin-bottom:18px; }
+.kpi-card { background:#1a1d2e; border:1px solid #2d3748; border-radius:10px; padding:15px; text-align:center; transition:transform .15s; }
+.kpi-card:hover { transform:translateY(-2px); }
+.kpi-label { font-size:10px; text-transform:uppercase; letter-spacing:1px; color:#64748b; margin-bottom:5px; }
+.kpi-value { font-size:25px; font-weight:700; }
+.kpi-sub { font-size:11px; color:#64748b; margin-top:3px; }
+.blue .kpi-value{color:#60a5fa;} .green .kpi-value{color:#4ade80;} .yellow .kpi-value{color:#fbbf24;} .purple .kpi-value{color:#c084fc;} .teal .kpi-value{color:#34d399;}
+
+.charts-grid { display:grid; grid-template-columns:1fr 1fr; gap:15px; margin-bottom:18px; }
+.full { grid-column:1/-1; }
+.chart-card { background:#1a1d2e; border:1px solid #2d3748; border-radius:10px; padding:18px; }
+.chart-title { font-size:13px; font-weight:600; color:#e2e8f0; }
+.chart-sub { font-size:11px; color:#64748b; margin:3px 0 13px; }
+canvas { max-height:255px; }
+
+.table-card { background:#1a1d2e; border:1px solid #2d3748; border-radius:10px; padding:18px; }
+.table-top { display:flex; justify-content:space-between; align-items:center; margin-bottom:13px; flex-wrap:wrap; gap:8px; }
+.table-title-sm { font-size:13px; font-weight:600; }
+.rc { font-size:11px; color:#64748b; margin-top:2px; }
+.tbl-search { background:#0f1117; border:1px solid #2d3748; border-radius:7px; padding:7px 11px; color:#e2e8f0; font-size:12px; width:185px; outline:none; }
+table { width:100%; border-collapse:collapse; font-size:12px; }
+th { padding:8px 10px; background:#0f1117; color:#64748b; font-size:10px; text-transform:uppercase; letter-spacing:.5px; border-bottom:1px solid #2d3748; text-align:left; white-space:nowrap; }
+td { padding:9px 10px; border-bottom:1px solid #1e2535; color:#cbd5e1; vertical-align:middle; }
+tr:last-child td { border-bottom:none; }
+tr:hover td { background:#1e2535; }
+.camp-tag { display:inline-block; background:#1e3a5f; color:#93c5fd; font-size:10px; padding:1px 7px; border-radius:20px; white-space:nowrap; max-width:125px; overflow:hidden; text-overflow:ellipsis; }
+.pill { display:inline-block; padding:2px 8px; border-radius:20px; font-size:10px; font-weight:600; white-space:nowrap; }
+.pg{background:#14532d;color:#4ade80;} .pb{background:#1e3a5f;color:#60a5fa;} .pr{background:#450a0a;color:#f87171;} .py{background:#451a03;color:#fbbf24;} .pgr{background:#1e293b;color:#94a3b8;}
+.empty { text-align:center; padding:34px; color:#475569; font-size:13px; }
+
+@media(max-width:860px) {
+  .layout{flex-direction:column;} .sidebar{width:100%;border-right:none;border-bottom:1px solid #1e2535;}
+  .kpi-row{grid-template-columns:repeat(2,1fr);} .charts-grid{grid-template-columns:1fr;} .full{grid-column:1;}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <h1>📊 Meta Ads Dashboard</h1>
+    <p>1 junio – 27 junio 2026 &nbsp;·&nbsp; Arequipa & Lima</p>
+    <div class="badges">
+      <span class="badge b1">7 Campañas</span>
+      <span class="badge b2">12 Ad Sets</span>
+      <span class="badge b3">28 Anuncios</span>
+    </div>
+  </div>
+</div>
+
+<div class="layout">
+
+<!-- ══ SIDEBAR ══ -->
+<div class="sidebar">
+
+  <div class="s-section">
+    <div class="s-title"><span>📅 Rango de fechas</span></div>
+    <div class="date-row">
+      <input class="date-input" type="date" id="fechaDesde" value="2026-06-01" min="2026-06-01" max="2026-06-27">
+      <input class="date-input" type="date" id="fechaHasta" value="2026-06-27" min="2026-06-01" max="2026-06-27">
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- CAMPAÑA -->
+  <div class="s-section">
+    <div class="s-title"><span>🗂️ Campaña</span><span class="s-count" id="cnt-camp">—</span></div>
+    <input class="filter-search" type="text" id="search-camp" placeholder="Buscar campaña..." oninput="filterChecks('campChecks',this.value)">
+    <div class="sa-row">
+      <span class="sa-btn" onclick="selectAll('campChecks',true)">Todos</span>
+      <span class="sa-btn" onclick="selectAll('campChecks',false)">Ninguno</span>
+    </div>
+    <div class="check-list" id="campChecks"></div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- AD SET — cascades from campaign -->
+  <div class="s-section">
+    <div class="s-title"><span>📦 Conjunto de anuncios</span><span class="s-count" id="cnt-adset">—</span></div>
+    <div class="cascade-note">↑ Se actualiza según la campaña seleccionada</div>
+    <input class="filter-search" type="text" id="search-adset" placeholder="Buscar ad set..." oninput="filterChecks('adsetChecks',this.value)">
+    <div class="sa-row">
+      <span class="sa-btn" onclick="selectAll('adsetChecks',true)">Todos</span>
+      <span class="sa-btn" onclick="selectAll('adsetChecks',false)">Ninguno</span>
+    </div>
+    <div class="check-list" id="adsetChecks"></div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ANUNCIO — cascades from ad set -->
+  <div class="s-section">
+    <div class="s-title"><span>🎨 Anuncio</span><span class="s-count" id="cnt-anuncio">—</span></div>
+    <div class="cascade-note">↑ Se actualiza según el ad set seleccionado</div>
+    <input class="filter-search" type="text" id="search-anuncio" placeholder="Buscar anuncio..." oninput="filterChecks('anuncioChecks',this.value)">
+    <div class="sa-row">
+      <span class="sa-btn" onclick="selectAll('anuncioChecks',true)">Todos</span>
+      <span class="sa-btn" onclick="selectAll('anuncioChecks',false)">Ninguno</span>
+    </div>
+    <div class="check-list" id="anuncioChecks"></div>
+  </div>
+
+  <div class="divider"></div>
+
+  <button class="apply-btn" onclick="applyFilters()">✅ Aplicar filtros</button>
+  <button class="reset-btn" onclick="resetFilters()">↺ Resetear todo</button>
+</div>
+
+<!-- ══ MAIN ══ -->
+<div class="main">
+  <div class="nav-tabs">
+    <button class="tab active" onclick="showTab('resumen',this)">📈 Resumen</button>
+    <button class="tab" onclick="showTab('campanas',this)">🗂️ Por Campaña</button>
+    <button class="tab" onclick="showTab('creativos',this)">🎬 Creativos</button>
+    <button class="tab" onclick="showTab('tabla',this)">📋 Tabla</button>
+  </div>
+
+  <!-- RESUMEN -->
+  <div id="tab-resumen" class="tab-content active">
+    <div class="kpi-row">
+      <div class="kpi-card blue"><div class="kpi-label">Inversión</div><div class="kpi-value" id="k-inv">—</div><div class="kpi-sub">S/ gastados</div></div>
+      <div class="kpi-card green"><div class="kpi-label">Leads</div><div class="kpi-value" id="k-leads">—</div><div class="kpi-sub">Conversaciones</div></div>
+      <div class="kpi-card yellow"><div class="kpi-label">CPL</div><div class="kpi-value" id="k-cpl">—</div><div class="kpi-sub">Costo por lead</div></div>
+      <div class="kpi-card purple"><div class="kpi-label">Hook Rate</div><div class="kpi-value" id="k-hook">—</div><div class="kpi-sub">Retención al 75%</div></div>
+      <div class="kpi-card teal"><div class="kpi-label">Retención</div><div class="kpi-value" id="k-ret">—</div><div class="kpi-sub">Completaron video</div></div>
+    </div>
+    <div class="charts-grid">
+      <div class="chart-card full"><div class="chart-title">📅 Tendencia Diaria — Inversión & CPL</div><div class="chart-sub">Barras = Inversión · Línea = CPL</div><canvas id="dailyChart"></canvas></div>
+      <div class="chart-card"><div class="chart-title">🥧 Inversión por Campaña</div><div class="chart-sub">% del gasto filtrado</div><canvas id="pieChart"></canvas></div>
+      <div class="chart-card"><div class="chart-title">⚡ CPL por Campaña</div><div class="chart-sub">S/ por lead — menor es mejor</div><canvas id="cplCampChart"></canvas></div>
+    </div>
+  </div>
+
+  <!-- CAMPAÑAS -->
+  <div id="tab-campanas" class="tab-content">
+    <div class="charts-grid">
+      <div class="chart-card"><div class="chart-title">🎯 Inversión vs Leads</div><div class="chart-sub">Tamaño de burbuja = CPL</div><canvas id="bubbleChart"></canvas></div>
+      <div class="chart-card"><div class="chart-title">📊 Leads por Campaña</div><div class="chart-sub">Volumen total de conversaciones</div><canvas id="leadsChart"></canvas></div>
+      <div class="chart-card full"><div class="chart-title">📋 Resumen por Campaña</div><div class="chart-sub">&nbsp;</div><div style="overflow-x:auto"><table><thead><tr><th>Campaña</th><th>Inversión</th><th>Leads</th><th>CPL</th><th>Eficiencia</th></tr></thead><tbody id="campTable"></tbody></table></div></div>
+    </div>
+  </div>
+
+  <!-- CREATIVOS -->
+  <div id="tab-creativos" class="tab-content">
+    <div class="charts-grid">
+      <div class="chart-card full"><div class="chart-title">🎬 Hook Rate vs Retención por Anuncio</div><div class="chart-sub">% sobre reproducciones de 3s · solo anuncios con video</div><canvas id="hookChart" style="max-height:300px;"></canvas></div>
+      <div class="chart-card"><div class="chart-title">🏆 Top 10 por Leads</div><div class="chart-sub">Anuncios con más conversaciones</div><canvas id="topLeadsChart"></canvas></div>
+      <div class="chart-card"><div class="chart-title">💰 Top 10 CPL más bajo</div><div class="chart-sub">Solo anuncios con resultados</div><canvas id="topCplChart"></canvas></div>
+    </div>
+  </div>
+
+  <!-- TABLA -->
+  <div id="tab-tabla" class="tab-content">
+    <div class="table-card">
+      <div class="table-top">
+        <div><div class="table-title-sm">📋 Detalle por Anuncio</div><div class="rc" id="rowCount"></div></div>
+        <input class="tbl-search" type="text" placeholder="🔍 Buscar..." oninput="filterTableSearch(this.value)">
+      </div>
+      <div style="overflow-x:auto">
+        <table><thead><tr><th>Anuncio</th><th>Campaña</th><th>Ad Set</th><th>Inversión</th><th>Leads</th><th>CPL</th><th>Rep. 3s</th><th>Hook 75%</th><th>Ret. 100%</th><th>Eficiencia</th></tr></thead><tbody id="tableBody"></tbody></table>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+// ══ DATA ══
+const RAW = [{"fecha": "2026-06-27", "campana": "Whatsapp Directo Arequipa", "adset": "BLM WSP Arequipa", "anuncio": "BLM Testimonio Camila", "inversion": 7.34, "resultados": 5, "rep3s": 262, "rep75": 32, "rep100": 10}, {"fecha": "2026-06-27", "campana": "CAMPA\u00d1A DE EMERGENCIA AREQUIPA", "adset": "BLM", "anuncio": "Blm 3", "inversion": 14.85, "resultados": 10, "rep3s": 649, "rep75": 129, "rep100": 52}, {"fecha": "2026-06-27", "campana": "Whatsapp Directo Arequipa", "adset": "Mentoplastia WSP Arequipa", "anuncio": "Mentplastia nuevo", "inversion": 8.77, "resultados": 5, "rep3s": 458, "rep75": 106, "rep100": 51}, {"fecha": "2026-06-27", "campana": "Whatsapp Directo Lima", "adset": "Mentoplastia WSP Lima", "anuncio": "Mentoplastia nuevo", "inversion": 13.53, "resultados": 2, "rep3s": 424, "rep75": 92, "rep100": 53}, {"fecha": "2026-06-27", "campana": "Whatsapp Directo Arequipa", "adset": "Endolaser WSP Arequipa", "anuncio": "endolaser corto, explicativo y A&D", "inversion": 0.02, "resultados": 0, "rep3s": 1, "rep75": 0, "rep100": 0}, {"fecha": "2026-06-27", "campana": "Whatsapp Directo Arequipa", "adset": "Endolaser WSP Arequipa", "anuncio": "endolaser + blm video ganador", "inversion": 6.64, "resultados": 6, "rep3s": 292, "rep75": 69, "rep100": 27}, {"fecha": "2026-06-27", "campana": "Whatsapp Directo Lima", "adset": "Endolaser WSP Lima", "anuncio": "endolaser + blm video ganador", "inversion": 11.01, "resultados": 21, "rep3s": 431, "rep75": 122, "rep100": 44}, {"fecha": "2026-06-27", "campana": "Whatsapp Directo Lima", "adset": "BLM WSP Lima", "anuncio": "BLM explicativo 2", "inversion": 23.15, "resultados": 34, "rep3s": 648, "rep75": 209, "rep100": 88}, {"fecha": "2026-06-26", "campana": "Whatsapp Directo Arequipa", "adset": "Endolaser WSP Arequipa", "anuncio": "endolaser + blm video ganador", "inversion": 22.17, "resultados": 26, "rep3s": 1306, "rep75": 315, "rep100": 140}, {"fecha": "2026-06-26", "campana": "Whatsapp Directo Lima", "adset": "BLM WSP Lima", "anuncio": "BLM explicativo 2", "inversion": 44.51, "resultados": 54, "rep3s": 1168, "rep75": 415, "rep100": 173}, {"fecha": "2026-06-26", "campana": "Whatsapp Directo Lima", "adset": "Endolaser WSP Lima", "anuncio": "endolaser corto, explicativo y A&D", "inversion": 0.02, "resultados": 0, "rep3s": 0, "rep75": 0, "rep100": 0}, {"fecha": "2026-06-26", "campana": "Whatsapp Directo Lima", "adset": "Endolaser WSP Lima", "anuncio": "endolaser + blm video ganador", "inversion": 31.64, "resultados": 49, "rep3s": 1371, "rep75": 413, "rep100": 154}, {"fecha": "2026-06-26", "campana": "Whatsapp Directo Arequipa", "adset": "BLM WSP Arequipa", "anuncio": "BLM explicativo 2", "inversion": 8.89, "resultados": 5, "rep3s": 274, "rep75": 70, "rep100": 25}, {"fecha": "2026-06-26", "campana": "Whatsapp Directo Arequipa", "adset": "BLM WSP Arequipa", "anuncio": "BLM Camila corregido", "inversion": 1.57, "resultados": 1, "rep3s": 70, "rep75": 6, "rep100": 5}, {"fecha": "2026-06-26", "campana": "Whatsapp Directo Lima", "adset": "Mentoplastia WSP Lima", "anuncio": "Mentoplastia nuevo", "inversion": 39.04, "resultados": 34, "rep3s": 1282, "rep75": 268, "rep100": 127}, {"fecha": "2026-06-26", "campana": "Whatsapp Directo Arequipa", "adset": "Mentoplastia WSP Arequipa", "anuncio": "Mentplastia nuevo", "inversion": 27.31, "resultados": 13, "rep3s": 1463, "rep75": 303, "rep100": 124}, {"fecha": "2026-06-26", "campana": "CAMPA\u00d1A DE EMERGENCIA AREQUIPA", "adset": "BLM", "anuncio": "Blm 3", "inversion": 42.98, "resultados": 36, "rep3s": 2159, "rep75": 533, "rep100": 185}, {"fecha": "2026-06-26", "campana": "Whatsapp Directo Arequipa", "adset": "BLM WSP Arequipa", "anuncio": "BLM Testimonio Camila", "inversion": 15.21, "resultados": 9, "rep3s": 670, "rep75": 62, "rep100": 19}, {"fecha": "2026-06-26", "campana": "Whatsapp Directo Lima", "adset": "BLM WSP Lima", "anuncio": "BLM Testimonio camila", "inversion": 14.65, "resultados": 10, "rep3s": 524, "rep75": 64, "rep100": 18}, {"fecha": "2026-06-25", "campana": "Whatsapp Directo Arequipa", "adset": "Endolaser WSP Arequipa", "anuncio": "endolaser corto, explicativo y A&D", "inversion": 0.08, "resultados": 0, "rep3s": 3, "rep75": 2, "rep100": 2}, {"fecha": "2026-06-25", "campana": "Whatsapp Directo Lima", "adset": "BLM WSP Lima", "anuncio": "BLM explicativo 2", "inversion": 24.01, "resultados": 28, "rep3s": 635, "rep75": 209, "rep100": 68}, {"fecha": "2026-06-25", "campana": "Whatsapp Directo Lima", "adset": "Endolaser WSP Lima", "anuncio": "endolaser + blm video ganador", "inversion": 18.5, "resultados": 31, "rep3s": 775, "rep75": 239, "rep100": 89}, {"fecha": "2026-06-25", "campana": "Whatsapp Directo Arequipa", "adset": "Endolaser WSP Arequipa", "anuncio": "endolaser + blm video ganador", "inversion": 12.36, "resultados": 11, "rep3s": 617, "rep75": 130, "rep100": 66}, {"fecha": "2026-06-25", "campana": "Whatsapp Directo Lima", "adset": "Mentoplastia WSP Lima", "anuncio": "Mentoplastia nuevo", "inversion": 18.95, "resultados": 16, "rep3s": 746, "rep75": 177, "rep100": 87}, {"fecha": "2026-06-25", "campana": "CAMPA\u00d1A DE EMERGENCIA AREQUIPA", "adset": "BLM", "anuncio": "Blm 3", "inversion": 37.12, "resultados": 24, "rep3s": 2208, "rep75": 476, "rep100": 195}, {"fecha": "2026-06-25", "campana": "Whatsapp Directo Arequipa", "adset": "BLM WSP Arequipa", "anuncio": "BLM Testimonio Camila", "inversion": 10.93, "resultados": 10, "rep3s": 526, "rep75": 66, "rep100": 23}, {"fecha": "2026-06-25", "campana": "Whatsapp Directo Lima", "adset": "BLM WSP Lima", "anuncio": "BLM Testimonio camila", "inversion": 7.22, "resultados": 10, "rep3s": 292, "rep75": 35, "rep100": 7}, {"fecha": "2026-06-25", "campana": "Whatsapp Directo Arequipa", "adset": "Mentoplastia WSP Arequipa", "anuncio": "Mentplastia nuevo", "inversion": 7.4, "resultados": 8, "rep3s": 410, "rep75": 85, "rep100": 36}, {"fecha": "2026-06-24", "campana": "Whatsapp Directo Arequipa", "adset": "Endolaser WSP Arequipa", "anuncio": "endolaser + blm video ganador", "inversion": 20.38, "resultados": 16, "rep3s": 850, "rep75": 198, "rep100": 88}, {"fecha": "2026-06-24", "campana": "Whatsapp Directo Arequipa", "adset": "Endolaser WSP Arequipa", "anuncio": "endolaser corto, explicativo y A&D", "inversion": 0.0, "resultados": 0, "rep3s": 0, "rep75": 0, "rep100": 0}, {"fecha": "2026-06-24", "campana": "Whatsapp Directo Lima", "adset": "BLM WSP Lima", "anuncio": "BLM explicativo 2", "inversion": 5.89, "resultados": 4, "rep3s": 190, "rep75": 64, "rep100": 30}, {"fecha": "2026-06-24", "campana": "Whatsapp Directo Lima", "adset": "Endolaser WSP Lima", "anuncio": "endolaser corto, explicativo y A&D", "inversion": 0.02, "resultados": 0, "rep3s": 1, "rep75": 0, "rep100": 0}, {"fecha": "2026-06-24", "campana": "Whatsapp Directo Lima", "adset": "Endolaser WSP Lima", "anuncio": "endolaser + blm video ganador", "inversion": 31.32, "resultados": 55, "rep3s": 1157, "rep75": 371, "rep100": 149}, {"fecha": "2026-06-24", "campana": "Whatsapp Directo Arequipa", "adset": "BLM WSP Arequipa", "anuncio": "BLM explicativo 2", "inversion": 6.62, "resultados": 1, "rep3s": 224, "rep75": 62, "rep100": 21}, {"fecha": "2026-06-24", "campana": "Whatsapp Directo Arequipa", "adset": "Mentoplastia WSP Arequipa", "anuncio": "Mentplastia nuevo", "inversion": 20.54, "resultados": 20, "rep3s": 1226, "rep75": 247, "rep100": 95}, {"fecha": "2026-06-24", "campana": "Whatsapp Directo Lima", "adset": "Mentoplastia WSP Lima", "anuncio": "Mentoplastia nuevo", "inversion": 34.68, "resultados": 15, "rep3s": 1131, "rep75": 228, "rep100": 112}, {"fecha": "2026-06-24", "campana": "CAMPA\u00d1A DE EMERGENCIA AREQUIPA", "adset": "BLM", "anuncio": "Blm 3", "inversion": 39.7, "resultados": 25, "rep3s": 1990, "rep75": 443, "rep100": 201}, {"fecha": "2026-06-24", "campana": "Whatsapp Directo Arequipa", "adset": "BLM WSP Arequipa", "anuncio": "BLM Camila corregido", "inversion": 4.59, "resultados": 4, "rep3s": 142, "rep75": 28, "rep100": 16}, {"fecha": "2026-06-24", "campana": "Whatsapp Directo Arequipa", "adset": "BLM WSP Arequipa", "anuncio": "BLM Testimonio Camila", "inversion": 13.66, "resultados": 8, "rep3s": 568, "rep75": 59, "rep100": 29}, {"fecha": "2026-06-24", "campana": "Whatsapp Directo Lima", "adset": "BLM WSP Lima", "anuncio": "BLM Testimonio camila", "inversion": 41.03, "resultados": 33, "rep3s": 1295, "rep75": 156, "rep100": 37}, {"fecha": "2026-06-23", "campana": "Whatsapp Directo Lima", "adset": "Endolaser WSP Lima", "anuncio": "endolaser + blm video ganador", "inversion": 42.06, "resultados": 73, "rep3s": 1546, "rep75": 455, "rep100": 174}, {"fecha": "2026-06-23", "campana": "Whatsapp Directo Arequipa", "adset": "Endolaser WSP Arequipa", "anuncio": "endolaser + blm video ganador", "inversion": 22.12, "resultados": 19, "rep3s": 1196, "rep75": 265, "rep100": 114}, {"fecha": "2026-06-23", "campana": "Whatsapp Directo Arequipa", "adset": "BLM WSP Arequipa", "anuncio": "BLM explicativo 2", "inversion": 1.77, "resultados": 1, "rep3s": 55, "rep75": 13, "rep100": 8}, {"fecha": "2026-06-23", "campana": "Whatsapp Directo Lima", "adset": "Mentoplastia WSP Lima", "anuncio": "Mentoplastia nuevo", "inversion": 39.09, "resultados": 27, "rep3s": 1344, "rep75": 287, "rep100": 144}, {"fecha": "2026-06-23", "campana": "Whatsapp Directo Lima", "adset": "Endolaser WSP Lima", "anuncio": "endolaser corto, explicativo y A&D", "inversion": 0.03, "resultados": 2, "rep3s": 0, "rep75": 0, "rep100": 0}, {"fecha": "2026-06-23", "campana": "Whatsapp Directo Lima", "adset": "BLM WSP Lima", "anuncio": "BLM antes y despues camila", "inversion": 2.77, "resultados": 3, "rep3s": 88, "rep75": 16, "rep100": 10}, {"fecha": "2026-06-23", "campana": "Whatsapp Directo Lima", "adset": "BLM WSP Lima", "anuncio": "BLM explicativo 2", "inversion": 1.64, "resultados": 3, "rep3s": 59, "rep75": 17, "rep100": 13}, {"fecha": "2026-06-23", "campana": "Whatsapp Directo Arequipa", "adset": "Endolaser WSP Arequipa", "anuncio": "endolaser corto, explicativo y A&D", "inversion": 0.03, "resultados": 0, "rep3s": 1, "rep75": 0, "rep100": 0}, {"fecha": "2026-06-23", "campana": "Whatsapp Directo Arequipa", "adset": "Mentoplastia WSP Arequipa", "anuncio": "Mentplastia nuevo", "inversion": 26.77, "resultados": 15, "rep3s": 1546, "rep75": 317, "rep100": 132}, {"fecha": "2026-06-23", "campana": "Whatsapp Directo Arequipa", "adset": "BLM WSP Arequipa", "anuncio": "BLM Camila corregido", "inversion": 1.09, "resultados": 1, "rep3s": 48, "rep75": 12, "rep100": 8}, {"fecha": "2026-06-23", "campana": "Whatsapp Directo Arequipa", "adset": "BLM WSP Arequipa", "anuncio": "BLM Testimonio Camila", "inversion": 19.36, "resultados": 7, "rep3s": 859, "rep75": 103, "rep100": 23}, {"fecha": "2026-06-23", "campana": "Whatsapp Directo Lima", "adset": "BLM WSP Lima", "anuncio": "BLM Camila corregido", "inversion": 1.19, "resultados": 0, "rep3s": 46, "rep75": 12, "rep100": 7}, {"fecha": "2026-06-23", "campana": "Whatsapp Directo Lima", "adset": "BLM WSP Lima", "anuncio": "BLM Jimena", "inversion": 0.0, "resultados": 1, "rep3s": 0, "rep75": 0, "rep100": 0}, {"fecha": "2026-06-23", "campana": "Whatsapp Directo Lima", "adset": "BLM WSP Lima", "anuncio": "BLM Testimonio camila", "inversion": 44.65, "resultados": 39, "rep3s": 1544, "rep75": 167, "rep100": 45}, {"fecha": "2026-06-23", "campana": "CAMPA\u00d1A DE EMERGENCIA AREQUIPA", "adset": "MENTOPLASTIA", "anuncio": "Mentoplastia 4", "inversion": 0.17, "resultados": 0, "rep3s": 4, "rep75": 1, "rep100": 1}, {"fecha": "2026-06-23", "campana": "CAMPA\u00d1A DE EMERGENCIA AREQUIPA", "adset": "BLM", "anuncio": "Blm 3", "inversion": 52.07, "resultados": 46, "rep3s": 2772, "rep75": 609, "rep100": 258}, {"fecha": "2026-06-22", "campana": "Whatsapp Directo Lima", "adset": "Endolaser WSP Lima", "anuncio": "endolaser corto, explicativo y A&D", "inversion": 14.0, "resultados": 7, "rep3s": 201, "rep75": 99, "rep100": 42}, {"fecha": "2026-06-22", "campana": "Whatsapp Directo Arequipa", "adset": "Endolaser WSP Arequipa", "anuncio": "endolaser corto, explicativo y A&D", "inversion": 0.04, "resultados": 0, "rep3s": 1, "rep75": 0, "rep100": 0}, {"fecha": "2026-06-22", "campana": "Whatsapp Directo Lima", "adset": "BLM WSP Lima", "anuncio": "BLM explicativo 2", "inversion": 10.51, "resultados": 7, "rep3s": 257, "rep75": 92, "rep100": 36}, {"fecha": "2026-06-22", "campana": "Whatsapp Directo Lima", "adset": "BLM WSP Lima", "anuncio": "BLM antes y despues camila", "inversion": 0.05, "resultados": 0, "rep3s": 3, "rep75": 0, "rep100": 0}, {"fecha": "2026-06-22", "campana": "Whatsapp Directo Lima", "adset": "Endolaser WSP Lima", "anuncio": "endolaser + blm video ganador", "inversion": 29.15, "resultados": 41, "rep3s": 1237, "rep75": 354, "rep100": 159}, {"fecha": "2026-06-22", "campana": "Whatsapp Directo Arequipa", "adset": "BLM WSP Arequipa", "anuncio": "BLM explicativo 2", "inversion": 0.03, "resultados": 0, "rep3s": 1, "rep75": 1, "rep100": 0}, {"fecha": "2026-06-22", "campana": "Whatsapp Directo Arequipa", "adset": "Endolaser WSP Arequipa", "anuncio": "endolaser + blm video ganador", "inversion": 27.29, "resultados": 26, "rep3s": 1339, "rep75": 281, "rep100": 119}, {"fecha": "2026-06-22", "campana": "Whatsapp Directo Lima", "adset": "Mentoplastia WSP Lima", "anuncio": "Mentoplastia 1", "inversion": 1.74, "resultados": 0, "rep3s": 32, "rep75": 11, "rep100": 2}, {"fecha": "2026-06-22", "campana": "Whatsapp Directo Lima", "adset": "Mentoplastia WSP Lima", "anuncio": "Mentoplastia nuevo", "inversion": 38.85, "resultados": 13, "rep3s": 1271, "rep75": 266, "rep100": 131}, {"fecha": "2026-06-22", "campana": "Whatsapp Directo Arequipa", "adset": "Mentoplastia WSP Arequipa", "anuncio": "Mentplastia nuevo", "inversion": 26.57, "resultados": 23, "rep3s": 1269, "rep75": 318, "rep100": 150}, {"fecha": "2026-06-22", "campana": "CAMPA\u00d1A DE EMERGENCIA AREQUIPA", "adset": "BLM", "anuncio": "Blm 3", "inversion": 45.67, "resultados": 48, "rep3s": 2908, "rep75": 646, "rep100": 234}, {"fecha": "2026-06-22", "campana": "Whatsapp Directo Arequipa", "adset": "BLM WSP Arequipa", "anuncio": "BLM Testimonio Camila", "inversion": 24.57, "resultados": 13, "rep3s": 1293, "rep75": 188, "rep100": 69}, {"fecha": "2026-06-22", "campana": "Whatsapp Directo Lima", "adset": "BLM WSP Lima", "anuncio": "BLM Camila corregido", "inversion": 0.08, "resultados": 0, "rep3s": 2, "rep75": 0, "rep100": 0}, {"fecha": "2026-06-22", "campana": "Whatsapp Directo Lima", "adset": "BLM WSP Lima", "anuncio": "BLM Jimena", "inversion": 0.01, "resultados": 0, "rep3s": 1, "rep75": 0, "rep100": 0}, {"fecha": "2026-06-22", "campana": "Whatsapp Directo Lima", "adset": "BLM WSP Lima", "anuncio": "BLM Testimonio camila", "inversion": 48.79, "resultados": 44, "rep3s": 2002, "rep75": 226, "rep100": 50}, {"fecha": "2026-06-22", "campana": "CAMPA\u00d1A DE EMERGENCIA AREQUIPA", "adset": "MENTOPLASTIA", "anuncio": "Mentoplastia 4", "inversion": 0.9, "resultados": 0, "rep3s": 46, "rep75": 13, "rep100": 5}, {"fecha": "2026-06-21", "campana": "Whatsapp Directo Lima", "adset": "Mentoplastia WSP Lima", "anuncio": "Mentoplastia nuevo", "inversion": 35.29, "resultados": 23, "rep3s": 1084, "rep75": 226, "rep100": 114}, {"fecha": "2026-06-21", "campana": "Whatsapp Directo Lima", "adset": "BLM WSP Lima", "anuncio": "BLM explicativo 2", "inversion": 4.14, "resultados": 6, "rep3s": 120, "rep75": 46, "rep100": 15}, {"fecha": "2026-06-21", "campana": "Whatsapp Directo Lima", "adset": "BLM WSP Lima", "anuncio": "BLM antes y despues camila", "inversion": 6.17, "resultados": 7, "rep3s": 196, "rep75": 26, "rep100": 18}, {"fecha": "2026-06-21", "campana": "Whatsapp Directo Lima", "adset": "Endolaser WSP Lima", "anuncio": "endolaser corto, explicativo y A&D", "inversion": 30.87, "resultados": 9, "rep3s": 475, "rep75": 192, "rep100": 77}, {"fecha": "2026-06-21", "campana": "Whatsapp Directo Lima", "adset": "Endolaser WSP Lima", "anuncio": "endolaser + blm video ganador", "inversion": 17.52, "resultados": 21, "rep3s": 622, "rep75": 161, "rep100": 64}, {"fecha": "2026-06-21", "campana": "Whatsapp Directo Arequipa", "adset": "BLM WSP Arequipa", "anuncio": "BLM explicativo 2", "inversion": 3.92, "resultados": 3, "rep3s": 122, "rep75": 29, "rep100": 14}, {"fecha": "2026-06-21", "campana": "Whatsapp Directo Arequipa", "adset": "Endolaser WSP Arequipa", "anuncio": "endolaser + blm video ganador", "inversion": 20.33, "resultados": 16, "rep3s": 967, "rep75": 189, "rep100": 74}, {"fecha": "2026-06-21", "campana": "Whatsapp Directo Arequipa", "adset": "Endolaser WSP Arequipa", "anuncio": "endolaser corto, explicativo y A&D", "inversion": 9.43, "resultados": 5, "rep3s": 224, "rep75": 76, "rep100": 39}, {"fecha": "2026-06-21", "campana": "CAMPA\u00d1A DE EMERGENCIA AREQUIPA", "adset": "MENTOPLASTIA", "anuncio": "Mentoplastia 4", "inversion": 0.77, "resultados": 1, "rep3s": 28, "rep75": 5, "rep100": 3}, {"fecha": "2026-06-21", "campana": "Whatsapp Directo Arequipa", "adset": "Mentoplastia WSP Arequipa", "anuncio": "Mentplastia nuevo", "inversion": 21.41, "resultados": 12, "rep3s": 1007, "rep75": 170, "rep100": 75}, {"fecha": "2026-06-21", "campana": "CAMPA\u00d1A DE EMERGENCIA AREQUIPA", "adset": "BLM", "anuncio": "Blm 3", "inversion": 46.65, "resultados": 52, "rep3s": 3197, "rep75": 712, "rep100": 263}, {"fecha": "2026-06-21", "campana": "Whatsapp Directo Arequipa", "adset": "Mentoplastia WSP Arequipa", "anuncio": "Mentplastia jimena", "inversion": 0.0, "resultados": 0, "rep3s": 0, "rep75": 0, "rep100": 0}, {"fecha": "2026-06-21", "campana": "Whatsapp Directo Arequipa", "adset": "BLM WSP Arequipa", "anuncio": "BLM Camila corregido", "inversion": 0.84, "resultados": 1, "rep3s": 31, "rep75": 6, "rep100": 3}, {"fecha": "2026-06-21", "campana": "Whatsapp Directo Arequipa", "adset": "BLM WSP Arequipa", "anuncio": "BLM Testimonio Camila", "inversion": 16.85, "resultados": 12, "rep3s": 981, "rep75": 97, "rep100": 25}, {"fecha": "2026-06-21", "campana": "Whatsapp Directo Lima", "adset": "BLM WSP Lima", "anuncio": "BLM Camila corregido", "inversion": 3.77, "resultados": 5, "rep3s": 98, "rep75": 16, "rep100": 9}, {"fecha": "2026-06-21", "campana": "Whatsapp Directo Lima", "adset": "BLM WSP Lima", "anuncio": "BLM Testimonio camila", "inversion": 35.23, "resultados": 33, "rep3s": 1388, "rep75": 152, "rep100": 34}, {"fecha": "2026-06-20", "campana": "Whatsapp Directo Arequipa", "adset": "BLM WSP Arequipa", "anuncio": "BLM explicativo 2", "inversion": 0.05, "resultados": 0, "rep3s": 2, "rep75": 0, "rep100": 0}, {"fecha": "2026-06-20", "campana": "Whatsapp Directo Lima", "adset": "Mentoplastia WSP Lima", "anuncio": "Mentoplastia 1", "inversion": 0.34, "resultados": 0, "rep3s": 7, "rep75": 1, "rep100": 1}, {"fecha": "2026-06-20", "campana": "Whatsapp Directo Arequipa", "adset": "Endolaser WSP Arequipa", "anuncio": "endolaser + blm video ganador", "inversion": 5.85, "resultados": 6, "rep3s": 264, "rep75": 71, "rep100": 34}, {"fecha": "2026-06-20", "campana": "Whatsapp Directo Lima", "adset": "Mentoplastia WSP Lima", "anuncio": "Mentoplastia nuevo", "inversion": 41.2, "resultados": 23, "rep3s": 1393, "rep75": 296, "rep100": 142}, {"fecha": "2026-06-20", "campana": "Whatsapp Directo Lima", "adset": "Endolaser WSP Lima", "anuncio": "endolaser + blm video ganador", "inversion": 2.93, "resultados": 2, "rep3s": 124, "rep75": 32, "rep100": 10}, {"fecha": "2026-06-20", "campana": "Whatsapp Directo Lima", "adset": "Endolaser WSP Lima", "anuncio": "endolaser corto, explicativo y A&D", "inversion": 36.21, "resultados": 24, "rep3s": 460, "rep75": 181, "rep100": 76}, {"fecha": "2026-06-20", "campana": "Whatsapp Directo Lima", "adset": "BLM WSP Lima", "anuncio": "BLM antes y despues camila", "inversion": 0.01, "resultados": 0, "rep3s": 0, "rep75": 0, "rep100": 0}, {"fecha": "2026-06-20", "campana": "Whatsapp Directo Lima", "adset": "BLM WSP Lima", "anuncio": "BLM explicativo 2", "inversion": 0.55, "resultados": 0, "rep3s": 12, "rep75": 4, "rep100": 0}, {"fecha": "2026-06-20", "campana": "Whatsapp Directo Arequipa", "adset": "Endolaser WSP Arequipa", "anuncio": "endolaser corto, explicativo y A&D", "inversion": 4.1, "resultados": 0, "rep3s": 86, "rep75": 35, "rep100": 13}, {"fecha": "2026-06-20", "campana": "Whatsapp Directo Lima", "adset": "BLM WSP Lima", "anuncio": "BLM Testimonio camila", "inversion": 29.2, "resultados": 20, "rep3s": 1156, "rep75": 166, "rep100": 45}, {"fecha": "2026-06-20", "campana": "Whatsapp Directo Arequipa", "adset": "Mentoplastia WSP Arequipa", "anuncio": "Mentplastia nuevo", "inversion": 8.01, "resultados": 4, "rep3s": 362, "rep75": 90, "rep100": 40}, {"fecha": "2026-06-20", "campana": "Whatsapp Directo Arequipa", "adset": "BLM WSP Arequipa", "anuncio": "BLM Testimonio Camila", "inversion": 10.69, "resultados": 6, "rep3s": 544, "rep75": 75, "rep100": 23}, {"fecha": "2026-06-20", "campana": "CAMPA\u00d1A DE EMERGENCIA AREQUIPA", "adset": "BLM", "anuncio": "Blm 3", "inversion": 28.67, "resultados": 31, "rep3s": 1756, "rep75": 418, "rep100": 154}, {"fecha": "2026-06-20", "campana": "Whatsapp Directo Lima", "adset": "BLM WSP Lima", "anuncio": "BLM Camila corregido", "inversion": 0.15, "resultados": 0, "rep3s": 6, "rep75": 2, "rep100": 1}, {"fecha": "2026-06-20", "campana": "CAMPA\u00d1A DE EMERGENCIA AREQUIPA", "adset": "MENTOPLASTIA", "anuncio": "Mentoplastia 4", "inversion": 0.47, "resultados": 0, "rep3s": 26, "rep75": 6, "rep100": 2}, {"fecha": "2026-06-20", "campana": "Whatsapp Directo Arequipa", "adset": "BLM WSP Arequipa", "anuncio": "BLM Jimena", "inversion": 0.0, "resultados": 0, "rep3s": 0, "rep75": 0, "rep100": 0}, {"fecha": "2026-06-20", "campana": "Whatsapp Directo Arequipa", "adset": "BLM WSP Arequipa", "anuncio": "BLM Camila corregido", "inversion": 0.04, "resultados": 0, "rep3s": 2, "rep75": 0, "rep100": 0}, {"fecha": "2026-06-20", "campana": "Whatsapp Directo Arequipa", "adset": "Mentoplastia WSP Arequipa", "anuncio": "Mentplastia jimena", "inversion": 0.02, "resultados": 0, "rep3s": 0, "rep75": 0, "rep100": 0}, {"fecha": "2026-06-19", "campana": "Whatsapp Directo Lima", "adset": "Mentoplastia WSP Lima", "anuncio": "Mentoplastia nuevo", "inversion": 60.44, "resultados": 45, "rep3s": 1755, "rep75": 388, "rep100": 211}, {"fecha": "2026-06-19", "campana": "Whatsapp Directo Lima", "adset": "BLM WSP Lima", "anuncio": "BLM explicativo 2", "inversion": 7.24, "resultados": 4, "rep3s": 208, "rep75": 70, "rep100": 26}, {"fecha": "2026-06-19", "campana": "Whatsapp Directo Lima", "adset": "BLM WSP Lima", "anuncio": "BLM antes y despues camila", "inversion": 6.71, "resultados": 5, "rep3s": 262, "rep75": 46, "rep100": 30}, {"fecha": "2026-06-19", "campana": "Whatsapp Directo Lima", "adset": "Endolaser WSP Lima", "anuncio": "endolaser corto, explicativo y A&D", "inversion": 50.72, "resultados": 26, "rep3s": 698, "rep75": 301, "rep100": 122}, {"fecha": "2026-06-19", "campana": "Whatsapp Directo Lima", "adset": "Endolaser WSP Lima", "anuncio": "endolaser + blm video ganador", "inversion": 10.27, "resultados": 8, "rep3s": 336, "rep75": 96, "rep100": 32}, {"fecha": "2026-06-19", "campana": "Whatsapp Directo Arequipa", "adset": "BLM WSP Arequipa", "anuncio": "BLM explicativo 2", "inversion": 3.37, "resultados": 2, "rep3s": 113, "rep75": 29, "rep100": 15}, {"fecha": "2026-06-19", "campana": "Whatsapp Directo Arequipa", "adset": "Endolaser WSP Arequipa", "anuncio": "endolaser + blm video ganador", "inversion": 3.72, "resultados": 3, "rep3s": 141, "rep75": 32, "rep100": 11}, {"fecha": "2026-06-19", "campana": "Whatsapp Directo Lima", "adset": "Mentoplastia WSP Lima", "anuncio": "Mentoplastia 1", "inversion": 0.27, "resultados": 1, "rep3s": 9, "rep75": 4, "rep100": 2}, {"fecha": "2026-06-19", "campana": "Whatsapp Directo Arequipa", "adset": "Endolaser WSP Arequipa", "anuncio": "endolaser corto, explicativo y A&D", "inversion": 19.87, "resultados": 11, "rep3s": 400, "rep75": 170, "rep100": 79}, {"fecha": "2026-06-19", "campana": "Whatsapp Directo Arequipa", "adset": "Mentoplastia WSP Arequipa", "anuncio": "Mentplastia nuevo", "inversion": 16.02, "resultados": 10, "rep3s": 707, "rep75": 149, "rep100": 64}, {"fecha": "2026-06-19", "campana": "CAMPA\u00d1A DE EMERGENCIA AREQUIPA", "adset": "BLM", "anuncio": "Blm 3", "inversion": 40.32, "resultados": 51, "rep3s": 2939, "rep75": 713, "rep100": 255}, {"fecha": "2026-06-19", "campana": "Whatsapp Directo Arequipa", "adset": "BLM WSP Arequipa", "anuncio": "BLM Camila corregido", "inversion": 4.28, "resultados": 3, "rep3s": 186, "rep75": 24, "rep100": 12}, {"fecha": "2026-06-19", "campana": "Whatsapp Directo Arequipa", "adset": "BLM WSP Arequipa", "anuncio": "BLM Jimena", "inversion": 0.02, "resultados": 0, "rep3s": 2, "rep75": 0, "rep100": 0}, {"fecha": "2026-06-19", "campana": "Whatsapp Directo Arequipa", "adset": "BLM WSP Arequipa", "anuncio": "BLM Testimonio Camila", "inversion": 11.37, "resultados": 11, "rep3s": 642, "rep75": 114, "rep100": 42}, {"fecha": "2026-06-19", "campana": "Whatsapp Directo Lima", "adset": "BLM WSP Lima", "anuncio": "BLM Camila corregido", "inversion": 12.42, "resultados": 12, "rep3s": 368, "rep75": 76, "rep100": 35}, {"fecha": "2026-06-19", "campana": "Whatsapp Directo Lima", "adset": "BLM WSP Lima", "anuncio": "BLM Jimena", "inversion": 0.09, "resultados": 0, "rep3s": 2, "rep75": 0, "rep100": 0}, {"fecha": "2026-06-19", "campana": "Whatsapp Directo Lima", "adset": "BLM WSP Lima", "anuncio": "BLM Testimonio camila", "inversion": 24.69, "resultados": 27, "rep3s": 1121, "rep75": 158, "rep100": 40}, {"fecha": "2026-06-19", "campana": "CAMPA\u00d1A DE EMERGENCIA AREQUIPA", "adset": "MENTOPLASTIA", "anuncio": "Mentoplastia 4", "inversion": 0.7, "resultados": 2, "rep3s": 29, "rep75": 5, "rep100": 3}, {"fecha": "2026-06-18", "campana": "CAMPA\u00d1A DE EMERGENCIA AREQUIPA", "adset": "MENTOPLASTIA", "anuncio": "Mentoplastia 2", "inversion": 0.52, "resultados": 0, "rep3s": 0, "rep75": 0, "rep100": 0}, {"fecha": "2026-06-18", "campana": "Whatsapp Directo Lima", "adset": "BLM WSP Lima", "anuncio": "BLM antes y despues camila", "inversion": 0.51, "resultados": 2, "rep3s": 24, "rep75": 4, "rep100": 4}, {"fecha": "2026-06-18", "campana": "Whatsapp Directo Lima", "adset": "Endolaser WSP Lima", "anuncio": "endolaser corto, explicativo y A&D", "inversion": 61.25, "resultados": 6, "rep3s": 1139, "rep75": 358, "rep100": 150}, {"fecha": "2026-06-18", "campana": "Whatsapp Directo Lima", "adset": "BLM WSP Lima", "anuncio": "BLM explicativo 2", "inversion": 1.77, "resultados": 4, "rep3s": 55, "rep75": 20, "rep100": 8}, {"fecha": "2026-06-18", "campana": "Whatsapp Directo Arequipa", "adset": "Endolaser WSP Arequipa", "anuncio": "endolaser + blm video ganador", "inversion": 11.13, "resultados": 9, "rep3s": 482, "rep75": 112, "rep100": 52}, {"fecha": "2026-06-18", "campana": "Whatsapp Directo Arequipa", "adset": "Endolaser WSP Arequipa", "anuncio": "endolaser corto, explicativo y A&D", "inversion": 7.7, "resultados": 6, "rep3s": 148, "rep75": 69, "rep100": 24}, {"fecha": "2026-06-18", "campana": "Whatsapp Directo Lima", "adset": "Mentoplastia WSP Lima", "anuncio": "Mentoplastia nuevo", "inversion": 48.76, "resultados": 40, "rep3s": 1610, "rep75": 350, "rep100": 191}, {"fecha": "2026-06-18", "campana": "Whatsapp Directo Arequipa", "adset": "Mentoplastia WSP Arequipa", "anuncio": "Mentplastia nuevo", "inversion": 20.95, "resultados": 17, "rep3s": 881, "rep75": 192, "rep100": 77}, {"fecha": "2026-06-18", "campana": "Whatsapp Directo Arequipa", "adset": "BLM WSP Arequipa", "anuncio": "BLM explicativo 2", "inversion": 2.57, "resultados": 1, "rep3s": 105, "rep75": 22, "rep100": 11}, {"fecha": "2026-06-18", "campana": "CAMPA\u00d1A DE EMERGENCIA AREQUIPA", "adset": "BLM", "anuncio": "Blm 3", "inversion": 42.39, "resultados": 72, "rep3s": 2758, "rep75": 699, "rep100": 298}, {"fecha": "2026-06-18", "campana": "Whatsapp Directo Lima", "adset": "BLM WSP Lima", "anuncio": "BLM Jimena", "inversion": 0.25, "resultados": 0, "rep3s": 10, "rep75": 1, "rep100": 0}, {"fecha": "2026-06-18", "campana": "Whatsapp Directo Arequipa", "adset": "Mentoplastia WSP Arequipa", "anuncio": "Mentplastia jimena", "inversion": 5.07, "resultados": 0, "rep3s": 96, "rep75": 12, "rep100": 3}, {"fecha": "2026-06-18", "campana": "Whatsapp Directo Lima", "adset": "BLM WSP Lima", "anuncio": "BLM Testimonio camila", "inversion": 20.16, "resultados": 24, "rep3s": 938, "rep75": 147, "rep100": 36}, {"fecha": "2026-06-18", "campana": "CAMPA\u00d1A DE EMERGENCIA AREQUIPA", "adset": "MENTOPLASTIA", "anuncio": "Mentoplastia 4", "inversion": 0.4, "resultados": 1, "rep3s": 14, "rep75": 3, "rep100": 3}, {"fecha": "2026-06-18", "campana": "Whatsapp Directo Lima", "adset": "BLM WSP Lima", "anuncio": "BLM Camila corregido", "inversion": 23.08, "resultados": 33, "rep3s": 661, "rep75": 134, "rep100": 69}, {"fecha": "2026-06-18", "campana": "Whatsapp Directo Arequipa", "adset": "BLM WSP Arequipa", "anuncio": "BLM Testimonio Camila", "inversion": 7.34, "resultados": 4, "rep3s": 505, "rep75": 70, "rep100": 20}, {"fecha": "2026-06-18", "campana": "Whatsapp Directo Arequipa", "adset": "BLM WSP Arequipa", "anuncio": "BLM Jimena", "inversion": 0.24, "resultados": 0, "rep3s": 6, "rep75": 0, "rep100": 0}, {"fecha": "2026-06-18", "campana": "Whatsapp Directo Arequipa", "adset": "BLM WSP Arequipa", "anuncio": "BLM Camila corregido", "inversion": 9.98, "resultados": 16, "rep3s": 416, "rep75": 96, "rep100": 51}, {"fecha": "2026-06-17", "campana": "Whatsapp Directo Arequipa", "adset": "Mentoplastia WSP Arequipa", "anuncio": "Mentplastia jimena", "inversion": 10.46, "resultados": 2, "rep3s": 205, "rep75": 54, "rep100": 20}, {"fecha": "2026-06-17", "campana": "Whatsapp Directo Lima", "adset": "BLM WSP Lima", "anuncio": "BLM explicativo 2", "inversion": 76.44, "resultados": 80, "rep3s": 2166, "rep75": 648, "rep100": 253}, {"fecha": "2026-06-17", "campana": "Whatsapp Directo Arequipa", "adset": "BLM WSP Arequipa", "anuncio": "BLM explicativo 2", "inversion": 14.38, "resultados": 13, "rep3s": 575, "rep75": 166, "rep100": 72}, {"fecha": "2026-06-17", "campana": "Whatsapp Directo Arequipa", "adset": "Endolaser WSP Arequipa", "anuncio": "endolaser corto, explicativo y A&D", "inversion": 18.26, "resultados": 11, "rep3s": 354, "rep75": 146, "rep100": 75}, {"fecha": "2026-06-17", "campana": "Whatsapp Directo Arequipa", "adset": "Mentoplastia WSP Arequipa", "anuncio": "Mentplastia nuevo", "inversion": 14.66, "resultados": 7, "rep3s": 735, "rep75": 127, "rep100": 61}, {"fecha": "2026-06-17", "campana": "CAMPA\u00d1A DE EMERGENCIA AREQUIPA", "adset": "MENTOPLASTIA", "anuncio": "Mentoplastia 2", "inversion": 1.0, "resultados": 1, "rep3s": 0, "rep75": 0, "rep100": 0}, {"fecha": "2026-06-17", "campana": "CAMPA\u00d1A DE EMERGENCIA AREQUIPA", "adset": "MENTOPLASTIA", "anuncio": "Mentoplastia 1", "inversion": 0.05, "resultados": 0, "rep3s": 1, "rep75": 0, "rep100": 0}, {"fecha": "2026-06-17", "campana": "CAMPA\u00d1A DE EMERGENCIA AREQUIPA", "adset": "BLM", "anuncio": "Blm 3", "inversion": 43.67, "resultados": 52, "rep3s": 2890, "rep75": 710, "rep100": 266}, {"fecha": "2026-06-17", "campana": "Whatsapp Directo Arequipa", "adset": "Endolaser WSP Arequipa", "anuncio": "endolaser + blm video ganador", "inversion": 2.56, "resultados": 2, "rep3s": 114, "rep75": 30, "rep100": 14}, {"fecha": "2026-06-17", "campana": "Whatsapp Directo Arequipa", "adset": "BLM WSP Arequipa", "anuncio": "BLM Camila corregido", "inversion": 3.46, "resultados": 2, "rep3s": 165, "rep75": 32, "rep100": 19}, {"fecha": "2026-06-17", "campana": "Whatsapp Directo Arequipa", "adset": "BLM WSP Arequipa", "anuncio": "BLM Testimonio Camila", "inversion": 4.26, "resultados": 5, "rep3s": 276, "rep75": 51, "rep100": 14}, {"fecha": "2026-06-17", "campana": "Whatsapp Directo Lima", "adset": "BLM WSP Lima", "anuncio": "BLM Camila corregido", "inversion": 7.52, "resultados": 11, "rep3s": 244, "rep75": 43, "rep100": 19}, {"fecha": "2026-06-17", "campana": "Whatsapp Directo Lima", "adset": "BLM WSP Lima", "anuncio": "BLM Jimena", "inversion": 0.36, "resultados": 0, "rep3s": 8, "rep75": 3, "rep100": 2}, {"fecha": "2026-06-17", "campana": "Whatsapp Directo Lima", "adset": "BLM WSP Lima", "anuncio": "BLM Testimonio camila", "inversion": 8.58, "resultados": 10, "rep3s": 415, "rep75": 64, "rep100": 19}, {"fecha": "2026-06-17", "campana": "Empleo Recepcionista", "adset": "Recepcionista", "anuncio": "Recepcionista 1", "inversion": 15.82, "resultados": 6, "rep3s": 0, "rep75": 0, "rep100": 0}, {"fecha": "2026-06-17", "campana": "Enfermera 2", "adset": "Enfermera 2", "anuncio": "Anuncio2", "inversion": 16.91, "resultados": 6, "rep3s": 0, "rep75": 0, "rep100": 0}, {"fecha": "2026-06-17", "campana": "Whatsapp Directo Arequipa", "adset": "BLM WSP Arequipa", "anuncio": "BLM Jimena", "inversion": 0.09, "resultados": 0, "rep3s": 2, "rep75": 1, "rep100": 0}, {"fecha": "2026-06-16", "campana": "Whatsapp Directo Arequipa", "adset": "Mentoplastia WSP Arequipa", "anuncio": "Mentplastia nuevo", "inversion": 8.81, "resultados": 4, "rep3s": 532, "rep75": 97, "rep100": 46}, {"fecha": "2026-06-16", "campana": "Whatsapp Directo Lima", "adset": "BLM WSP Lima", "anuncio": "BLM explicativo 2", "inversion": 105.12, "resultados": 93, "rep3s": 2877, "rep75": 958, "rep100": 344}, {"fecha": "2026-06-16", "campana": "Whatsapp Directo Lima", "adset": "BLM WSP Lima", "anuncio": "BLM antes y despues camila", "inversion": 1.35, "resultados": 2, "rep3s": 31, "rep75": 3, "rep100": 2}, {"fecha": "2026-06-16", "campana": "Whatsapp Directo Arequipa", "adset": "BLM WSP Arequipa", "anuncio": "BLM explicativo 2", "inversion": 21.77, "resultados": 25, "rep3s": 844, "rep75": 243, "rep100": 95}, {"fecha": "2026-06-16", "campana": "Whatsapp Directo Arequipa", "adset": "Endolaser WSP Arequipa", "anuncio": "endolaser + blm video ganador", "inversion": 11.49, "resultados": 14, "rep3s": 528, "rep75": 114, "rep100": 35}, {"fecha": "2026-06-16", "campana": "Whatsapp Directo Arequipa", "adset": "Endolaser WSP Arequipa", "anuncio": "endolaser corto, explicativo y A&D", "inversion": 14.5, "resultados": 7, "rep3s": 182, "rep75": 77, "rep100": 31}, {"fecha": "2026-06-16", "campana": "CAMPA\u00d1A DE EMERGENCIA AREQUIPA", "adset": "MENTOPLASTIA", "anuncio": "Mentoplastia 2", "inversion": 0.3, "resultados": 1, "rep3s": 0, "rep75": 0, "rep100": 0}, {"fecha": "2026-06-16", "campana": "CAMPA\u00d1A DE EMERGENCIA AREQUIPA", "adset": "BLM", "anuncio": "Blm 3", "inversion": 41.74, "resultados": 41, "rep3s": 3245, "rep75": 704, "rep100": 275}, {"fecha": "2026-06-16", "campana": "Whatsapp Directo Arequipa", "adset": "Mentoplastia WSP Arequipa", "anuncio": "Mentplastia jimena", "inversion": 14.56, "resultados": 4, "rep3s": 350, "rep75": 85, "rep100": 44}, {"fecha": "2026-06-16", "campana": "Empleo Recepcionista", "adset": "Recepcionista", "anuncio": "Recepcionista 1", "inversion": 42.05, "resultados": 15, "rep3s": 0, "rep75": 0, "rep100": 0}, {"fecha": "2026-06-16", "campana": "Enfermera 2", "adset": "Enfermera 2", "anuncio": "Anuncio2", "inversion": 35.83, "resultados": 15, "rep3s": 0, "rep75": 0, "rep100": 0}, {"fecha": "2026-06-15", "campana": "Whatsapp Directo Arequipa", "adset": "Mentoplastia WSP Arequipa", "anuncio": "mentoplastia 1", "inversion": 2.08, "resultados": 1, "rep3s": 82, "rep75": 23, "rep100": 8}, {"fecha": "2026-06-15", "campana": "Enfermera 2", "adset": "Enfermera 2", "anuncio": "Anuncio2", "inversion": 32.88, "resultados": 21, "rep3s": 0, "rep75": 0, "rep100": 0}, {"fecha": "2026-06-15", "campana": "Empleo Recepcionista", "adset": "Recepcionista", "anuncio": "Recepcionista 1", "inversion": 49.79, "resultados": 17, "rep3s": 0, "rep75": 0, "rep100": 0}, {"fecha": "2026-06-15", "campana": "Whatsapp Directo Arequipa", "adset": "Mentoplastia WSP Arequipa", "anuncio": "Mentplastia jimena", "inversion": 0.08, "resultados": 0, "rep3s": 4, "rep75": 1, "rep100": 0}, {"fecha": "2026-06-15", "campana": "CAMPA\u00d1A DE EMERGENCIA AREQUIPA", "adset": "BLM", "anuncio": "Blm 3", "inversion": 41.47, "resultados": 51, "rep3s": 3249, "rep75": 747, "rep100": 264}, {"fecha": "2026-06-15", "campana": "CAMPA\u00d1A DE EMERGENCIA AREQUIPA", "adset": "BLM", "anuncio": "Blm 2", "inversion": 1.76, "resultados": 0, "rep3s": 0, "rep75": 0, "rep100": 0}, {"fecha": "2026-06-15", "campana": "CAMPA\u00d1A DE EMERGENCIA AREQUIPA", "adset": "MENTOPLASTIA", "anuncio": "Mentoplastia 1", "inversion": 0.2, "resultados": 1, "rep3s": 17, "rep75": 9, "rep100": 4}, {"fecha": "2026-06-15", "campana": "CAMPA\u00d1A DE EMERGENCIA AREQUIPA", "adset": "MENTOPLASTIA", "anuncio": "Mentoplastia 2", "inversion": 0.19, "resultados": 0, "rep3s": 0, "rep75": 0, "rep100": 0}, {"fecha": "2026-06-15", "campana": "Whatsapp Directo Arequipa", "adset": "Mentoplastia WSP Arequipa", "anuncio": "Mentplastia nuevo 2", "inversion": 0.05, "resultados": 0, "rep3s": 5, "rep75": 1, "rep100": 1}, {"fecha": "2026-06-15", "campana": "Whatsapp Directo Arequipa", "adset": "Mentoplastia WSP Arequipa", "anuncio": "Mentplastia nuevo", "inversion": 21.99, "resultados": 12, "rep3s": 999, "rep75": 193, "rep100": 110}, {"fecha": "2026-06-15", "campana": "Whatsapp Directo Arequipa", "adset": "Endolaser WSP Arequipa", "anuncio": "endolaser corto, explicativo y A&D", "inversion": 18.05, "resultados": 5, "rep3s": 336, "rep75": 103, "rep100": 49}, {"fecha": "2026-06-15", "campana": "Whatsapp Directo Arequipa", "adset": "Endolaser WSP Arequipa", "anuncio": "endolaser + blm video ganador", "inversion": 5.07, "resultados": 5, "rep3s": 290, "rep75": 72, "rep100": 29}, {"fecha": "2026-06-15", "campana": "Whatsapp Directo Arequipa", "adset": "BLM WSP Arequipa", "anuncio": "BLM explicativo 2", "inversion": 24.54, "resultados": 27, "rep3s": 942, "rep75": 288, "rep100": 127}, {"fecha": "2026-06-15", "campana": "Whatsapp Directo Lima", "adset": "BLM WSP Lima", "anuncio": "BLM explicativo 2", "inversion": 119.48, "resultados": 160, "rep3s": 3668, "rep75": 1235, "rep100": 489}, {"fecha": "2026-06-14", "campana": "Whatsapp Directo Arequipa", "adset": "Mentoplastia WSP Arequipa", "anuncio": "Mentplastia nuevo 3", "inversion": 2.08, "resultados": 4, "rep3s": 107, "rep75": 27, "rep100": 14}, {"fecha": "2026-06-14", "campana": "Whatsapp Directo Lima", "adset": "BLM WSP Lima", "anuncio": "BLM explicativo 2", "inversion": 150.51, "resultados": 199, "rep3s": 4090, "rep75": 1446, "rep100": 605}, {"fecha": "2026-06-14", "campana": "Whatsapp Directo Lima", "adset": "BLM WSP Lima", "anuncio": "BLM antes y despues camila", "inversion": 2.16, "resultados": 4, "rep3s": 78, "rep75": 11, "rep100": 10}, {"fecha": "2026-06-14", "campana": "Whatsapp Directo Arequipa", "adset": "BLM WSP Arequipa", "anuncio": "BLM explicativo 2", "inversion": 28.07, "resultados": 19, "rep3s": 1038, "rep75": 304, "rep100": 140}, {"fecha": "2026-06-14", "campana": "Whatsapp Directo Arequipa", "adset": "Mentoplastia WSP Arequipa", "anuncio": "Mento nuevo", "inversion": 1.29, "resultados": 0, "rep3s": 33, "rep75": 11, "rep100": 5}, {"fecha": "2026-06-14", "campana": "Whatsapp Directo Arequipa", "adset": "Mentoplastia WSP Arequipa", "anuncio": "mentoplastia 1", "inversion": 0.19, "resultados": 0, "rep3s": 13, "rep75": 6, "rep100": 2}, {"fecha": "2026-06-14", "campana": "Whatsapp Directo Arequipa", "adset": "Endolaser WSP Arequipa", "anuncio": "endolaser corto, explicativo y A&D", "inversion": 25.45, "resultados": 8, "rep3s": 505, "rep75": 186, "rep100": 82}, {"fecha": "2026-06-14", "campana": "Whatsapp Directo Arequipa", "adset": "Mentoplastia WSP Arequipa", "anuncio": "Mentplastia nuevo", "inversion": 22.54, "resultados": 15, "rep3s": 1032, "rep75": 204, "rep100": 102}, {"fecha": "2026-06-14", "campana": "Whatsapp Directo Lima", "adset": "BLM WSP Lima", "anuncio": "BLM explicativo", "inversion": 0.73, "resultados": 0, "rep3s": 14, "rep75": 6, "rep100": 4}, {"fecha": "2026-06-14", "campana": "CAMPA\u00d1A DE EMERGENCIA AREQUIPA", "adset": "MENTOPLASTIA", "anuncio": "Mentoplastia 2", "inversion": 0.27, "resultados": 0, "rep3s": 0, "rep75": 0, "rep100": 0}, {"fecha": "2026-06-14", "campana": "CAMPA\u00d1A DE EMERGENCIA AREQUIPA", "adset": "MENTOPLASTIA", "anuncio": "Mentoplastia 3", "inversion": 0.22, "resultados": 0, "rep3s": 19, "rep75": 5, "rep100": 0}, {"fecha": "2026-06-14", "campana": "CAMPA\u00d1A DE EMERGENCIA AREQUIPA", "adset": "BLM", "anuncio": "Blm 1", "inversion": 2.12, "resultados": 1, "rep3s": 101, "rep75": 30, "rep100": 10}, {"fecha": "2026-06-14", "campana": "CAMPA\u00d1A DE EMERGENCIA AREQUIPA", "adset": "BLM", "anuncio": "Blm 2", "inversion": 0.06, "resultados": 0, "rep3s": 0, "rep75": 0, "rep100": 0}, {"fecha": "2026-06-14", "campana": "CAMPA\u00d1A DE EMERGENCIA AREQUIPA", "adset": "BLM", "anuncio": "Blm 3", "inversion": 42.97, "resultados": 67, "rep3s": 3468, "rep75": 794, "rep100": 286}, {"fecha": "2026-06-14", "campana": "Empleo Recepcionista", "adset": "Recepcionista", "anuncio": "Recepcionista 1", "inversion": 46.53, "resultados": 11, "rep3s": 0, "rep75": 0, "rep100": 0}, {"fecha": "2026-06-14", "campana": "Enfermera 2", "adset": "Enfermera 2", "anuncio": "Anuncio2", "inversion": 18.74, "resultados": 10, "rep3s": 0, "rep75": 0, "rep100": 0}, {"fecha": "2026-06-13", "campana": "Whatsapp Directo Arequipa", "adset": "Mentoplastia WSP Arequipa", "anuncio": "Mentplastia nuevo 2", "inversion": 0.03, "resultados": 0, "rep3s": 2, "rep75": 0, "rep100": 0}, {"fecha": "2026-06-13", "campana": "Whatsapp Directo Lima", "adset": "BLM WSP Lima", "anuncio": "BLM explicativo 2", "inversion": 60.0, "resultados": 56, "rep3s": 1694, "rep75": 527, "rep100": 194}, {"fecha": "2026-06-13", "campana": "Whatsapp Directo Lima", "adset": "BLM WSP Lima", "anuncio": "BLM antes y despues camila", "inversion": 1.28, "resultados": 0, "rep3s": 47, "rep75": 7, "rep100": 7}, {"fecha": "2026-06-13", "campana": "Whatsapp Directo Arequipa", "adset": "BLM WSP Arequipa", "anuncio": "BLM explicativo 2", "inversion": 21.8, "resultados": 26, "rep3s": 770, "rep75": 226, "rep100": 103}, {"fecha": "2026-06-13", "campana": "Whatsapp Directo Arequipa", "adset": "Endolaser WSP Arequipa", "anuncio": "endolaser + blm video ganador", "inversion": 8.31, "resultados": 11, "rep3s": 292, "rep75": 64, "rep100": 25}, {"fecha": "2026-06-13", "campana": "Whatsapp Directo Arequipa", "adset": "Endolaser WSP Arequipa", "anuncio": "endolaser corto, explicativo y A&D", "inversion": 12.39, "resultados": 6, "rep3s": 278, "rep75": 111, "rep100": 55}, {"fecha": "2026-06-13", "campana": "Whatsapp Directo Arequipa", "adset": "Mentoplastia WSP Arequipa", "anuncio": "Mentplastia nuevo", "inversion": 23.64, "resultados": 11, "rep3s": 1232, "rep75": 210, "rep100": 109}, {"fecha": "2026-06-13", "campana": "Enfermera 2", "adset": "Enfermera 2", "anuncio": "Anuncio2", "inversion": 31.8, "resultados": 32, "rep3s": 0, "rep75": 0, "rep100": 0}, {"fecha": "2026-06-13", "campana": "Whatsapp Directo Lima", "adset": "BLM WSP Lima", "anuncio": "BLM Video Camila", "inversion": 53.79, "resultados": 49, "rep3s": 1517, "rep75": 265, "rep100": 136}, {"fecha": "2026-06-13", "campana": "CAMPA\u00d1A DE EMERGENCIA AREQUIPA", "adset": "MENTOPLASTIA", "anuncio": "Mentoplastia 2", "inversion": 0.33, "resultados": 1, "rep3s": 0, "rep75": 0, "rep100": 0}, {"fecha": "2026-06-13", "campana": "CAMPA\u00d1A DE EMERGENCIA AREQUIPA", "adset": "MENTOPLASTIA", "anuncio": "Mentoplastia 1", "inversion": 0.11, "resultados": 1, "rep3s": 5, "rep75": 1, "rep100": 1}, {"fecha": "2026-06-13", "campana": "CAMPA\u00d1A DE EMERGENCIA AREQUIPA", "adset": "BLM", "anuncio": "Blm 1", "inversion": 0.06, "resultados": 0, "rep3s": 2, "rep75": 0, "rep100": 0}, {"fecha": "2026-06-13", "campana": "CAMPA\u00d1A DE EMERGENCIA AREQUIPA", "adset": "BLM", "anuncio": "Blm 3", "inversion": 47.19, "resultados": 65, "rep3s": 3211, "rep75": 751, "rep100": 282}, {"fecha": "2026-06-13", "campana": "Empleo Recepcionista", "adset": "Recepcionista", "anuncio": "Recepcionista 1", "inversion": 69.81, "resultados": 11, "rep3s": 0, "rep75": 0, "rep100": 0}, {"fecha": "2026-06-13", "campana": "Empleo Recepcionista 2", "adset": "Recepcionista 2", "anuncio": "Anuncio", "inversion": 14.23, "resultados": 0, "rep3s": 0, "rep75": 0, "rep100": 0}, {"fecha": "2026-06-12", "campana": "Whatsapp Directo Arequipa", "adset": "Mentoplastia WSP Arequipa", "anuncio": "Mentplastia nuevo 3", "inversion": 6.27, "resultados": 4, "rep3s": 279, "rep75": 71, "rep100": 48}, {"fecha": "2026-06-12", "campana": "Whatsapp Directo Lima", "adset": "BLM WSP Lima", "anuncio": "BLM explicativo 2", "inversion": 10.07, "resultados": 8, "rep3s": 257, "rep75": 74, "rep100": 28}, {"fecha": "2026-06-12", "campana": "Whatsapp Directo Arequipa", "adset": "BLM WSP Arequipa", "anuncio": "BLM explicativo 2", "inversion": 21.96, "resultados": 19, "rep3s": 843, "rep75": 266, "rep100": 109}, {"fecha": "2026-06-12", "campana": "Whatsapp Directo Arequipa", "adset": "Mentoplastia WSP Arequipa", "anuncio": "Mento nuevo", "inversion": 0.99, "resultados": 0, "rep3s": 38, "rep75": 12, "rep100": 7}, {"fecha": "2026-06-12", "campana": "Whatsapp Directo Arequipa", "adset": "Mentoplastia WSP Arequipa", "anuncio": "mentoplastia 1", "inversion": 0.25, "resultados": 0, "rep3s": 7, "rep75": 3, "rep100": 1}, {"fecha": "2026-06-12", "campana": "Whatsapp Directo Arequipa", "adset": "Endolaser WSP Arequipa", "anuncio": "endolaser corto, explicativo y A&D", "inversion": 22.96, "resultados": 18, "rep3s": 427, "rep75": 168, "rep100": 71}, {"fecha": "2026-06-12", "campana": "Whatsapp Directo Arequipa", "adset": "Mentoplastia WSP Arequipa", "anuncio": "Mentplastia nuevo", "inversion": 13.47, "resultados": 3, "rep3s": 668, "rep75": 129, "rep100": 69}, {"fecha": "2026-06-12", "campana": "Whatsapp Directo Lima", "adset": "BLM WSP Lima", "anuncio": "BLM Video Camila", "inversion": 95.68, "resultados": 77, "rep3s": 2814, "rep75": 484, "rep100": 231}, {"fecha": "2026-06-12", "campana": "Whatsapp Directo Lima", "adset": "BLM WSP Lima", "anuncio": "BLM explicativo", "inversion": 7.23, "resultados": 3, "rep3s": 123, "rep75": 30, "rep100": 14}, {"fecha": "2026-06-12", "campana": "CAMPA\u00d1A DE EMERGENCIA AREQUIPA", "adset": "MENTOPLASTIA", "anuncio": "Mentoplastia 2", "inversion": 0.47, "resultados": 1, "rep3s": 0, "rep75": 0, "rep100": 0}, {"fecha": "2026-06-12", "campana": "CAMPA\u00d1A DE EMERGENCIA AREQUIPA", "adset": "MENTOPLASTIA", "anuncio": "Mentoplastia 3", "inversion": 0.08, "resultados": 0, "rep3s": 7, "rep75": 2, "rep100": 2}, {"fecha": "2026-06-12", "campana": "CAMPA\u00d1A DE EMERGENCIA AREQUIPA", "adset": "BLM", "anuncio": "Blm 2", "inversion": 0.61, "resultados": 1, "rep3s": 0, "rep75": 0, "rep100": 0}, {"fecha": "2026-06-12", "campana": "CAMPA\u00d1A DE EMERGENCIA AREQUIPA", "adset": "BLM", "anuncio": "Blm 3", "inversion": 34.23, "resultados": 51, "rep3s": 2604, "rep75": 633, "rep100": 236}, {"fecha": "2026-06-12", "campana": "Enfermera 2", "adset": "Enfermera 2", "anuncio": "Anuncio2", "inversion": 0.11, "resultados": 0, "rep3s": 0, "rep75": 0, "rep100": 0}, {"fecha": "2026-06-11", "campana": "Whatsapp Directo Arequipa", "adset": "Mentoplastia WSP Arequipa", "anuncio": "Mentplastia nuevo 2", "inversion": 0.38, "resultados": 0, "rep3s": 18, "rep75": 4, "rep100": 1}, {"fecha": "2026-06-11", "campana": "Whatsapp Directo Lima", "adset": "BLM WSP Lima", "anuncio": "BLM explicativo 2", "inversion": 20.16, "resultados": 16, "rep3s": 580, "rep75": 192, "rep100": 76}, {"fecha": "2026-06-11", "campana": "Whatsapp Directo Lima", "adset": "BLM WSP Lima", "anuncio": "BLM antes y despues camila", "inversion": 4.77, "resultados": 1, "rep3s": 113, "rep75": 19, "rep100": 11}, {"fecha": "2026-06-11", "campana": "Whatsapp Directo Arequipa", "adset": "BLM WSP Arequipa", "anuncio": "BLM explicativo 2", "inversion": 25.36, "resultados": 22, "rep3s": 869, "rep75": 274, "rep100": 97}, {"fecha": "2026-06-11", "campana": "Whatsapp Directo Arequipa", "adset": "Endolaser WSP Arequipa", "anuncio": "endolaser + blm video ganador", "inversion": 10.97, "resultados": 4, "rep3s": 425, "rep75": 91, "rep100": 35}, {"fecha": "2026-06-11", "campana": "Whatsapp Directo Arequipa", "adset": "Endolaser WSP Arequipa", "anuncio": "endolaser corto, explicativo y A&D", "inversion": 18.27, "resultados": 6, "rep3s": 370, "rep75": 145, "rep100": 66}, {"fecha": "2026-06-11", "campana": "Whatsapp Directo Arequipa", "adset": "Mentoplastia WSP Arequipa", "anuncio": "Mentplastia nuevo", "inversion": 21.94, "resultados": 14, "rep3s": 1025, "rep75": 203, "rep100": 98}, {"fecha": "2026-06-11", "campana": "Whatsapp Directo Arequipa", "adset": "Mentoplastia WSP Arequipa", "anuncio": "Mento nuevo", "inversion": 0.63, "resultados": 1, "rep3s": 26, "rep75": 2, "rep100": 1}, {"fecha": "2026-06-11", "campana": "Whatsapp Directo Arequipa", "adset": "Mentoplastia WSP Arequipa", "anuncio": "Mentplastia nuevo 3", "inversion": 0.32, "resultados": 0, "rep3s": 16, "rep75": 3, "rep100": 3}, {"fecha": "2026-06-11", "campana": "Whatsapp Directo Lima", "adset": "BLM WSP Lima", "anuncio": "BLM Video Camila", "inversion": 96.08, "resultados": 75, "rep3s": 2640, "rep75": 454, "rep100": 217}, {"fecha": "2026-06-11", "campana": "CAMPA\u00d1A DE EMERGENCIA AREQUIPA", "adset": "MENTOPLASTIA", "anuncio": "Mentoplastia 2", "inversion": 0.29, "resultados": 0, "rep3s": 0, "rep75": 0, "rep100": 0}, {"fecha": "2026-06-11", "campana": "CAMPA\u00d1A DE EMERGENCIA AREQUIPA", "adset": "BLM", "anuncio": "Blm 1", "inversion": 1.37, "resultados": 0, "rep3s": 59, "rep75": 24, "rep100": 11}, {"fecha": "2026-06-11", "campana": "CAMPA\u00d1A DE EMERGENCIA AREQUIPA", "adset": "BLM", "anuncio": "Blm 3", "inversion": 41.79, "resultados": 58, "rep3s": 2867, "rep75": 678, "rep100": 272}, {"fecha": "2026-06-11", "campana": "Empleo Enfermera", "adset": "Enfermera", "anuncio": "Enfermera 1", "inversion": 0.0, "resultados": 1, "rep3s": 0, "rep75": 0, "rep100": 0}, {"fecha": "2026-06-11", "campana": "Empleo Recepcionista", "adset": "Recepcionista", "anuncio": "Recepcionista 1", "inversion": 0.0, "resultados": 1, "rep3s": 0, "rep75": 0, "rep100": 0}, {"fecha": "2026-06-11", "campana": "Whatsapp Directo Lima", "adset": "BLM WSP Lima", "anuncio": "BLM explicativo", "inversion": 1.88, "resultados": 0, "rep3s": 36, "rep75": 8, "rep100": 5}, {"fecha": "2026-06-10", "campana": "Whatsapp Directo Arequipa", "adset": "Mentoplastia WSP Arequipa", "anuncio": "Mentplastia nuevo", "inversion": 25.07, "resultados": 7, "rep3s": 1181, "rep75": 226, "rep100": 127}, {"fecha": "2026-06-10", "campana": "Whatsapp Directo Lima", "adset": "BLM WSP Lima", "anuncio": "BLM explicativo 2", "inversion": 32.98, "resultados": 38, "rep3s": 833, "rep75": 283, "rep100": 122}, {"fecha": "2026-06-10", "campana": "Whatsapp Directo Arequipa", "adset": "BLM WSP Arequipa", "anuncio": "BLM explicativo 2", "inversion": 27.67, "resultados": 23, "rep3s": 1045, "rep75": 304, "rep100": 142}, {"fecha": "2026-06-10", "campana": "Whatsapp Directo Arequipa", "adset": "Endolaser WSP Arequipa", "anuncio": "endolaser + blm video ganador", "inversion": 2.87, "resultados": 0, "rep3s": 126, "rep75": 36, "rep100": 12}, {"fecha": "2026-06-10", "campana": "Whatsapp Directo Arequipa", "adset": "Mentoplastia WSP Arequipa", "anuncio": "mentoplastia 1", "inversion": 0.8, "resultados": 0, "rep3s": 34, "rep75": 10, "rep100": 7}, {"fecha": "2026-06-10", "campana": "Whatsapp Directo Arequipa", "adset": "Endolaser WSP Arequipa", "anuncio": "endolaser corto, explicativo y A&D", "inversion": 23.99, "resultados": 9, "rep3s": 477, "rep75": 188, "rep100": 91}, {"fecha": "2026-06-10", "campana": "CAMPA\u00d1A DE EMERGENCIA AREQUIPA", "adset": "BLM", "anuncio": "Blm 2", "inversion": 4.16, "resultados": 5, "rep3s": 0, "rep75": 0, "rep100": 0}, {"fecha": "2026-06-10", "campana": "Whatsapp Directo Arequipa", "adset": "Mentoplastia WSP Arequipa", "anuncio": "Mentplastia nuevo 2", "inversion": 0.07, "resultados": 0, "rep3s": 6, "rep75": 1, "rep100": 1}, {"fecha": "2026-06-10", "campana": "Whatsapp Directo Arequipa", "adset": "Mentoplastia WSP Arequipa", "anuncio": "Mentplastia nuevo 3", "inversion": 0.0, "resultados": 1, "rep3s": 0, "rep75": 0, "rep100": 0}, {"fecha": "2026-06-10", "campana": "Whatsapp Directo Lima", "adset": "BLM WSP Lima", "anuncio": "BLM Video Camila", "inversion": 105.22, "resultados": 103, "rep3s": 2871, "rep75": 470, "rep100": 223}, {"fecha": "2026-06-10", "campana": "CAMPA\u00d1A DE EMERGENCIA AREQUIPA", "adset": "MENTOPLASTIA", "anuncio": "Mentoplastia 2", "inversion": 1.04, "resultados": 0, "rep3s": 0, "rep75": 0, "rep100": 0}, {"fecha": "2026-06-10", "campana": "CAMPA\u00d1A DE EMERGENCIA AREQUIPA", "adset": "BLM", "anuncio": "Blm 3", "inversion": 42.28, "resultados": 51, "rep3s": 2644, "rep75": 669, "rep100": 268}, {"fecha": "2026-06-10", "campana": "Empleo Recepcionista", "adset": "Recepcionista", "anuncio": "Recepcionista 1", "inversion": 27.85, "resultados": 9, "rep3s": 0, "rep75": 0, "rep100": 0}, {"fecha": "2026-06-09", "campana": "Whatsapp Directo Arequipa", "adset": "Mentoplastia WSP Arequipa", "anuncio": "Mentplastia nuevo", "inversion": 12.13, "resultados": 2, "rep3s": 599, "rep75": 99, "rep100": 50}, {"fecha": "2026-06-09", "campana": "Whatsapp Directo Arequipa", "adset": "Mentoplastia WSP Arequipa", "anuncio": "mentoplastia 1", "inversion": 0.08, "resultados": 0, "rep3s": 2, "rep75": 2, "rep100": 1}, {"fecha": "2026-06-09", "campana": "Whatsapp Directo Arequipa", "adset": "Mentoplastia WSP Arequipa", "anuncio": "Mento nuevo", "inversion": 0.23, "resultados": 0, "rep3s": 8, "rep75": 3, "rep100": 1}, {"fecha": "2026-06-09", "campana": "Whatsapp Directo Arequipa", "adset": "BLM WSP Arequipa", "anuncio": "BLM explicativo 2", "inversion": 16.19, "resultados": 14, "rep3s": 638, "rep75": 214, "rep100": 90}, {"fecha": "2026-06-09", "campana": "Whatsapp Directo Lima", "adset": "BLM WSP Lima", "anuncio": "BLM antes y despues camila", "inversion": 0.94, "resultados": 1, "rep3s": 30, "rep75": 4, "rep100": 2}, {"fecha": "2026-06-09", "campana": "Whatsapp Directo Lima", "adset": "BLM WSP Lima", "anuncio": "BLM explicativo 2", "inversion": 9.08, "resultados": 19, "rep3s": 344, "rep75": 125, "rep100": 45}, {"fecha": "2026-06-09", "campana": "Whatsapp Directo Lima", "adset": "BLM WSP Lima", "anuncio": "BLM explicativo", "inversion": 0.89, "resultados": 1, "rep3s": 13, "rep75": 4, "rep100": 1}, {"fecha": "2026-06-09", "campana": "Whatsapp Directo Arequipa", "adset": "Mentoplastia WSP Arequipa", "anuncio": "Mentplastia nuevo 3", "inversion": 4.4, "resultados": 3, "rep3s": 187, "rep75": 52, "rep100": 31}, {"fecha": "2026-06-09", "campana": "Whatsapp Directo Arequipa", "adset": "Endolaser WSP Arequipa", "anuncio": "endolaser corto, explicativo y A&D", "inversion": 12.57, "resultados": 4, "rep3s": 227, "rep75": 80, "rep100": 31}, {"fecha": "2026-06-09", "campana": "Whatsapp Directo Lima", "adset": "BLM WSP Lima", "anuncio": "BLM Video Camila", "inversion": 60.59, "resultados": 52, "rep3s": 1700, "rep75": 337, "rep100": 142}, {"fecha": "2026-06-09", "campana": "CAMPA\u00d1A DE EMERGENCIA AREQUIPA", "adset": "BLM", "anuncio": "Blm 2", "inversion": 11.09, "resultados": 19, "rep3s": 0, "rep75": 0, "rep100": 0}, {"fecha": "2026-06-09", "campana": "Empleo Recepcionista", "adset": "Recepcionista", "anuncio": "Recepcionista 1", "inversion": 29.18, "resultados": 21, "rep3s": 0, "rep75": 0, "rep100": 0}, {"fecha": "2026-06-09", "campana": "CAMPA\u00d1A DE EMERGENCIA AREQUIPA", "adset": "BLM", "anuncio": "Blm 3", "inversion": 15.26, "resultados": 21, "rep3s": 892, "rep75": 219, "rep100": 76}, {"fecha": "2026-06-09", "campana": "CAMPA\u00d1A DE EMERGENCIA AREQUIPA", "adset": "MENTOPLASTIA", "anuncio": "Mentoplastia 2", "inversion": 0.3, "resultados": 0, "rep3s": 0, "rep75": 0, "rep100": 0}, {"fecha": "2026-06-09", "campana": "CAMPA\u00d1A DE EMERGENCIA AREQUIPA", "adset": "BLM", "anuncio": "Blm 1", "inversion": 2.33, "resultados": 2, "rep3s": 98, "rep75": 47, "rep100": 18}, {"fecha": "2026-06-09", "campana": "CAMPA\u00d1A DE EMERGENCIA AREQUIPA", "adset": "MENTOPLASTIA", "anuncio": "Mentoplastia 3", "inversion": 0.12, "resultados": 0, "rep3s": 7, "rep75": 2, "rep100": 1}, {"fecha": "2026-06-09", "campana": "CAMPA\u00d1A DE EMERGENCIA AREQUIPA", "adset": "MENTOPLASTIA", "anuncio": "Mentoplastia 1", "inversion": 0.13, "resultados": 0, "rep3s": 6, "rep75": 5, "rep100": 2}, {"fecha": "2026-06-08", "campana": "Whatsapp Directo Lima", "adset": "BLM WSP Lima", "anuncio": "BLM Video Camila", "inversion": 52.22, "resultados": 56, "rep3s": 1902, "rep75": 315, "rep100": 162}, {"fecha": "2026-06-08", "campana": "Whatsapp Directo Lima", "adset": "BLM WSP Lima", "anuncio": "BLM explicativo 2", "inversion": 16.57, "resultados": 26, "rep3s": 619, "rep75": 220, "rep100": 82}, {"fecha": "2026-06-08", "campana": "Whatsapp Directo Arequipa", "adset": "BLM WSP Arequipa", "anuncio": "BLM explicativo 2", "inversion": 14.91, "resultados": 14, "rep3s": 759, "rep75": 229, "rep100": 98}, {"fecha": "2026-06-08", "campana": "Whatsapp Directo Arequipa", "adset": "Endolaser WSP Arequipa", "anuncio": "endolaser + blm video ganador", "inversion": 12.15, "resultados": 7, "rep3s": 790, "rep75": 178, "rep100": 75}, {"fecha": "2026-06-08", "campana": "Whatsapp Directo Arequipa", "adset": "Endolaser WSP Arequipa", "anuncio": "endolaser corto, explicativo y A&D", "inversion": 3.14, "resultados": 6, "rep3s": 73, "rep75": 34, "rep100": 18}, {"fecha": "2026-06-08", "campana": "Whatsapp Directo Arequipa", "adset": "Mentoplastia WSP Arequipa", "anuncio": "Mentplastia nuevo", "inversion": 16.78, "resultados": 7, "rep3s": 1107, "rep75": 193, "rep100": 98}, {"fecha": "2026-06-08", "campana": "Whatsapp Directo Arequipa", "adset": "Mentoplastia WSP Arequipa", "anuncio": "Mentplastia nuevo 2", "inversion": 0.55, "resultados": 0, "rep3s": 13, "rep75": 4, "rep100": 2}, {"fecha": "2026-06-08", "campana": "Whatsapp Directo Lima", "adset": "BLM WSP Lima", "anuncio": "BLM antes y despues camila", "inversion": 0.71, "resultados": 1, "rep3s": 22, "rep75": 1, "rep100": 1}, {"fecha": "2026-06-08", "campana": "CAMPA\u00d1A DE EMERGENCIA AREQUIPA", "adset": "MENTOPLASTIA", "anuncio": "Mentoplastia 2", "inversion": 0.85, "resultados": 2, "rep3s": 0, "rep75": 0, "rep100": 0}, {"fecha": "2026-06-08", "campana": "CAMPA\u00d1A DE EMERGENCIA AREQUIPA", "adset": "MENTOPLASTIA", "anuncio": "Mentoplastia 3", "inversion": 0.15, "resultados": 0, "rep3s": 10, "rep75": 4, "rep100": 3}, {"fecha": "2026-06-08", "campana": "CAMPA\u00d1A DE EMERGENCIA AREQUIPA", "adset": "BLM", "anuncio": "Blm 1", "inversion": 4.4, "resultados": 3, "rep3s": 246, "rep75": 89, "rep100": 35}, {"fecha": "2026-06-08", "campana": "CAMPA\u00d1A DE EMERGENCIA AREQUIPA", "adset": "BLM", "anuncio": "Blm 2", "inversion": 10.79, "resultados": 20, "rep3s": 0, "rep75": 0, "rep100": 0}, {"fecha": "2026-06-08", "campana": "CAMPA\u00d1A DE EMERGENCIA AREQUIPA", "adset": "BLM", "anuncio": "Blm 3", "inversion": 18.39, "resultados": 30, "rep3s": 1182, "rep75": 316, "rep100": 125}, {"fecha": "2026-06-08", "campana": "Empleo Enfermera", "adset": "Enfermera", "anuncio": "Enfermera 1", "inversion": 9.53, "resultados": 6, "rep3s": 0, "rep75": 0, "rep100": 0}, {"fecha": "2026-06-08", "campana": "Empleo Recepcionista", "adset": "Recepcionista", "anuncio": "Recepcionista 1", "inversion": 10.28, "resultados": 12, "rep3s": 0, "rep75": 0, "rep100": 0}, {"fecha": "2026-06-08", "campana": "CAMPA\u00d1A DE EMERGENCIA AREQUIPA", "adset": "MENTOPLASTIA", "anuncio": "Mentoplastia 1", "inversion": 0.29, "resultados": 0, "rep3s": 22, "rep75": 7, "rep100": 3}, {"fecha": "2026-06-07", "campana": "Whatsapp Directo Arequipa", "adset": "Mentoplastia WSP Arequipa", "anuncio": "Mentplastia nuevo 3", "inversion": 2.08, "resultados": 0, "rep3s": 121, "rep75": 24, "rep100": 13}, {"fecha": "2026-06-07", "campana": "Whatsapp Directo Lima", "adset": "BLM WSP Lima", "anuncio": "BLM explicativo 2", "inversion": 77.42, "resultados": 108, "rep3s": 2554, "rep75": 889, "rep100": 378}, {"fecha": "2026-06-07", "campana": "Whatsapp Directo Arequipa", "adset": "BLM WSP Arequipa", "anuncio": "BLM explicativo 2", "inversion": 26.1, "resultados": 23, "rep3s": 1222, "rep75": 358, "rep100": 133}, {"fecha": "2026-06-07", "campana": "Whatsapp Directo Arequipa", "adset": "Endolaser WSP Arequipa", "anuncio": "endolaser + blm video ganador", "inversion": 0.04, "resultados": 0, "rep3s": 1, "rep75": 1, "rep100": 1}, {"fecha": "2026-06-07", "campana": "Whatsapp Directo Arequipa", "adset": "Mentoplastia WSP Arequipa", "anuncio": "Mento nuevo", "inversion": 0.51, "resultados": 0, "rep3s": 21, "rep75": 5, "rep100": 3}, {"fecha": "2026-06-07", "campana": "Whatsapp Directo Arequipa", "adset": "Mentoplastia WSP Arequipa", "anuncio": "mentoplastia 1", "inversion": 0.69, "resultados": 0, "rep3s": 28, "rep75": 9, "rep100": 5}, {"fecha": "2026-06-07", "campana": "Whatsapp Directo Arequipa", "adset": "Endolaser WSP Arequipa", "anuncio": "endolaser corto, explicativo y A&D", "inversion": 26.34, "resultados": 14, "rep3s": 821, "rep75": 285, "rep100": 127}, {"fecha": "2026-06-07", "campana": "Whatsapp Directo Arequipa", "adset": "Mentoplastia WSP Arequipa", "anuncio": "Mentplastia nuevo", "inversion": 22.69, "resultados": 19, "rep3s": 1402, "rep75": 234, "rep100": 116}, {"fecha": "2026-06-07", "campana": "CAMPA\u00d1A DE EMERGENCIA AREQUIPA", "adset": "MENTOPLASTIA", "anuncio": "Mentoplastia 2", "inversion": 0.94, "resultados": 1, "rep3s": 0, "rep75": 0, "rep100": 0}, {"fecha": "2026-06-07", "campana": "Whatsapp Directo Lima", "adset": "BLM WSP Lima", "anuncio": "BLM explicativo", "inversion": 0.87, "resultados": 2, "rep3s": 25, "rep75": 6, "rep100": 3}, {"fecha": "2026-06-07", "campana": "Whatsapp Directo Lima", "adset": "BLM WSP Lima", "anuncio": "BLM Video Camila", "inversion": 61.57, "resultados": 56, "rep3s": 2230, "rep75": 364, "rep100": 155}, {"fecha": "2026-06-07", "campana": "CAMPA\u00d1A DE EMERGENCIA AREQUIPA", "adset": "MENTOPLASTIA", "anuncio": "Mentoplastia 1", "inversion": 0.29, "resultados": 2, "rep3s": 23, "rep75": 12, "rep100": 4}, {"fecha": "2026-06-07", "campana": "CAMPA\u00d1A DE EMERGENCIA AREQUIPA", "adset": "MENTOPLASTIA", "anuncio": "Mentoplastia 3", "inversion": 0.87, "resultados": 1, "rep3s": 79, "rep75": 15, "rep100": 7}, {"fecha": "2026-06-07", "campana": "CAMPA\u00d1A DE EMERGENCIA AREQUIPA", "adset": "BLM", "anuncio": "Blm 1", "inversion": 8.37, "resultados": 18, "rep3s": 496, "rep75": 165, "rep100": 63}, {"fecha": "2026-06-07", "campana": "CAMPA\u00d1A DE EMERGENCIA AREQUIPA", "adset": "BLM", "anuncio": "Blm 2", "inversion": 2.31, "resultados": 2, "rep3s": 0, "rep75": 0, "rep100": 0}, {"fecha": "2026-06-07", "campana": "CAMPA\u00d1A DE EMERGENCIA AREQUIPA", "adset": "BLM", "anuncio": "Blm 3", "inversion": 22.28, "resultados": 36, "rep3s": 1386, "rep75": 314, "rep100": 115}, {"fecha": "2026-06-07", "campana": "Empleo Enfermera", "adset": "Enfermera", "anuncio": "Enfermera 1", "inversion": 25.53, "resultados": 25, "rep3s": 0, "rep75": 0, "rep100": 0}, {"fecha": "2026-06-06", "campana": "Whatsapp Directo Lima", "adset": "BLM WSP Lima", "anuncio": "BLM antes y despues camila", "inversion": 1.86, "resultados": 0, "rep3s": 55, "rep75": 12, "rep100": 8}, {"fecha": "2026-06-06", "campana": "Whatsapp Directo Arequipa", "adset": "Endolaser WSP Arequipa", "anuncio": "endolaser corto, explicativo y A&D", "inversion": 16.13, "resultados": 7, "rep3s": 304, "rep75": 123, "rep100": 45}, {"fecha": "2026-06-06", "campana": "Whatsapp Directo Arequipa", "adset": "BLM WSP Arequipa", "anuncio": "BLM explicativo 2", "inversion": 20.69, "resultados": 14, "rep3s": 609, "rep75": 181, "rep100": 82}, {"fecha": "2026-06-06", "campana": "Whatsapp Directo Arequipa", "adset": "Endolaser WSP Arequipa", "anuncio": "endolaser + blm video ganador", "inversion": 8.53, "resultados": 7, "rep3s": 309, "rep75": 76, "rep100": 33}, {"fecha": "2026-06-06", "campana": "Whatsapp Directo Arequipa", "adset": "Mentoplastia WSP Arequipa", "anuncio": "Mento nuevo", "inversion": 0.25, "resultados": 0, "rep3s": 8, "rep75": 3, "rep100": 2}, {"fecha": "2026-06-06", "campana": "Whatsapp Directo Arequipa", "adset": "Mentoplastia WSP Arequipa", "anuncio": "Mentplastia nuevo 3", "inversion": 0.35, "resultados": 0, "rep3s": 19, "rep75": 2, "rep100": 1}, {"fecha": "2026-06-06", "campana": "Whatsapp Directo Arequipa", "adset": "Mentoplastia WSP Arequipa", "anuncio": "Mentplastia nuevo", "inversion": 17.85, "resultados": 8, "rep3s": 686, "rep75": 116, "rep100": 59}, {"fecha": "2026-06-06", "campana": "Whatsapp Directo Lima", "adset": "BLM WSP Lima", "anuncio": "BLM explicativo", "inversion": 1.35, "resultados": 1, "rep3s": 25, "rep75": 7, "rep100": 3}, {"fecha": "2026-06-06", "campana": "Whatsapp Directo Lima", "adset": "BLM WSP Lima", "anuncio": "BLM Video Camila", "inversion": 106.9, "resultados": 108, "rep3s": 2865, "rep75": 546, "rep100": 238}, {"fecha": "2026-06-06", "campana": "Empleo Enfermera", "adset": "Enfermera", "anuncio": "Enfermera 1", "inversion": 25.9, "resultados": 21, "rep3s": 0, "rep75": 0, "rep100": 0}, {"fecha": "2026-06-06", "campana": "Whatsapp Directo Arequipa", "adset": "Mentoplastia WSP Arequipa", "anuncio": "Mentplastia nuevo 2", "inversion": 0.73, "resultados": 0, "rep3s": 15, "rep75": 3, "rep100": 1}, {"fecha": "2026-06-05", "campana": "Whatsapp Directo Arequipa", "adset": "Mentoplastia WSP Arequipa", "anuncio": "mentoplastia 1", "inversion": 0.01, "resultados": 0, "rep3s": 0, "rep75": 0, "rep100": 0}, {"fecha": "2026-06-05", "campana": "Whatsapp Directo Lima", "adset": "BLM WSP Lima", "anuncio": "BLM explicativo 2", "inversion": 20.8, "resultados": 31, "rep3s": 718, "rep75": 237, "rep100": 91}, {"fecha": "2026-06-05", "campana": "Whatsapp Directo Arequipa", "adset": "BLM WSP Arequipa", "anuncio": "BLM explicativo 2", "inversion": 22.98, "resultados": 28, "rep3s": 992, "rep75": 275, "rep100": 101}, {"fecha": "2026-06-05", "campana": "Whatsapp Directo Arequipa", "adset": "Endolaser WSP Arequipa", "anuncio": "endolaser + blm video ganador", "inversion": 4.32, "resultados": 5, "rep3s": 212, "rep75": 51, "rep100": 20}, {"fecha": "2026-06-05", "campana": "Whatsapp Directo Arequipa", "adset": "Mentoplastia WSP Arequipa", "anuncio": "Mentplastia nuevo", "inversion": 28.18, "resultados": 25, "rep3s": 1471, "rep75": 334, "rep100": 143}, {"fecha": "2026-06-05", "campana": "Whatsapp Directo Arequipa", "adset": "Endolaser WSP Arequipa", "anuncio": "endolaser corto, explicativo y A&D", "inversion": 20.75, "resultados": 8, "rep3s": 575, "rep75": 213, "rep100": 86}, {"fecha": "2026-06-05", "campana": "Whatsapp Directo Arequipa", "adset": "Mentoplastia WSP Arequipa", "anuncio": "Mentplastia nuevo 2", "inversion": 0.06, "resultados": 0, "rep3s": 5, "rep75": 2, "rep100": 2}, {"fecha": "2026-06-05", "campana": "Whatsapp Directo Lima", "adset": "BLM WSP Lima", "anuncio": "BLM Video Camila", "inversion": 89.95, "resultados": 104, "rep3s": 3137, "rep75": 480, "rep100": 210}, {"fecha": "2026-06-05", "campana": "Empleo Enfermera", "adset": "Enfermera", "anuncio": "Enfermera 1", "inversion": 30.83, "resultados": 26, "rep3s": 0, "rep75": 0, "rep100": 0}, {"fecha": "2026-06-04", "campana": "Whatsapp Directo Arequipa", "adset": "Endolaser WSP Arequipa", "anuncio": "endolaser corto, explicativo y A&D", "inversion": 23.19, "resultados": 6, "rep3s": 808, "rep75": 283, "rep100": 131}, {"fecha": "2026-06-04", "campana": "Whatsapp Directo Lima", "adset": "BLM WSP Lima", "anuncio": "BLM explicativo 2", "inversion": 74.55, "resultados": 105, "rep3s": 2318, "rep75": 732, "rep100": 278}, {"fecha": "2026-06-04", "campana": "Whatsapp Directo Arequipa", "adset": "BLM WSP Arequipa", "anuncio": "BLM explicativo 2", "inversion": 22.64, "resultados": 19, "rep3s": 973, "rep75": 283, "rep100": 129}, {"fecha": "2026-06-04", "campana": "Whatsapp Directo Arequipa", "adset": "Mentoplastia WSP Arequipa", "anuncio": "Mento nuevo", "inversion": 0.91, "resultados": 0, "rep3s": 33, "rep75": 8, "rep100": 2}, {"fecha": "2026-06-04", "campana": "Whatsapp Directo Lima", "adset": "BLM WSP Lima", "anuncio": "BLM antes y despues camila", "inversion": 1.85, "resultados": 3, "rep3s": 62, "rep75": 16, "rep100": 11}, {"fecha": "2026-06-04", "campana": "Whatsapp Directo Arequipa", "adset": "Mentoplastia WSP Arequipa", "anuncio": "Mentplastia nuevo", "inversion": 21.71, "resultados": 12, "rep3s": 1093, "rep75": 190, "rep100": 97}, {"fecha": "2026-06-04", "campana": "Whatsapp Directo Lima", "adset": "BLM WSP Lima", "anuncio": "BLM explicativo", "inversion": 0.11, "resultados": 0, "rep3s": 3, "rep75": 1, "rep100": 1}, {"fecha": "2026-06-04", "campana": "Whatsapp Directo Lima", "adset": "BLM WSP Lima", "anuncio": "BLM Video Camila", "inversion": 4.98, "resultados": 3, "rep3s": 177, "rep75": 23, "rep100": 13}, {"fecha": "2026-06-04", "campana": "Whatsapp Directo Arequipa", "adset": "Mentoplastia WSP Arequipa", "anuncio": "Mentplastia nuevo 3", "inversion": 5.52, "resultados": 4, "rep3s": 271, "rep75": 71, "rep100": 39}, {"fecha": "2026-06-03", "campana": "Whatsapp Directo Arequipa", "adset": "Mentoplastia WSP Arequipa", "anuncio": "Mento nuevo", "inversion": 0.11, "resultados": 0, "rep3s": 10, "rep75": 3, "rep100": 1}, {"fecha": "2026-06-03", "campana": "Whatsapp Directo Lima", "adset": "BLM WSP Lima", "anuncio": "BLM explicativo 2", "inversion": 71.44, "resultados": 112, "rep3s": 2215, "rep75": 751, "rep100": 271}, {"fecha": "2026-06-03", "campana": "Whatsapp Directo Arequipa", "adset": "BLM WSP Arequipa", "anuncio": "BLM explicativo 2", "inversion": 14.82, "resultados": 15, "rep3s": 522, "rep75": 187, "rep100": 72}, {"fecha": "2026-06-03", "campana": "Whatsapp Directo Arequipa", "adset": "Endolaser WSP Arequipa", "anuncio": "endolaser + blm video ganador", "inversion": 9.86, "resultados": 10, "rep3s": 560, "rep75": 115, "rep100": 45}, {"fecha": "2026-06-03", "campana": "Whatsapp Directo Lima", "adset": "BLM WSP Lima", "anuncio": "BLM antes y despues camila", "inversion": 0.76, "resultados": 1, "rep3s": 44, "rep75": 11, "rep100": 9}, {"fecha": "2026-06-03", "campana": "Whatsapp Directo Arequipa", "adset": "Endolaser WSP Arequipa", "anuncio": "endolaser corto, explicativo y A&D", "inversion": 8.92, "resultados": 8, "rep3s": 253, "rep75": 110, "rep100": 46}, {"fecha": "2026-06-03", "campana": "Whatsapp Directo Arequipa", "adset": "Mentoplastia WSP Arequipa", "anuncio": "Mentplastia nuevo", "inversion": 14.76, "resultados": 9, "rep3s": 697, "rep75": 124, "rep100": 72}, {"fecha": "2026-06-03", "campana": "Whatsapp Directo Arequipa", "adset": "Mentoplastia WSP Arequipa", "anuncio": "Mentplastia nuevo 2", "inversion": 1.26, "resultados": 0, "rep3s": 27, "rep75": 11, "rep100": 10}, {"fecha": "2026-06-03", "campana": "Whatsapp Directo Lima", "adset": "BLM WSP Lima", "anuncio": "BLM explicativo", "inversion": 0.14, "resultados": 0, "rep3s": 1, "rep75": 0, "rep100": 0}, {"fecha": "2026-06-02", "campana": "Whatsapp Directo Lima", "adset": "BLM WSP Lima", "anuncio": "BLM explicativo", "inversion": 0.33, "resultados": 1, "rep3s": 11, "rep75": 2, "rep100": 1}, {"fecha": "2026-06-02", "campana": "Whatsapp Directo Arequipa", "adset": "Mentoplastia WSP Arequipa", "anuncio": "Mentplastia nuevo 3", "inversion": 1.13, "resultados": 1, "rep3s": 63, "rep75": 20, "rep100": 8}, {"fecha": "2026-06-02", "campana": "Whatsapp Directo Arequipa", "adset": "Mentoplastia WSP Arequipa", "anuncio": "Mentplastia nuevo", "inversion": 34.54, "resultados": 26, "rep3s": 1768, "rep75": 338, "rep100": 158}, {"fecha": "2026-06-02", "campana": "Whatsapp Directo Arequipa", "adset": "Endolaser WSP Arequipa", "anuncio": "endolaser corto, explicativo y A&D", "inversion": 28.3, "resultados": 27, "rep3s": 787, "rep75": 308, "rep100": 123}, {"fecha": "2026-06-02", "campana": "Whatsapp Directo Arequipa", "adset": "Mentoplastia WSP Arequipa", "anuncio": "mentoplastia 1", "inversion": 2.25, "resultados": 1, "rep3s": 92, "rep75": 22, "rep100": 8}, {"fecha": "2026-06-02", "campana": "Whatsapp Directo Arequipa", "adset": "Mentoplastia WSP Arequipa", "anuncio": "Mento nuevo", "inversion": 0.38, "resultados": 0, "rep3s": 18, "rep75": 5, "rep100": 2}, {"fecha": "2026-06-02", "campana": "Whatsapp Directo Arequipa", "adset": "BLM WSP Arequipa", "anuncio": "BLM explicativo 2", "inversion": 23.11, "resultados": 29, "rep3s": 1021, "rep75": 290, "rep100": 112}, {"fecha": "2026-06-02", "campana": "Whatsapp Directo Lima", "adset": "BLM WSP Lima", "anuncio": "BLM antes y despues camila", "inversion": 7.71, "resultados": 10, "rep3s": 297, "rep75": 44, "rep100": 27}, {"fecha": "2026-06-02", "campana": "Whatsapp Directo Lima", "adset": "BLM WSP Lima", "anuncio": "BLM explicativo 2", "inversion": 121.78, "resultados": 133, "rep3s": 3919, "rep75": 1228, "rep100": 451}, {"fecha": "2026-06-01", "campana": "Whatsapp Directo Arequipa", "adset": "Endolaser WSP Arequipa", "anuncio": "endolaser corto, explicativo y A&D", "inversion": 19.22, "resultados": 12, "rep3s": 413, "rep75": 150, "rep100": 62}, {"fecha": "2026-06-01", "campana": "Whatsapp Directo Arequipa", "adset": "BLM WSP Arequipa", "anuncio": "BLM explicativo 2", "inversion": 42.95, "resultados": 34, "rep3s": 1615, "rep75": 476, "rep100": 206}, {"fecha": "2026-06-01", "campana": "Whatsapp Directo Arequipa", "adset": "Endolaser WSP Arequipa", "anuncio": "endolaser + blm video ganador", "inversion": 14.78, "resultados": 16, "rep3s": 874, "rep75": 203, "rep100": 92}, {"fecha": "2026-06-01", "campana": "Whatsapp Directo Lima", "adset": "BLM WSP Lima", "anuncio": "BLM antes y despues camila", "inversion": 93.54, "resultados": 77, "rep3s": 3069, "rep75": 467, "rep100": 313}, {"fecha": "2026-06-01", "campana": "Whatsapp Directo Arequipa", "adset": "Mentoplastia WSP Arequipa", "anuncio": "Mentplastia nuevo", "inversion": 21.27, "resultados": 3, "rep3s": 1024, "rep75": 182, "rep100": 69}, {"fecha": "2026-06-01", "campana": "Whatsapp Directo Arequipa", "adset": "Mentoplastia WSP Arequipa", "anuncio": "Mentplastia nuevo 2", "inversion": 2.72, "resultados": 0, "rep3s": 87, "rep75": 16, "rep100": 11}, {"fecha": "2026-06-01", "campana": "Whatsapp Directo Lima", "adset": "BLM WSP Lima", "anuncio": "BLM explicativo", "inversion": 1.8, "resultados": 1, "rep3s": 37, "rep75": 16, "rep100": 7}, {"fecha": "2026-06-01", "campana": "Whatsapp Directo Lima", "adset": "BLM WSP Lima", "anuncio": "BLM explicativo 2", "inversion": 53.13, "resultados": 62, "rep3s": 1659, "rep75": 551, "rep100": 205}];
+const HIERARCHY = {"Whatsapp Directo Arequipa": {"BLM WSP Arequipa": ["BLM Camila corregido", "BLM Jimena", "BLM Testimonio Camila", "BLM explicativo 2"], "Mentoplastia WSP Arequipa": ["Mento nuevo", "Mentplastia jimena", "Mentplastia nuevo", "Mentplastia nuevo 2", "Mentplastia nuevo 3", "mentoplastia 1"], "Endolaser WSP Arequipa": ["endolaser + blm video ganador", "endolaser corto, explicativo y A&D"]}, "CAMPA\u00d1A DE EMERGENCIA AREQUIPA": {"BLM": ["Blm 1", "Blm 2", "Blm 3"], "MENTOPLASTIA": ["Mentoplastia 1", "Mentoplastia 2", "Mentoplastia 3", "Mentoplastia 4"]}, "Whatsapp Directo Lima": {"Mentoplastia WSP Lima": ["Mentoplastia 1", "Mentoplastia nuevo"], "Endolaser WSP Lima": ["endolaser + blm video ganador", "endolaser corto, explicativo y A&D"], "BLM WSP Lima": ["BLM Camila corregido", "BLM Jimena", "BLM Testimonio camila", "BLM Video Camila", "BLM antes y despues camila", "BLM explicativo", "BLM explicativo 2"]}, "Empleo Recepcionista": {"Recepcionista": ["Recepcionista 1"]}, "Enfermera 2": {"Enfermera 2": ["Anuncio2"]}, "Empleo Recepcionista 2": {"Recepcionista 2": ["Anuncio"]}, "Empleo Enfermera": {"Enfermera": ["Enfermera 1"]}};
+const ALL_CAMPANAS = ["CAMPA\u00d1A DE EMERGENCIA AREQUIPA", "Empleo Enfermera", "Empleo Recepcionista", "Empleo Recepcionista 2", "Enfermera 2", "Whatsapp Directo Arequipa", "Whatsapp Directo Lima"];
+const FECHA_MIN = '2026-06-01';
+const FECHA_MAX = '2026-06-27';
+
+const COLORS = ['#60a5fa','#4ade80','#fbbf24','#c084fc','#34d399','#f87171','#fb923c','#38bdf8','#a78bfa','#f472b6','#e879f9','#2dd4bf'];
+const gc = 'rgba(255,255,255,0.06)', tc = '#94a3b8';
+
+// ══ CHECKLIST BUILDERS ══
+function buildChecklist(id, items, checked=true) {
+  const el = document.getElementById(id);
+  el.innerHTML = items.map(v =>
+    `<label class="check-item"><input type="checkbox" value="${v}"${checked?' checked':''} onchange="onCascadeChange('${id}')"><span>${v}</span></label>`
+  ).join('');
+  updateCount(id);
+}
+
+function updateCount(id) {
+  const total = document.querySelectorAll('#'+id+' input').length;
+  const checked = document.querySelectorAll('#'+id+' input:checked').length;
+  const countMap = {'campChecks':'cnt-camp','adsetChecks':'cnt-adset','anuncioChecks':'cnt-anuncio'};
+  const el = document.getElementById(countMap[id]);
+  if(el) el.textContent = checked+'/'+total;
+}
+
+// ══ CASCADE LOGIC ══
+function onCascadeChange(sourceId) {
+  updateCount(sourceId);
+  if(sourceId === 'campChecks') {
+    cascadeAdsets();
+  } else if(sourceId === 'adsetChecks') {
+    cascadeAnuncios();
+  }
+  // Auto-apply on cascade
+  applyFilters();
+}
+
+function getSelected(id) {
+  return new Set(Array.from(document.querySelectorAll('#'+id+' input:checked')).map(cb=>cb.value));
+}
+
+function cascadeAdsets() {
+  const selCamps = getSelected('campChecks');
+  // Collect valid adsets for selected campaigns
+  const validAdsets = new Set();
+  selCamps.forEach(c => {
+    if(HIERARCHY[c]) Object.keys(HIERARCHY[c]).forEach(a => validAdsets.add(a));
+  });
+
+  // Rebuild adset checklist with only valid options, preserving current checked state where possible
+  const prevSelected = getSelected('adsetChecks');
+  const el = document.getElementById('adsetChecks');
+  const allAdsets = Array.from(validAdsets).sort();
+
+  el.innerHTML = allAdsets.map(a => {
+    const isChecked = prevSelected.has(a) || prevSelected.size === 0;
+    return `<label class="check-item"><input type="checkbox" value="${a}"${isChecked?' checked':''} onchange="onCascadeChange('adsetChecks')"><span>${a}</span></label>`;
+  }).join('');
+
+  // Clear search
+  document.getElementById('search-adset').value = '';
+  updateCount('adsetChecks');
+  cascadeAnuncios();
+}
+
+function cascadeAnuncios() {
+  const selCamps = getSelected('campChecks');
+  const selAdsets = getSelected('adsetChecks');
+
+  // Collect valid anuncios for selected campaigns+adsets
+  const validAnuncios = new Set();
+  selCamps.forEach(c => {
+    if(HIERARCHY[c]) {
+      selAdsets.forEach(a => {
+        if(HIERARCHY[c][a]) HIERARCHY[c][a].forEach(n => validAnuncios.add(n));
+      });
+    }
+  });
+
+  const prevSelected = getSelected('anuncioChecks');
+  const el = document.getElementById('anuncioChecks');
+  const allAnuncios = Array.from(validAnuncios).sort();
+
+  el.innerHTML = allAnuncios.map(n => {
+    const isChecked = prevSelected.has(n) || prevSelected.size === 0;
+    return `<label class="check-item"><input type="checkbox" value="${n}"${isChecked?' checked':''} onchange="onCascadeChange('anuncioChecks')"><span>${n}</span></label>`;
+  }).join('');
+
+  document.getElementById('search-anuncio').value = '';
+  updateCount('anuncioChecks');
+}
+
+// ══ FILTER SEARCH ══
+function filterChecks(id, q) {
+  document.querySelectorAll('#'+id+' .check-item').forEach(el => {
+    el.style.display = el.querySelector('span').textContent.toLowerCase().includes(q.toLowerCase()) ? '' : 'none';
+  });
+}
+
+function selectAll(id, val) {
+  document.querySelectorAll('#'+id+' input').forEach(cb => cb.checked = val);
+  onCascadeChange(id);
+}
+
+// ══ AGGREGATION ══
+function getFiltered() {
+  const desde = document.getElementById('fechaDesde').value;
+  const hasta = document.getElementById('fechaHasta').value;
+  const sc = getSelected('campChecks'), sa = getSelected('adsetChecks'), san = getSelected('anuncioChecks');
+  return RAW.filter(r => r.fecha>=desde && r.fecha<=hasta && sc.has(r.campana) && sa.has(r.adset) && san.has(r.anuncio));
+}
+
+function agg(data, key) {
+  const m = {};
+  data.forEach(r => {
+    const k=r[key]; if(!m[k]) m[k]={key:k,inv:0,res:0,r3:0,r75:0,r100:0};
+    m[k].inv+=r.inversion; m[k].res+=r.resultados; m[k].r3+=r.rep3s; m[k].r75+=r.rep75; m[k].r100+=r.rep100;
+  });
+  return Object.values(m).map(d => {
+    d.inv=Math.round(d.inv*100)/100;
+    d.cpl=d.res>0?Math.round(d.inv/d.res*100)/100:null;
+    d.hook=d.r3>0?Math.round(d.r75/d.r3*10000)/100:null;
+    d.ret=d.r3>0?Math.round(d.r100/d.r3*10000)/100:null;
+    return d;
+  });
+}
+
+function aggDaily(data) {
+  const m={};
+  data.forEach(r => {
+    if(!m[r.fecha]) m[r.fecha]={fecha:r.fecha,inv:0,res:0};
+    m[r.fecha].inv+=r.inversion; m[r.fecha].res+=r.resultados;
+  });
+  return Object.values(m).sort((a,b)=>a.fecha.localeCompare(b.fecha)).map(d => {
+    const fd=new Date(d.fecha+'T00:00:00');
+    return {...d, inv:Math.round(d.inv*100)/100, cpl:d.res>0?Math.round(d.inv/d.res*100)/100:null,
+      label:fd.toLocaleDateString('es-PE',{day:'2-digit',month:'short'})};
+  });
+}
+
+function badge(c) {
+  if(!c) return '<span class="pill pgr">— Sin leads</span>';
+  if(c<=0.5) return '<span class="pill pg">🔥 Top</span>';
+  if(c<=1.2) return '<span class="pill pb">⭐ Eficiente</span>';
+  if(c<=2.0) return '<span class="pill py">✓ Normal</span>';
+  return '<span class="pill pr">⚠️ Alto CPL</span>';
+}
+
+// ══ CHARTS ══
+let charts = {};
+function destroyChart(id) { if(charts[id]) { charts[id].destroy(); delete charts[id]; } }
+
+function applyFilters() {
+  const data = getFiltered();
+  const totInv=data.reduce((s,r)=>s+r.inversion,0);
+  const totRes=data.reduce((s,r)=>s+r.resultados,0);
+  const totR3=data.reduce((s,r)=>s+r.rep3s,0);
+  const totR75=data.reduce((s,r)=>s+r.rep75,0);
+  const totR100=data.reduce((s,r)=>s+r.rep100,0);
+
+  document.getElementById('k-inv').textContent='S/ '+totInv.toLocaleString('es-PE',{maximumFractionDigits:0});
+  document.getElementById('k-leads').textContent=totRes.toLocaleString();
+  document.getElementById('k-cpl').textContent=totRes>0?'S/ '+(totInv/totRes).toFixed(2):'—';
+  document.getElementById('k-hook').textContent=totR3>0?(totR75/totR3*100).toFixed(1)+'%':'—';
+  document.getElementById('k-ret').textContent=totR3>0?(totR100/totR3*100).toFixed(1)+'%':'—';
+
+  const byCamp=agg(data,'campana').sort((a,b)=>b.inv-a.inv);
+  const byAnuncio=agg(data,'anuncio').sort((a,b)=>b.inv-a.inv);
+  const daily=aggDaily(data);
+
+  // Daily chart
+  destroyChart('dailyChart');
+  if(daily.length) {
+    charts['dailyChart']=new Chart(document.getElementById('dailyChart'),{
+      type:'bar',
+      data:{labels:daily.map(d=>d.label),datasets:[
+        {label:'Inversión (S/)',data:daily.map(d=>d.inv),backgroundColor:'rgba(96,165,250,0.45)',borderColor:'#60a5fa',borderWidth:1,yAxisID:'y'},
+        {label:'CPL (S/)',data:daily.map(d=>d.cpl),type:'line',borderColor:'#fbbf24',backgroundColor:'rgba(251,191,36,0.08)',fill:true,tension:0.4,pointRadius:4,pointBackgroundColor:'#fbbf24',yAxisID:'y1'}
+      ]},
+      options:{responsive:true,interaction:{mode:'index',intersect:false},plugins:{legend:{labels:{color:tc}}},
+        scales:{x:{ticks:{color:tc},grid:{color:gc}},y:{ticks:{color:tc,callback:v=>'S/'+v},grid:{color:gc},title:{display:true,text:'Inversión',color:tc}},y1:{position:'right',ticks:{color:'#fbbf24',callback:v=>'S/'+v},grid:{drawOnChartArea:false},title:{display:true,text:'CPL',color:'#fbbf24'}}}
+      }
+    });
+  }
+
+  // Pie
+  destroyChart('pieChart');
+  if(byCamp.length) {
+    charts['pieChart']=new Chart(document.getElementById('pieChart'),{
+      type:'doughnut',
+      data:{labels:byCamp.map(d=>d.key),datasets:[{data:byCamp.map(d=>d.inv),backgroundColor:COLORS.map(c=>c+'cc'),borderColor:'#1a1d2e',borderWidth:2}]},
+      options:{responsive:true,plugins:{legend:{position:'right',labels:{color:tc,font:{size:11},padding:9}},tooltip:{callbacks:{label:ctx=>` S/${ctx.parsed.toLocaleString()} (${(ctx.parsed/totInv*100).toFixed(1)}%)`}}}}
+    });
+  }
+
+  // CPL horiz
+  destroyChart('cplCampChart');
+  const cwc=byCamp.filter(d=>d.cpl);
+  if(cwc.length) {
+    charts['cplCampChart']=new Chart(document.getElementById('cplCampChart'),{
+      type:'bar',
+      data:{labels:cwc.map(d=>d.key),datasets:[{label:'CPL (S/)',data:cwc.map(d=>d.cpl),backgroundColor:COLORS.map(c=>c+'99'),borderColor:COLORS,borderWidth:2,borderRadius:5}]},
+      options:{indexAxis:'y',responsive:true,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>' S/ '+ctx.parsed.x.toFixed(2)}}},
+        scales:{x:{ticks:{color:tc,callback:v=>'S/'+v},grid:{color:gc}},y:{ticks:{color:tc,font:{size:11}},grid:{color:gc}}}
+      }
+    });
+  }
+
+  // Bubble
+  destroyChart('bubbleChart');
+  if(byCamp.length) {
+    charts['bubbleChart']=new Chart(document.getElementById('bubbleChart'),{
+      type:'bubble',
+      data:{datasets:byCamp.map((d,i)=>{const c=d.cpl||0;return{label:d.key,data:[{x:d.inv,y:d.res,r:Math.max(5,Math.min(26,c*7))}],backgroundColor:COLORS[i%COLORS.length]+'99',borderColor:COLORS[i%COLORS.length],borderWidth:2};})},
+      options:{responsive:true,plugins:{legend:{labels:{color:tc,font:{size:11}}},tooltip:{callbacks:{label:ctx=>`${ctx.dataset.label}: S/${ctx.parsed.x.toFixed(0)} · ${ctx.parsed.y} leads`}}},
+        scales:{x:{title:{display:true,text:'Inversión (S/)',color:tc},ticks:{color:tc,callback:v=>'S/'+v},grid:{color:gc}},y:{title:{display:true,text:'Leads',color:tc},ticks:{color:tc},grid:{color:gc}}}
+      }
+    });
+  }
+
+  // Leads
+  destroyChart('leadsChart');
+  if(byCamp.length) {
+    charts['leadsChart']=new Chart(document.getElementById('leadsChart'),{
+      type:'bar',
+      data:{labels:byCamp.map(d=>d.key),datasets:[{label:'Leads',data:byCamp.map(d=>d.res),backgroundColor:COLORS.map(c=>c+'99'),borderColor:COLORS,borderWidth:2,borderRadius:5}]},
+      options:{indexAxis:'y',responsive:true,plugins:{legend:{display:false}},scales:{x:{ticks:{color:tc},grid:{color:gc}},y:{ticks:{color:tc,font:{size:11}},grid:{color:gc}}}}
+    });
+  }
+
+  // Camp table
+  document.getElementById('campTable').innerHTML = byCamp.length ?
+    byCamp.map(d=>`<tr><td><strong>${d.key}</strong></td><td>S/ ${d.inv.toLocaleString()}</td><td>${d.res.toLocaleString()}</td><td>${d.cpl?'S/ '+d.cpl.toFixed(2):'—'}</td><td>${badge(d.cpl)}</td></tr>`).join('') :
+    '<tr><td colspan="5" class="empty">Sin datos para los filtros seleccionados</td></tr>';
+
+  // Hook
+  destroyChart('hookChart');
+  const vidAds=byAnuncio.filter(d=>d.r3>0&&d.hook!==null).sort((a,b)=>(a.cpl||99)-(b.cpl||99)).slice(0,20);
+  if(vidAds.length) {
+    charts['hookChart']=new Chart(document.getElementById('hookChart'),{
+      type:'bar',
+      data:{labels:vidAds.map(d=>d.key.length>26?d.key.slice(0,24)+'…':d.key),datasets:[
+        {label:'Hook Rate 75%(%)',data:vidAds.map(d=>d.hook),backgroundColor:'rgba(192,132,252,0.6)',borderColor:'#c084fc',borderWidth:2,borderRadius:4},
+        {label:'Retención 100%(%)',data:vidAds.map(d=>d.ret),backgroundColor:'rgba(52,211,153,0.6)',borderColor:'#34d399',borderWidth:2,borderRadius:4}
+      ]},
+      options:{responsive:true,plugins:{legend:{labels:{color:tc}}},scales:{x:{ticks:{color:tc,font:{size:10},maxRotation:45},grid:{color:gc}},y:{ticks:{color:tc,callback:v=>v+'%'},grid:{color:gc}}}}
+    });
+  }
+
+  // Top leads
+  destroyChart('topLeadsChart');
+  const topL=[...byAnuncio].sort((a,b)=>b.res-a.res).slice(0,10);
+  if(topL.length) {
+    charts['topLeadsChart']=new Chart(document.getElementById('topLeadsChart'),{
+      type:'bar',
+      data:{labels:topL.map(d=>d.key.length>22?d.key.slice(0,20)+'…':d.key),datasets:[{label:'Leads',data:topL.map(d=>d.res),backgroundColor:'rgba(74,222,128,0.6)',borderColor:'#4ade80',borderWidth:2,borderRadius:5}]},
+      options:{indexAxis:'y',responsive:true,plugins:{legend:{display:false}},scales:{x:{ticks:{color:tc},grid:{color:gc}},y:{ticks:{color:tc,font:{size:11}},grid:{color:gc}}}}
+    });
+  }
+
+  // Top CPL
+  destroyChart('topCplChart');
+  const topC=[...byAnuncio].filter(d=>d.cpl&&d.res>0).sort((a,b)=>a.cpl-b.cpl).slice(0,10);
+  if(topC.length) {
+    charts['topCplChart']=new Chart(document.getElementById('topCplChart'),{
+      type:'bar',
+      data:{labels:topC.map(d=>d.key.length>22?d.key.slice(0,20)+'…':d.key),datasets:[{label:'CPL (S/)',data:topC.map(d=>d.cpl),backgroundColor:'rgba(96,165,250,0.6)',borderColor:'#60a5fa',borderWidth:2,borderRadius:5}]},
+      options:{indexAxis:'y',responsive:true,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>' S/ '+ctx.parsed.x.toFixed(2)}}},
+        scales:{x:{ticks:{color:tc,callback:v=>'S/'+v},grid:{color:gc}},y:{ticks:{color:tc,font:{size:11}},grid:{color:gc}}}
+      }
+    });
+  }
+
+  // Table
+  const mapKey=r=>r.anuncio+'|||'+r.adset+'|||'+r.campana;
+  const tm={};
+  data.forEach(r=>{const k=mapKey(r);if(!tm[k])tm[k]={anuncio:r.anuncio,adset:r.adset,campana:r.campana,inv:0,res:0,r3:0,r75:0,r100:0};
+    tm[k].inv+=r.inversion;tm[k].res+=r.resultados;tm[k].r3+=r.rep3s;tm[k].r75+=r.rep75;tm[k].r100+=r.rep100;
+  });
+  currentTableData=Object.values(tm).map(d=>{
+    d.inv=Math.round(d.inv*100)/100;d.cpl=d.res>0?Math.round(d.inv/d.res*100)/100:null;
+    d.hook=d.r3>0?Math.round(d.r75/d.r3*10000)/100:null;d.ret=d.r3>0?Math.round(d.r100/d.r3*10000)/100:null;
+    return d;
+  }).sort((a,b)=>b.inv-a.inv);
+  filterTableSearch('');
+}
+
+let currentTableData=[];
+function filterTableSearch(q) {
+  const f=q?currentTableData.filter(d=>(d.anuncio+d.campana+d.adset).toLowerCase().includes(q.toLowerCase())):currentTableData;
+  document.getElementById('rowCount').textContent=f.length+' anuncios';
+  document.getElementById('tableBody').innerHTML=f.length?f.map(d=>`
+    <tr>
+      <td><strong>${d.anuncio}</strong></td>
+      <td><span class="camp-tag" title="${d.campana}">${d.campana.length>20?d.campana.slice(0,18)+'…':d.campana}</span></td>
+      <td style="color:#94a3b8;font-size:11px">${d.adset}</td>
+      <td>S/ ${d.inv.toLocaleString()}</td>
+      <td>${d.res.toLocaleString()}</td>
+      <td>${d.cpl?'S/ '+d.cpl.toFixed(2):'—'}</td>
+      <td>${d.r3>0?d.r3.toLocaleString():'—'}</td>
+      <td>${d.hook&&d.hook>0?d.hook+'%':'—'}</td>
+      <td>${d.ret&&d.ret>0?d.ret+'%':'—'}</td>
+      <td>${badge(d.cpl)}</td>
+    </tr>`).join(''):'<tr><td colspan="10" class="empty">Sin resultados</td></tr>';
+}
+
+function showTab(name,btn) {
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  btn.classList.add('active');
+}
+
+function resetFilters() {
+  document.getElementById('fechaDesde').value=FECHA_MIN;
+  document.getElementById('fechaHasta').value=FECHA_MAX;
+  buildChecklist('campChecks', ALL_CAMPANAS, true);
+  cascadeAdsets();
+  applyFilters();
+}
+
+// ══ INIT ══
+buildChecklist('campChecks', ALL_CAMPANAS, true);
+cascadeAdsets();
+applyFilters();
+</script>
+</body>
+</html>
