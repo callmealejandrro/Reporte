@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard Marketing Inmobiliario</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300..700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+<style>
+:root{
+  --bg:#f7f6f2;--surf:#fff;--surf2:#f3f4f6;--border:#e5e7eb;--divider:#dcd9d5;
+  --txt:#111827;--muted:#6b7280;--faint:#9ca3af;
+  --primary:#1d4ed8;--primary-l:#eff6ff;
+  --ok:#059669;--ok-bg:#ecfdf5;--warn:#d97706;--warn-bg:#fffbeb;--err:#dc2626;--err-bg:#fef2f2;
+  --dark:#111827;--font:'Inter',sans-serif;--disp:'Instrument Serif',Georgia,serif;
+  --r-sm:6px;--r-md:10px;--r-lg:14px;--r-xl:18px;
+  --sh-sm:0 1px 3px rgba(0,0,0,.07);--sh-md:0 4px 14px rgba(0,0,0,.08);
+}
+[data-theme="dark"]{
+  --bg:#111827;--surf:#1f2937;--surf2:#374151;--border:#374151;
+  --txt:#f9fafb;--muted:#9ca3af;--faint:#6b7280;
+  --primary:#60a5fa;--primary-l:#1e3a5f;
+  --ok:#34d399;--ok-bg:#064e3b;--warn:#fbbf24;--warn-bg:#451a03;--err:#f87171;--err-bg:#450a0a;
+  --sh-sm:0 1px 3px rgba(0,0,0,.3);--sh-md:0 4px 14px rgba(0,0,0,.4);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-font-smoothing:antialiased;scroll-behavior:smooth}
+body{font-family:var(--font);color:var(--txt);background:var(--bg);min-height:100dvh;transition:background .25s,color .25s;font-size:15px}
+button{cursor:pointer;background:none;border:none;font:inherit;color:inherit}
+table{border-collapse:collapse;width:100%}
+
+/* LAYOUT */
+.wrap{max-width:1400px;margin:0 auto;padding:24px 16px}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:28px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:12px}
+.brand-ico{width:38px;height:38px;border-radius:10px;background:#1d4ed8;display:flex;align-items:center;justify-content:center}
+.brand-name{font-family:var(--disp);font-size:1.3rem;font-weight:400}
+.brand-sub{font-size:.75rem;color:var(--muted)}
+.topbar-right{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.tab-bar{display:flex;gap:3px;background:var(--surf2);border-radius:var(--r-lg);padding:4px}
+.tab-btn{padding:7px 16px;border-radius:var(--r-md);font-size:.85rem;font-weight:500;color:var(--muted);border:none;background:none;cursor:pointer;transition:all .18s;white-space:nowrap}
+.tab-btn.active{background:var(--surf);color:var(--txt);box-shadow:var(--sh-sm)}
+.theme-btn{width:36px;height:36px;border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;background:var(--surf);border:1px solid var(--border);color:var(--muted)}
+.page{display:none}.page.active{display:block}
+
+/* KPI CARDS */
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:20px}
+.kpi-card{background:var(--surf);border:1px solid var(--border);border-radius:var(--r-xl);padding:16px 20px;box-shadow:var(--sh-sm)}
+.kpi-label{font-size:.72rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px}
+.kpi-val{font-size:1.6rem;font-weight:700;line-height:1.1;font-family:var(--disp)}
+.kpi-badge{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:99px;font-size:11px;font-weight:700;margin-top:6px}
+.kpi-badge.ok{background:var(--ok-bg);color:var(--ok)}
+.kpi-badge.bad{background:var(--err-bg);color:var(--err)}
+.kpi-badge.warn{background:var(--warn-bg);color:var(--warn)}
+.kpi-badge.neu{background:var(--surf2);color:var(--muted)}
+
+/* CARD */
+.card{background:var(--surf);border:1px solid var(--border);border-radius:var(--r-xl);overflow:hidden;box-shadow:var(--sh-sm);margin-bottom:20px}
+.card-head{padding:14px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.card-title{font-size:.95rem;font-weight:700}
+.card-controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.sel{padding:7px 12px;border-radius:var(--r-md);border:1px solid var(--border);background:var(--surf2);color:var(--txt);font-size:.85rem;font-family:var(--font);cursor:pointer}
+.card-body{overflow-x:auto}
+
+/* TABLA DE INDICADORES POR MES/PROYECTO */
+.ind-table{width:100%;font-size:.82rem;border-collapse:collapse}
+.ind-table th{padding:10px 12px;text-align:left;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#9ca3af;white-space:nowrap;background:var(--dark);border-bottom:2px solid var(--border)}
+[data-theme="dark"] .ind-table th{background:var(--surf2)}
+.ind-table td{padding:9px 12px;border-bottom:1px solid var(--border);vertical-align:middle;white-space:nowrap}
+.ind-table tbody tr:hover td{background:var(--surf2)}
+.ind-table .sticky-col{position:sticky;left:0;background:var(--surf);z-index:2;font-weight:700;min-width:120px}
+.ind-table .sticky-col2{position:sticky;left:120px;background:var(--surf);z-index:2;min-width:110px}
+.ind-table tbody tr:hover .sticky-col,
+.ind-table tbody tr:hover .sticky-col2{background:var(--surf2)}
+.ind-table .kpi-group-row td{background:var(--surf2);font-weight:700;font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);padding:6px 12px;border-top:2px solid var(--border)}
+.ind-table .total-row td{font-weight:700;background:#f8faff;border-top:2px solid var(--border)}
+[data-theme="dark"] .ind-table .total-row td{background:#1e3a5f20}
+
+/* CHIPS SEMÁFORO */
+.chip{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:99px;font-size:.75rem;font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
+.chip.green{background:#d1fae5;color:#065f46}
+.chip.yellow{background:#fef3c7;color:#92400e}
+.chip.red{background:#fee2e2;color:#991b1b}
+.chip.blue{background:#dbeafe;color:#1e40af}
+.chip.gray{background:var(--surf2);color:var(--muted)}
+[data-theme="dark"] .chip.green{background:#064e3b;color:#34d399}
+[data-theme="dark"] .chip.yellow{background:#451a03;color:#fbbf24}
+[data-theme="dark"] .chip.red{background:#450a0a;color:#f87171}
+[data-theme="dark"] .chip.blue{background:#1e3a5f;color:#60a5fa}
+
+/* INDICATOR CARDS */
+.ind-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-bottom:20px}
+.ind-card{background:var(--surf);border:1px solid var(--border);border-radius:var(--r-xl);padding:20px;box-shadow:var(--sh-sm);display:flex;gap:14px}
+.tl{display:flex;flex-direction:column;gap:4px;padding-top:4px}
+.tl-dot{width:14px;height:14px;border-radius:50%;background:var(--border)}
+.tl-dot.g{background:#10b981;box-shadow:0 0 7px #10b98166}
+.tl-dot.y{background:#f59e0b;box-shadow:0 0 7px #f59e0b66}
+.tl-dot.r{background:#ef4444;box-shadow:0 0 7px #ef444466}
+.ind-content{flex:1}
+.ind-area{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:3px}
+.ind-name{font-size:.88rem;font-weight:700;margin-bottom:3px}
+.ind-sub{font-size:.72rem;color:var(--muted);margin-bottom:10px}
+.prog-bg{background:var(--surf2);border-radius:99px;height:6px;overflow:hidden;margin-bottom:5px}
+.prog-bar{height:100%;border-radius:99px;transition:width .6s cubic-bezier(.16,1,.3,1)}
+.ind-nums{display:flex;justify-content:space-between;font-size:.72rem}
+.ind-act{font-weight:700}
+
+/* CHARTS */
+.charts-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px}
+.charts-grid .full{grid-column:1/-1}
+.chart-card{background:var(--surf);border:1px solid var(--border);border-radius:var(--r-xl);overflow:hidden;box-shadow:var(--sh-sm)}
+.chart-head{padding:14px 20px 0}
+.chart-title{font-size:.88rem;font-weight:700;margin-bottom:2px}
+.chart-sub{font-size:.72rem;color:var(--muted)}
+
+.sec-title{font-size:1.05rem;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:10px}
+.sec-tag{font-size:.68rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;background:var(--surf2);padding:3px 10px;border-radius:99px}
+.footer{text-align:center;padding:28px 0 12px;color:var(--faint);font-size:.72rem}
+
+@media(max-width:900px){.charts-grid{grid-template-columns:1fr}.charts-grid .full{grid-column:1}}
+@media(max-width:650px){.kpi-grid{grid-template-columns:1fr 1fr}.topbar{flex-direction:column;align-items:flex-start}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- TOPBAR -->
+<header class="topbar">
+  <div class="brand">
+    <div class="brand-ico">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2"><path d="M3 17l4-8 4.5 7L16 9l5 8"/><circle cx="21" cy="8" r="2.5" fill="#34d399" stroke="none"/></svg>
+    </div>
+    <div><div class="brand-name">Marketing Analytics</div><div class="brand-sub">Proyectos inmobiliarios · Ene – Jun 2025</div></div>
+  </div>
+  <div class="topbar-right">
+    <nav class="tab-bar">
+      <button class="tab-btn active" data-tab="resumen">Resumen</button>
+      <button class="tab-btn" data-tab="indicadores">Indicadores KPI</button>
+      <button class="tab-btn" data-tab="graficos">Gráficos</button>
+    </nav>
+    <button class="theme-btn" id="themeBtn" aria-label="Cambiar tema">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    </button>
+  </div>
+</header>
+
+<!-- ── RESUMEN ─────────────────────────────────────────────── -->
+<section class="page active" id="page-resumen">
+  <div class="kpi-grid" id="kpi-grid"></div>
+  <div class="sec-title">Semáforo de Indicadores <span class="sec-tag">Acumulado Ene–Jun</span></div>
+  <div class="ind-cards" id="ind-cards"></div>
+  <div class="card">
+    <div class="card-head">
+      <div class="card-title">Resumen por Proyecto</div>
+    </div>
+    <div class="card-body"><table class="ind-table" id="proj-tbl"></table></div>
+  </div>
+</section>
+
+<!-- ── INDICADORES KPI ────────────────────────────────────── -->
+<section class="page" id="page-indicadores">
+  <div class="card">
+    <div class="card-head">
+      <div class="card-title">Indicadores de Marketing — Resultado vs. Meta</div>
+      <div class="card-controls">
+        <select class="sel" id="sel-proyecto">
+          <option value="TODOS">Todos los proyectos</option>
+          <option value="CALIPSO">CALIPSO</option>
+          <option value="FLORENCIA">FLORENCIA</option>
+          <option value="GENERAL">GENERAL</option>
+          <option value="TAMBO">TAMBO</option>
+          <option value="TERRAZAS">TERRAZAS</option>
+        </select>
+        <select class="sel" id="sel-vista">
+          <option value="mes_proyecto">Por Mes × Proyecto</option>
+          <option value="mes">Solo por Mes</option>
+          <option value="proyecto">Solo por Proyecto</option>
+          <option value="general">General (acumulado)</option>
+        </select>
+      </div>
+    </div>
+    <div class="card-body"><table class="ind-table" id="kpi-tbl"></table></div>
+  </div>
+</section>
+
+<!-- ── GRÁFICOS ────────────────────────────────────────────── -->
+<section class="page" id="page-graficos">
+  <div class="card-controls" style="margin-bottom:14px">
+    <select class="sel" id="sel-chart-proyecto">
+          <option value="TODOS">Todos los proyectos</option>
+          <option value="CALIPSO">CALIPSO</option>
+          <option value="FLORENCIA">FLORENCIA</option>
+          <option value="GENERAL">GENERAL</option>
+          <option value="TAMBO">TAMBO</option>
+          <option value="TERRAZAS">TERRAZAS</option>
+        </select>
+  </div>
+  <div class="charts-grid">
+    <div class="chart-card full"><div class="chart-head"><div class="chart-title">Volumen del Funnel por Mes</div><div class="chart-sub">Leads, Citas y Visitas</div></div><div id="ch-funnel"></div></div>
+    <div class="chart-card"><div class="chart-head"><div class="chart-title">Costo por Lead (CPL)</div><div class="chart-sub">Meta &lt; S/. 6.68</div></div><div id="ch-cpl"></div></div>
+    <div class="chart-card"><div class="chart-head"><div class="chart-title">ROAS Mensual</div><div class="chart-sub">Meta ≥ 25x</div></div><div id="ch-roas"></div></div>
+    <div class="chart-card"><div class="chart-head"><div class="chart-title">Tasa de Evaluados</div><div class="chart-sub">Meta ≥ 50%</div></div><div id="ch-tasa"></div></div>
+    <div class="chart-card"><div class="chart-head"><div class="chart-title">Leads por Proyecto</div><div class="chart-sub">Distribución acumulada</div></div><div id="ch-pie"></div></div>
+  </div>
+</section>
+
+</div>
+<footer class="footer">Dashboard de Marketing Inmobiliario · Ene–Jun 2025 · Sep S/.500 · Inicial S/.15,000 · Venta S/.55,000</footer>
+
+<script>
+const BASE = [{"Mes": "Enero", "Proyecto": "CALIPSO", "Leads": 542.0, "Citas": 6.0, "Visitas": 1.0, "Separaciones": 0.0, "Ventas": 0.0, "Gasto": 1861.13, "MesNum": 1, "Ingresos": 0.0, "Tasa_Evaluados": 1.107011070110701, "CPL": 3.4338191881918823, "ROAS": 0.0}, {"Mes": "Enero", "Proyecto": "FLORENCIA", "Leads": 1347.0, "Citas": 77.0, "Visitas": 25.0, "Separaciones": 15.0, "Ventas": 12.0, "Gasto": 8241.76, "MesNum": 1, "Ingresos": 847500.0, "Tasa_Evaluados": 5.716406829992576, "CPL": 6.118604305864885, "ROAS": 102.82997806293801}, {"Mes": "Enero", "Proyecto": "TAMBO", "Leads": 0.0, "Citas": 14.0, "Visitas": 3.0, "Separaciones": 1.0, "Ventas": 1.0, "Gasto": 0.0, "MesNum": 1, "Ingresos": 70500.0, "Tasa_Evaluados": null, "CPL": null, "ROAS": null}, {"Mes": "Febrero", "Proyecto": "CALIPSO", "Leads": 356.0, "Citas": 9.0, "Visitas": 0.0, "Separaciones": 0.0, "Ventas": 0.0, "Gasto": 1758.41, "MesNum": 2, "Ingresos": 0.0, "Tasa_Evaluados": 2.528089887640449, "CPL": 4.93935393258427, "ROAS": 0.0}, {"Mes": "Febrero", "Proyecto": "FLORENCIA", "Leads": 1408.0, "Citas": 48.0, "Visitas": 15.0, "Separaciones": 2.0, "Ventas": 3.0, "Gasto": 7467.29, "MesNum": 2, "Ingresos": 211000.0, "Tasa_Evaluados": 3.4090909090909087, "CPL": 5.303473011363637, "ROAS": 28.256569652444192}, {"Mes": "Febrero", "Proyecto": "TAMBO", "Leads": 0.0, "Citas": 12.0, "Visitas": 3.0, "Separaciones": 0.0, "Ventas": 0.0, "Gasto": 0.0, "MesNum": 2, "Ingresos": 0.0, "Tasa_Evaluados": null, "CPL": null, "ROAS": null}, {"Mes": "Marzo", "Proyecto": "CALIPSO", "Leads": 304.0, "Citas": 14.0, "Visitas": 3.0, "Separaciones": 0.0, "Ventas": 1.0, "Gasto": 3578.8, "MesNum": 3, "Ingresos": 70000.0, "Tasa_Evaluados": 4.605263157894736, "CPL": 11.772368421052633, "ROAS": 19.55962892589695}, {"Mes": "Marzo", "Proyecto": "FLORENCIA", "Leads": 988.0, "Citas": 60.0, "Visitas": 25.0, "Separaciones": 5.0, "Ventas": 1.0, "Gasto": 6854.51, "MesNum": 3, "Ingresos": 72500.0, "Tasa_Evaluados": 6.0728744939271255, "CPL": 6.937763157894737, "ROAS": 10.576977785428863}, {"Mes": "Marzo", "Proyecto": "TAMBO", "Leads": 0.0, "Citas": 8.0, "Visitas": 4.0, "Separaciones": 0.0, "Ventas": 2.0, "Gasto": 0.0, "MesNum": 3, "Ingresos": 140000.0, "Tasa_Evaluados": null, "CPL": null, "ROAS": null}, {"Mes": "Marzo", "Proyecto": "TERRAZAS", "Leads": 0.0, "Citas": 0.0, "Visitas": 0.0, "Separaciones": 0.0, "Ventas": 1.0, "Gasto": 0.0, "MesNum": 3, "Ingresos": 70000.0, "Tasa_Evaluados": null, "CPL": null, "ROAS": null}, {"Mes": "Abril", "Proyecto": "CALIPSO", "Leads": 159.0, "Citas": 0.0, "Visitas": 0.0, "Separaciones": 0.0, "Ventas": 0.0, "Gasto": 838.83, "MesNum": 4, "Ingresos": 0.0, "Tasa_Evaluados": 0.0, "CPL": 5.2756603773584905, "ROAS": 0.0}, {"Mes": "Abril", "Proyecto": "FLORENCIA", "Leads": 1077.0, "Citas": 29.0, "Visitas": 7.0, "Separaciones": 10.0, "Ventas": 2.0, "Gasto": 7086.44, "MesNum": 4, "Ingresos": 145000.0, "Tasa_Evaluados": 2.692664809656453, "CPL": 6.579795728876508, "ROAS": 20.461614012113277}, {"Mes": "Abril", "Proyecto": "TAMBO", "Leads": 0.0, "Citas": 7.0, "Visitas": 1.0, "Separaciones": 0.0, "Ventas": 1.0, "Gasto": 0.0, "MesNum": 4, "Ingresos": 70000.0, "Tasa_Evaluados": null, "CPL": null, "ROAS": null}, {"Mes": "Mayo", "Proyecto": "CALIPSO", "Leads": 35.0, "Citas": 0.0, "Visitas": 0.0, "Separaciones": 0.0, "Ventas": 0.0, "Gasto": 399.54, "MesNum": 5, "Ingresos": 0.0, "Tasa_Evaluados": 0.0, "CPL": 11.415428571428572, "ROAS": 0.0}, {"Mes": "Mayo", "Proyecto": "FLORENCIA", "Leads": 1430.0, "Citas": 5.0, "Visitas": 2.0, "Separaciones": 4.0, "Ventas": 3.0, "Gasto": 9455.2, "MesNum": 5, "Ingresos": 212000.0, "Tasa_Evaluados": 0.34965034965034963, "CPL": 6.612027972027972, "ROAS": 22.42152466367713}, {"Mes": "Mayo", "Proyecto": "TAMBO", "Leads": 0.0, "Citas": 1.0, "Visitas": 0.0, "Separaciones": 0.0, "Ventas": 2.0, "Gasto": 0.0, "MesNum": 5, "Ingresos": 140000.0, "Tasa_Evaluados": null, "CPL": null, "ROAS": null}, {"Mes": "Junio", "Proyecto": "GENERAL", "Leads": 705.0, "Citas": 42.0, "Visitas": 8.0, "Separaciones": 5.0, "Ventas": 4.0, "Gasto": 5900.38, "MesNum": 6, "Ingresos": 282500.0, "Tasa_Evaluados": 5.957446808510639, "CPL": 8.369333333333334, "ROAS": 47.878272246872235}];
+const KPI_MES = [{"mes": "Enero", "leads": 1889, "citas": 97, "visitas": 29, "separaciones": 16, "ventas": 13, "gasto": 10102.89, "ingresos": 918000.0, "tasa": 5.13, "cpl": 5.35, "roas": 90.87}, {"mes": "Febrero", "leads": 1764, "citas": 69, "visitas": 18, "separaciones": 2, "ventas": 3, "gasto": 9225.7, "ingresos": 211000.0, "tasa": 3.91, "cpl": 5.23, "roas": 22.87}, {"mes": "Marzo", "leads": 1292, "citas": 82, "visitas": 32, "separaciones": 5, "ventas": 5, "gasto": 10433.31, "ingresos": 352500.0, "tasa": 6.35, "cpl": 8.08, "roas": 33.79}, {"mes": "Abril", "leads": 1236, "citas": 36, "visitas": 8, "separaciones": 10, "ventas": 3, "gasto": 7925.27, "ingresos": 215000.0, "tasa": 2.91, "cpl": 6.41, "roas": 27.13}, {"mes": "Mayo", "leads": 1465, "citas": 6, "visitas": 2, "separaciones": 4, "ventas": 5, "gasto": 9854.74, "ingresos": 352000.0, "tasa": 0.41, "cpl": 6.73, "roas": 35.72}, {"mes": "Junio", "leads": 705, "citas": 42, "visitas": 8, "separaciones": 5, "ventas": 4, "gasto": 5900.38, "ingresos": 282500.0, "tasa": 5.96, "cpl": 8.37, "roas": 47.88}];
+const KPI_PROJ = [{"proyecto": "CALIPSO", "leads": 1396, "citas": 29, "visitas": 4, "separaciones": 0, "ventas": 1, "gasto": 8436.71, "ingresos": 70000.0, "tasa": 2.08, "cpl": 6.04, "roas": 8.3}, {"proyecto": "FLORENCIA", "leads": 6250, "citas": 219, "visitas": 74, "separaciones": 36, "ventas": 21, "gasto": 39105.2, "ingresos": 1488000.0, "tasa": 3.5, "cpl": 6.26, "roas": 38.05}, {"proyecto": "GENERAL", "leads": 705, "citas": 42, "visitas": 8, "separaciones": 5, "ventas": 4, "gasto": 5900.38, "ingresos": 282500.0, "tasa": 5.96, "cpl": 8.37, "roas": 47.88}, {"proyecto": "TAMBO", "leads": 0, "citas": 42, "visitas": 11, "separaciones": 1, "ventas": 6, "gasto": 0.0, "ingresos": 420500.0, "tasa": null, "cpl": null, "roas": null}, {"proyecto": "TERRAZAS", "leads": 0, "citas": 0, "visitas": 0, "separaciones": 0, "ventas": 1, "gasto": 0.0, "ingresos": 70000.0, "tasa": null, "cpl": null, "roas": null}];
+const GK = {"Leads": 8351, "Citas": 332, "Visitas": 97, "Separaciones": 42, "Ventas": 33, "Gasto": 53442.29, "Ingresos": 2331000.0, "Tasa": 3.98, "CPL": 6.4, "ROAS": 43.62, "n_meses": 6};
+const MESES = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio"];
+const PROYECTOS = ["CALIPSO", "FLORENCIA", "GENERAL", "TAMBO", "TERRAZAS"];
+const COLORS = ['#3b82f6','#10b981','#f59e0b','#ef4444','#8b5cf6'];
+const KPIS = [
+  { id:'leads',  area:'Marketing', nombre:'N° de Leads Generados',              meta:2000, modo:'mayor', metaLbl:'≥ 2,000', formula:'Conteo de leads ingresados' },
+  { id:'tasa',   area:'Marketing', nombre:'Tasa de Leads Evaluados (%)',         meta:50,   modo:'mayor', metaLbl:'≥ 50%',   formula:'(Leads calificados / Leads generados) × 100' },
+  { id:'roas',   area:'Marketing', nombre:'ROAS (Return on Ad Spend)',           meta:25,   modo:'mayor', metaLbl:'≥ 25',    formula:'Ingresos atribuibles / Gasto en publicidad' },
+  { id:'cpl',    area:'Marketing', nombre:'Costo por Lead (promedio proyectos)', meta:6.68, modo:'menor', metaLbl:'< 6.68',  formula:'Importe gastado en leads / N° leads' },
+];
+
+// helpers
+function sem(v, meta, modo) {
+  if (v === null || v === undefined) return 'none';
+  const p = modo === 'mayor' ? v/meta : meta/v;
+  return p >= 1 ? 'green' : p >= 0.7 ? 'yellow' : 'red';
+}
+function semIcon(c) { return {green:'🟢',yellow:'🟡',red:'🔴',none:'⚪'}[c] || '⚪'; }
+function chip(c, txt) { return `<span class="chip ${c}">${semIcon(c)} ${txt}</span>`; }
+function n(v, d=0) { return v===null||v===undefined?'—':Number(v).toLocaleString('es-PE',{minimumFractionDigits:d,maximumFractionDigits:d}); }
+function money(v) { return v===null?'—':'S/. '+Number(v).toLocaleString('es-PE',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+function kpiFmt(id, v) {
+  if (v===null) return '—';
+  const map = { leads:()=>n(v), tasa:()=>n(v,1)+'%', roas:()=>n(v,1)+'x', cpl:()=>money(v) };
+  return (map[id] || (()=>String(v)))();
+}
+
+// ── THEME ─────────────────────────────────────────────────────────────────────
+let dark = false;
+document.getElementById('themeBtn').addEventListener('click', () => {
+  dark = !dark;
+  document.documentElement.setAttribute('data-theme', dark?'dark':'light');
+  document.getElementById('themeBtn').innerHTML = dark
+    ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>'
+    : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+  if (chartsBuilt) setTimeout(buildCharts, 50);
+});
+
+// ── TABS ──────────────────────────────────────────────────────────────────────
+let chartsBuilt = false;
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-'+btn.dataset.tab).classList.add('active');
+    if (btn.dataset.tab === 'graficos' && !chartsBuilt) { buildCharts(); chartsBuilt = true; }
+    if (btn.dataset.tab === 'indicadores') buildKpiTable();
+  });
+});
+
+// ── KPI CARDS RESUMEN ─────────────────────────────────────────────────────────
+function buildKpiCards() {
+  const items = [
+    {l:'Leads Totales',    v:n(GK.Leads),       meta:'≥ 2,000/mes', s:sem(GK.Leads/5,2000,'mayor')},
+    {l:'Tasa Evaluados',   v:n(GK.Tasa,1)+'%',  meta:'≥ 50%',       s:sem(GK.Tasa,50,'mayor')},
+    {l:'ROAS Acumulado',   v:n(GK.ROAS,1)+'x',  meta:'≥ 25x',       s:sem(GK.ROAS,25,'mayor')},
+    {l:'CPL Promedio',     v:money(GK.CPL),      meta:'< S/. 6.68',  s:sem(GK.CPL,6.68,'menor')},
+    {l:'Gasto Total',      v:money(GK.Gasto),    meta:'Inversión',   s:'neu'},
+    {l:'Ingresos Atrib.',  v:'S/. '+n(GK.Ingresos/1000,0)+'k', meta:'Estimado', s:'neu'},
+    {l:'Ventas Cerradas',  v:n(GK.Ventas),       meta:'—',           s:'neu'},
+    {l:'Citas Agendadas',  v:n(GK.Citas),        meta:'—',           s:'neu'},
+  ];
+  document.getElementById('kpi-grid').innerHTML = items.map(c => `
+    <div class="kpi-card">
+      <div class="kpi-label">${c.l}</div>
+      <div class="kpi-val">${c.v}</div>
+      <span class="kpi-badge ${c.s}">${semIcon(c.s)} ${c.meta}</span>
+    </div>`).join('');
+}
+
+// ── IND CARDS ─────────────────────────────────────────────────────────────────
+function buildIndCards() {
+  const items = KPIS.map(k => {
+    const val = k.id==='leads' ? GK.Leads/5 : k.id==='tasa' ? GK.Tasa : k.id==='roas' ? GK.ROAS : GK.CPL;
+    const s = sem(val, k.meta, k.modo);
+    const pct = Math.min(100, k.modo==='mayor' ? val/k.meta*100 : k.meta/val*100);
+    const bc = {green:'#10b981',yellow:'#f59e0b',red:'#ef4444',none:'#9ca3af'}[s];
+    const dot = (lvl) => {
+      if (lvl==='g' && s==='green') return 'g';
+      if (lvl==='y' && s==='yellow') return 'y';
+      if (lvl==='r' && s==='red') return 'r';
+      return '';
+    };
+    return `<div class="ind-card" style="border-left:4px solid ${bc}">
+      <div class="tl"><div class="tl-dot ${dot('g')}"></div><div class="tl-dot ${dot('y')}"></div><div class="tl-dot ${dot('r')}"></div></div>
+      <div class="ind-content">
+        <div class="ind-area">${k.area}</div>
+        <div class="ind-name">${k.nombre}</div>
+        <div class="ind-sub">Meta: <strong>${k.metaLbl}</strong> &nbsp;·&nbsp; ${k.formula}</div>
+        <div class="prog-bg"><div class="prog-bar" style="width:${pct.toFixed(1)}%;background:${bc}"></div></div>
+        <div class="ind-nums"><span class="ind-act" style="color:${bc}">${kpiFmt(k.id,val)}</span><span style="color:var(--muted)">Meta ${k.metaLbl}</span></div>
+      </div>
+    </div>`;
+  });
+  document.getElementById('ind-cards').innerHTML = items.join('');
+}
+
+// ── PROJ TABLE RESUMEN ────────────────────────────────────────────────────────
+function buildProjTable() {
+  let html = `<thead><tr>
+    <th>Proyecto</th><th>Leads</th><th>Citas</th><th>Visitas</th>
+    <th>Separaciones</th><th>Ventas</th><th>Gasto</th><th>Ingresos</th>
+    <th>Leads/mes</th><th>Tasa Eval.</th><th>CPL</th><th>ROAS</th>
+  </tr></thead><tbody>`;
+  KPI_PROJ.forEach(r => {
+    const leadsXmes = r.leads / 5;
+    html += `<tr>
+      <td><strong>${r.proyecto}</strong></td>
+      <td>${n(r.leads)}</td><td>${n(r.citas)}</td><td>${n(r.visitas)}</td>
+      <td>${n(r.separaciones)}</td><td>${n(r.ventas)}</td>
+      <td>${money(r.gasto)}</td><td>${money(r.ingresos)}</td>
+      <td>${chip(sem(leadsXmes,2000,'mayor'), n(leadsXmes,0)+'/mes')}</td>
+      <td>${r.tasa!==null ? chip(sem(r.tasa,50,'mayor'),n(r.tasa,1)+'%') : '<span class="chip gray">—</span>'}</td>
+      <td>${r.cpl!==null ? chip(sem(r.cpl,6.68,'menor'),money(r.cpl)) : '<span class="chip gray">—</span>'}</td>
+      <td>${r.roas!==null ? chip(sem(r.roas,25,'mayor'),n(r.roas,1)+'x') : '<span class="chip gray">—</span>'}</td>
+    </tr>`;
+  });
+  // total
+  const tL=GK.Leads,tC=GK.Citas,tV=GK.Visitas,tS=GK.Separaciones,tVe=GK.Ventas,tG=GK.Gasto,tI=GK.Ingresos;
+  html += `<tr class="total-row"><td><strong>TOTAL</strong></td>
+    <td>${n(tL)}</td><td>${n(tC)}</td><td>${n(tV)}</td><td>${n(tS)}</td><td>${n(tVe)}</td>
+    <td>${money(tG)}</td><td>${money(tI)}</td>
+    <td>${chip(sem(tL/5,2000,'mayor'),n(tL/5,0)+'/mes')}</td>
+    <td>${chip(sem(GK.Tasa,50,'mayor'),n(GK.Tasa,1)+'%')}</td>
+    <td>${chip(sem(GK.CPL,6.68,'menor'),money(GK.CPL))}</td>
+    <td>${chip(sem(GK.ROAS,25,'mayor'),n(GK.ROAS,1)+'x')}</td>
+  </tr>`;
+  html += '</tbody>';
+  document.getElementById('proj-tbl').innerHTML = html;
+}
+
+// ── KPI TABLE (INDICADORES) ───────────────────────────────────────────────────
+// Función de agregación
+function aggregate(rows) {
+  const leads=rows.reduce((s,r)=>s+(r.Leads||0),0);
+  const citas=rows.reduce((s,r)=>s+(r.Citas||0),0);
+  const gasto=rows.reduce((s,r)=>s+(r.Gasto||0),0);
+  const ingresos=rows.reduce((s,r)=>s+(r.Ingresos||0),0);
+  return {
+    leads,
+    tasa: leads ? citas/leads*100 : null,
+    roas: gasto ? ingresos/gasto : null,
+    cpl:  leads ? gasto/leads : null,
+  };
+}
+
+function buildKpiTable() {
+  const vista = document.getElementById('sel-vista').value;
+  const projFilt = document.getElementById('sel-proyecto').value;
+  const tbl = document.getElementById('kpi-tbl');
+  let html = '';
+
+  if (vista === 'general') {
+    const rows = projFilt==='TODOS' ? BASE : BASE.filter(r=>r.Proyecto===projFilt);
+    const agg = aggregate(rows);
+    html = `<thead><tr><th>Área</th><th>Indicador</th><th>Meta</th><th>Fórmula</th><th>Resultado${projFilt!='TODOS'?' · '+projFilt:''}</th><th>Estado</th></tr></thead><tbody>`;
+    KPIS.forEach(k => {
+      const v = agg[k.id];
+      const s = sem(v, k.meta, k.modo);
+      html += `<tr>
+        <td>${k.area}</td><td><strong>${k.nombre}</strong></td>
+        <td><span class="chip blue">${k.metaLbl}</span></td>
+        <td style="color:var(--muted);font-size:.72rem">${k.formula}</td>
+        <td>${v!==null ? chip(s, kpiFmt(k.id,v)) : '<span class="chip gray">—</span>'}</td>
+        <td>${v!==null ? chip(s, semIcon(s)+' '+(s==='green'?'Cumple':s==='yellow'?'Cerca':'No cumple')) : '—'}</td>
+      </tr>`;
+    });
+    html += '</tbody>';
+  }
+
+  else if (vista === 'mes') {
+    html = `<thead><tr><th class="sticky-col">Mes</th><th>Proyecto</th>`;
+    KPIS.forEach(k => html += `<th>${k.nombre}<br><span style="font-weight:400;color:#9ca3af">${k.metaLbl}</span></th>`);
+    html += `</tr></thead><tbody>`;
+    MESES.forEach(mes => {
+      const proyectos = projFilt==='TODOS' ? PROYECTOS : [projFilt];
+      proyectos.forEach((proj, pi) => {
+        const row = BASE.find(r => r.Mes===mes && r.Proyecto===proj);
+        if (!row) return;
+        html += `<tr>
+          <td class="sticky-col">${pi===0 ? mes : ''}</td>
+          <td><strong>${proj}</strong></td>`;
+        KPIS.forEach(k => {
+          const v = row[k.id==='leads'?'Leads':k.id==='tasa'?'Tasa_Evaluados':k.id==='roas'?'ROAS':'CPL'];
+          const s = sem(v, k.meta, k.modo);
+          html += `<td>${v!==null ? chip(s, kpiFmt(k.id,v)) : '<span class="chip gray">—</span>'}</td>`;
+        });
+        html += '</tr>';
+      });
+      // Subtotal del mes
+      const mesRows = BASE.filter(r => r.Mes===mes && (projFilt==='TODOS' || r.Proyecto===projFilt));
+      const agg = aggregate(mesRows);
+      html += `<tr style="background:var(--surf2);font-weight:700">
+        <td class="sticky-col" style="font-size:.72rem;color:var(--muted)">Subtotal ${mes}</td>
+        <td style="font-size:.72rem;color:var(--muted)">TODOS</td>`;
+      KPIS.forEach(k => {
+        const v = agg[k.id];
+        const s = sem(v, k.meta, k.modo);
+        html += `<td>${v!==null ? chip(s, kpiFmt(k.id,v)) : '<span class="chip gray">—</span>'}</td>`;
+      });
+      html += '</tr>';
+    });
+    // Total general
+    const allRows = projFilt==='TODOS' ? BASE : BASE.filter(r=>r.Proyecto===projFilt);
+    const totAgg = aggregate(allRows);
+    html += `<tr class="total-row"><td class="sticky-col">TOTAL</td><td>—</td>`;
+    KPIS.forEach(k => {
+      const v = totAgg[k.id];
+      const s = sem(v, k.meta, k.modo);
+      html += `<td>${v!==null ? chip(s, kpiFmt(k.id,v)) : '—'}</td>`;
+    });
+    html += '</tr></tbody>';
+  }
+
+  else if (vista === 'proyecto') {
+    html = `<thead><tr><th>Proyecto</th>`;
+    KPIS.forEach(k => html += `<th>${k.nombre}<br><span style="font-weight:400;color:#9ca3af">${k.metaLbl}</span></th>`);
+    html += `</tr></thead><tbody>`;
+    const projs = projFilt==='TODOS' ? KPI_PROJ : KPI_PROJ.filter(r=>r.proyecto===projFilt);
+    projs.forEach(r => {
+      html += `<tr><td><strong>${r.proyecto}</strong></td>`;
+      KPIS.forEach(k => {
+        const v = r[k.id];
+        const s = sem(v, k.meta, k.modo);
+        html += `<td>${v!==null ? chip(s, kpiFmt(k.id,v)) : '<span class="chip gray">—</span>'}</td>`;
+      });
+      html += '</tr>';
+    });
+    // total
+    const allR = projFilt==='TODOS' ? BASE : BASE.filter(r=>r.Proyecto===projFilt);
+    const totA = aggregate(allR);
+    html += `<tr class="total-row"><td><strong>TOTAL</strong></td>`;
+    KPIS.forEach(k => {
+      const v = totA[k.id]; const s = sem(v, k.meta, k.modo);
+      html += `<td>${v!==null?chip(s,kpiFmt(k.id,v)):'—'}</td>`;
+    });
+    html += '</tr></tbody>';
+  }
+
+  else { // mes_proyecto (default) — TABLA CRUZADA: filas=KPI, cols=mes+proyecto
+    const proyectos = projFilt==='TODOS' ? PROYECTOS : [projFilt];
+    // Construir columnas: para cada mes, los proyectos que tienen data
+    const cols = [];
+    MESES.forEach(mes => {
+      proyectos.forEach(proj => {
+        const row = BASE.find(r => r.Mes===mes && r.Proyecto===proj);
+        if (row) cols.push({mes, proj, row});
+      });
+    });
+    html = `<thead>
+      <tr>
+        <th rowspan="2" style="min-width:200px">Indicador (Meta)</th>
+        <th rowspan="2">Fórmula</th>`;
+    // Header meses (agrupados)
+    MESES.forEach(mes => {
+      const count = cols.filter(c=>c.mes===mes).length;
+      if (count > 0) html += `<th colspan="${count}" style="text-align:center;border-left:2px solid #374151">${mes}</th>`;
+    });
+    html += `<th rowspan="2" style="border-left:2px solid #374151">Total</th></tr>
+      <tr>`;
+    cols.forEach((c,i) => {
+      const borderL = i===0||cols[i-1].mes!==c.mes ? 'border-left:2px solid #374151' : '';
+      html += `<th style="${borderL};font-weight:600;color:var(--primary)">${c.proj}</th>`;
+    });
+    html += `</tr></thead><tbody>`;
+
+    KPIS.forEach(k => {
+      html += `<tr>
+        <td style="font-weight:700">${k.nombre}<br><span class="chip blue" style="font-size:.65rem">${k.metaLbl}</span></td>
+        <td style="color:var(--muted);font-size:.7rem">${k.formula}</td>`;
+      cols.forEach((c,i) => {
+        const borderL = i===0||cols[i-1].mes!==c.mes ? 'border-left:2px solid #e5e7eb' : '';
+        const field = {leads:'Leads',tasa:'Tasa_Evaluados',roas:'ROAS',cpl:'CPL'}[k.id];
+        const v = c.row[field];
+        const s = sem(v, k.meta, k.modo);
+        html += `<td style="${borderL}">${v!==null ? chip(s,kpiFmt(k.id,v)) : '<span class="chip gray">—</span>'}</td>`;
+      });
+      // Total
+      const allR = projFilt==='TODOS' ? BASE : BASE.filter(r=>r.Proyecto===projFilt);
+      const totA = aggregate(allR);
+      const vT = totA[k.id];
+      const sT = sem(vT, k.meta, k.modo);
+      html += `<td style="border-left:2px solid #e5e7eb">${vT!==null?chip(sT,kpiFmt(k.id,vT)):'—'}</td>`;
+      html += `</tr>`;
+    });
+    html += '</tbody>';
+  }
+
+  tbl.innerHTML = html;
+}
+
+document.getElementById('sel-vista').addEventListener('change', buildKpiTable);
+document.getElementById('sel-proyecto').addEventListener('change', buildKpiTable);
+
+// ── CHARTS ────────────────────────────────────────────────────────────────────
+function pLayout(extra) {
+  return Object.assign({
+    paper_bgcolor: dark ? '#1f2937' : '#fff',
+    plot_bgcolor:  dark ? '#1f2937' : '#fff',
+    font: { family:'Inter,sans-serif', color: dark?'#d1d5db':'#374151', size:11 },
+    margin: { t:30, r:20, b:45, l:55 },
+    legend: { orientation:'h', yanchor:'bottom', y:1.05, xanchor:'center', x:0.5 },
+    xaxis: { showgrid:false, linecolor: dark?'#374151':'#e5e7eb' },
+    yaxis: { gridcolor: dark?'#374151':'#f3f4f6' },
+    height: 280,
+  }, extra);
+}
+
+function buildCharts() {
+  const proj = document.getElementById('sel-chart-proyecto').value;
+  const cfg = {responsive:true, displayModeBar:false};
+  let mData;
+  if (proj === 'TODOS') {
+    mData = KPI_MES;
+  } else {
+    mData = MESES.map(mes => {
+      const rows = BASE.filter(r => r.Mes===mes && r.Proyecto===proj);
+      const leads = rows.reduce((s,r)=>s+(r.Leads||0),0);
+      const citas = rows.reduce((s,r)=>s+(r.Citas||0),0);
+      const visitas = rows.reduce((s,r)=>s+(r.Visitas||0),0);
+      const gasto = rows.reduce((s,r)=>s+(r.Gasto||0),0);
+      const ingresos = rows.reduce((s,r)=>s+(r.Ingresos||0),0);
+      return { mes, leads, citas, visitas,
+        tasa: leads ? citas/leads*100 : null,
+        cpl: leads ? gasto/leads : null,
+        roas: gasto ? ingresos/gasto : null,
+      };
+    });
+  }
+  const M = mData.map(r=>r.mes);
+  Plotly.react('ch-funnel', [
+    {name:'Leads',x:M,y:mData.map(r=>r.leads),type:'bar',marker:{color:COLORS[0]}},
+    {name:'Citas',x:M,y:mData.map(r=>r.citas),type:'bar',marker:{color:COLORS[1]}},
+    {name:'Visitas',x:M,y:mData.map(r=>r.visitas),type:'bar',marker:{color:COLORS[2]}},
+  ], pLayout({barmode:'group',height:260}), cfg);
+  Plotly.react('ch-cpl', [
+    {name:'CPL',x:M,y:mData.map(r=>r.cpl),type:'scatter',mode:'lines+markers',fill:'tozeroy',fillcolor:'rgba(59,130,246,.08)',line:{color:COLORS[0],width:2.5},marker:{size:7}},
+    {name:'Meta S/. 6.68',x:M,y:M.map(()=>6.68),mode:'lines',line:{dash:'dash',color:'#ef4444',width:1.5}},
+  ], pLayout({yaxis:{title:'S/.',range:[0,Math.max(12,...mData.map(r=>r.cpl||0))+2]}}), cfg);
+  Plotly.react('ch-roas', [
+    {name:'ROAS',x:M,y:mData.map(r=>r.roas),type:'scatter',mode:'lines+markers',fill:'tozeroy',fillcolor:'rgba(16,185,129,.08)',line:{color:COLORS[1],width:2.5},marker:{size:7}},
+    {name:'Meta 25x',x:M,y:M.map(()=>25),mode:'lines',line:{dash:'dash',color:'#ef4444',width:1.5}},
+  ], pLayout({yaxis:{title:'Multiplicador'}}), cfg);
+  Plotly.react('ch-tasa', [
+    {name:'Tasa Eval.',x:M,y:mData.map(r=>r.tasa),type:'scatter',mode:'lines+markers',fill:'tozeroy',fillcolor:'rgba(245,158,11,.08)',line:{color:COLORS[2],width:2.5},marker:{size:7}},
+    {name:'Meta 50%',x:M,y:M.map(()=>50),mode:'lines',line:{dash:'dash',color:'#ef4444',width:1.5}},
+  ], pLayout({yaxis:{title:'%'}}), cfg);
+  const pLeads = KPI_PROJ.filter(r=>r.leads>0);
+  Plotly.react('ch-pie', [{
+    labels:pLeads.map(r=>r.proyecto), values:pLeads.map(r=>r.leads), type:'pie', hole:0.45,
+    marker:{colors:COLORS}, textinfo:'label+percent', textposition:'inside',
+  }], pLayout({height:260,showlegend:true,legend:{orientation:'v',x:1,y:.5}}), cfg);
+  chartsBuilt = true;
+}
+document.getElementById('sel-chart-proyecto').addEventListener('change', buildCharts);
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+buildKpiCards();
+buildIndCards();
+buildProjTable();
+buildKpiTable();
+</script>
+</body>
+</html>
