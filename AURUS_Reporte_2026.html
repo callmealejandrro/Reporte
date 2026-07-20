@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>AURUS | Reporte de Resultados 2026 y Plan Estratégico</title>
+<script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
+<style>
+:root{
+  --primary:#1a2b4c; --accent:#c9a24d; --danger:#d64545; --success:#3d9970; --warn:#f2a94c;
+  --bg:#f4f6f9; --card:#ffffff; --text:#22303f;
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+body{font-family:'Segoe UI',Arial,sans-serif; background:var(--bg); color:var(--text); line-height:1.5;}
+.header{background:linear-gradient(135deg,var(--primary),#2c4270); color:#fff; padding:40px 30px; text-align:center;}
+.header h1{font-size:2.2rem; margin-bottom:8px;}
+.header p{opacity:.85; font-size:1rem;}
+nav{background:var(--primary); position:sticky; top:0; z-index:100; display:flex; flex-wrap:wrap; justify-content:center; box-shadow:0 2px 8px rgba(0,0,0,.2);}
+nav a{color:#fff; padding:14px 18px; text-decoration:none; font-size:.9rem; font-weight:600; transition:.2s; border-bottom:3px solid transparent;}
+nav a:hover, nav a.active{background:rgba(255,255,255,.1); border-bottom:3px solid var(--accent);}
+.container{max-width:1200px; margin:0 auto; padding:30px 20px;}
+.section{margin-bottom:60px;}
+.section-title{font-size:1.6rem; color:var(--primary); border-left:5px solid var(--accent); padding-left:14px; margin-bottom:20px;}
+.subsection-title{font-size:1.2rem; color:var(--primary); margin:25px 0 12px;}
+.kpi-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:16px; margin-bottom:25px;}
+.kpi-card{background:var(--card); border-radius:10px; padding:18px; box-shadow:0 2px 10px rgba(0,0,0,.06); text-align:center; border-top:4px solid var(--accent);}
+.kpi-card .value{font-size:1.8rem; font-weight:700; color:var(--primary);}
+.kpi-card .label{font-size:.8rem; color:#667; text-transform:uppercase; letter-spacing:.5px; margin-top:4px;}
+.kpi-card.danger{border-top-color:var(--danger);}
+.kpi-card.success{border-top-color:var(--success);}
+.card{background:var(--card); border-radius:10px; padding:20px; box-shadow:0 2px 10px rgba(0,0,0,.06); margin-bottom:20px;}
+.grid2{display:grid; grid-template-columns:1fr 1fr; gap:20px;}
+.grid3{display:grid; grid-template-columns:1fr 1fr 1fr; gap:20px;}
+@media(max-width:900px){.grid2,.grid3{grid-template-columns:1fr;}}
+.chart-box{width:100%; min-height:380px;}
+table{width:100%; border-collapse:collapse; font-size:.9rem;}
+th,td{padding:10px 12px; text-align:left; border-bottom:1px solid #e5e8ee;}
+th{background:var(--primary); color:#fff; position:sticky; top:0;}
+tr:hover{background:#f0f3f8;}
+.badge{display:inline-block; padding:3px 10px; border-radius:12px; font-size:.75rem; font-weight:700; color:#fff;}
+.badge-principal{background:var(--danger);}
+.badge-apoyo{background:var(--warn); color:#333;}
+.badge-otro{background:#9aa5b1;}
+.pain-list{list-style:none;}
+.pain-list li{background:#fff5f5; border-left:4px solid var(--danger); padding:14px 18px; margin-bottom:12px; border-radius:6px;}
+.pain-list li strong{color:var(--danger);}
+.finding-list li{background:#f5faf7; border-left:4px solid var(--success); padding:14px 18px; margin-bottom:12px; border-radius:6px; list-style:none;}
+.finding-list li strong{color:var(--success);}
+.tabs{display:flex; gap:10px; margin-bottom:18px; flex-wrap:wrap;}
+.tab-btn{padding:10px 18px; border:2px solid var(--primary); background:#fff; color:var(--primary); border-radius:20px; cursor:pointer; font-weight:600; font-size:.85rem; transition:.2s;}
+.tab-btn.active{background:var(--primary); color:#fff;}
+.tab-content{display:none;}
+.tab-content.active{display:block;}
+.timeline{position:relative; padding-left:30px; border-left:3px solid var(--accent);}
+.timeline-item{margin-bottom:22px; position:relative;}
+.timeline-item::before{content:''; position:absolute; left:-38px; top:2px; width:14px; height:14px; border-radius:50%; background:var(--accent); border:3px solid #fff; box-shadow:0 0 0 2px var(--accent);}
+.timeline-item .month{font-weight:700; color:var(--primary); font-size:1rem;}
+.footer{text-align:center; padding:30px; color:#889; font-size:.85rem;}
+.filter-bar{display:flex; gap:10px; margin-bottom:15px; flex-wrap:wrap;}
+.filter-bar select, .filter-bar input{padding:8px 12px; border-radius:6px; border:1px solid #ccd; font-size:.85rem;}
+.highlight-box{background:#eef3fb; border-radius:10px; padding:20px; border-left:5px solid var(--primary); margin-bottom:20px;}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>AURUS | Reporte de Resultados 2026 y Plan Estratégico</h1>
+  <p>Análisis de embudo comercial, redes sociales y pauta digital &mdash; Enero a Julio 2026 (corte 19/07/2026)</p>
+</div>
+
+<nav id="navbar">
+  <a href="#resumen" class="navlink active">Resumen Ejecutivo</a>
+  <a href="#resultados" class="navlink">Resultados YTD</a>
+  <a href="#dolores" class="navlink">Dolores &amp; Hallazgos</a>
+  <a href="#proyecciones" class="navlink">Proyecciones</a>
+  <a href="#plan" class="navlink">Plan de Acción</a>
+  <a href="#tematicas" class="navlink">Calendario Temáticas</a>
+</nav>
+
+<div class="container">
+
+  <!-- RESUMEN EJECUTIVO -->
+  <section id="resumen" class="section">
+    <h2 class="section-title">Resumen Ejecutivo</h2>
+    <div class="kpi-grid" id="kpiResumen"></div>
+    <div class="highlight-box">
+      <strong>Diagnóstico clave:</strong> El embudo comercial y las redes sociales cayeron en paralelo desde febrero 2026, confirmando que la inversión en contenido/pauta está directamente correlacionada con la calidad del lead. Julio muestra una recuperación importante en CPL (S/3.22 vs S/6.40 promedio del semestre), lo que da base real para las proyecciones de este reporte.
+    </div>
+  </section>
+
+  <!-- RESULTADOS YTD -->
+  <section id="resultados" class="section">
+    <h2 class="section-title">Resultados YTD 2026 (Enero-Junio)</h2>
+
+    <h3 class="subsection-title">Embudo comercial mensual</h3>
+    <div class="card"><div id="chartEmbudoMensual" class="chart-box"></div></div>
+
+    <h3 class="subsection-title">Redes sociales: seguidores e interacciones</h3>
+    <div class="grid2">
+      <div class="card"><div id="chartSeguidores" class="chart-box"></div></div>
+      <div class="card"><div id="chartInteracciones" class="chart-box"></div></div>
+    </div>
+
+    <h3 class="subsection-title">Rendimiento por proyecto</h3>
+    <div class="card" style="overflow-x:auto;">
+      <table id="tablaProyectos">
+        <thead><tr><th>Proyecto</th><th>Leads</th><th>Citas</th><th>Visitas</th><th>Separaciones</th><th>Ventas</th><th>ROAS</th><th>% Leads</th><th>% Ventas</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <h3 class="subsection-title">Pauta digital de julio 2026 &mdash; performance por conjunto de anuncios</h3>
+    <div class="card" style="overflow-x:auto;">
+      <table id="tablaPauta">
+        <thead><tr><th>Campaña</th><th>Conjunto de anuncios</th><th>Gasto (S/.)</th><th>Leads</th><th>Alcance</th><th>CPL (S/.)</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- DOLORES Y HALLAZGOS -->
+  <section id="dolores" class="section">
+    <h2 class="section-title">Dolores, Puntos de Quiebre y Hallazgos</h2>
+
+    <h3 class="subsection-title">🔴 Dolores identificados</h3>
+    <ul class="pain-list">
+      <li><strong>Caída del embudo desde febrero:</strong> la tasa lead→cita cayó de 5.13% en enero a un mínimo de 0.41% en mayo, coincidiendo con la caída de alcance en redes sociales.</li>
+      <li><strong>Conversión global lead→venta muy baja:</strong> solo 0.40% en el semestre, señal de fuga en las primeras etapas del embudo (lead a cita).</li>
+      <li><strong>Redes sociales estancadas:</strong> de 2,314 seguidores netos ganados en Ago-Dic 2025 se pasó a solo 290 en todo el primer semestre 2026 (-87%).</li>
+      <li><strong>Interacciones colapsadas:</strong> de un promedio de ~1,900/mes (2025) a menos de 300/mes desde febrero 2026.</li>
+      <li><strong>Concentración de riesgo en un solo proyecto:</strong> Florencia representa 74.8% de los leads; cualquier falla en esa cuenta impacta el resultado global.</li>
+      <li><strong>Público de retargeting pequeño:</strong> solo 2,000-2,300 personas en la audiencia de reinteracción de 180 días, con riesgo de saturación en 4-6 semanas.</li>
+    </ul>
+
+    <h3 class="subsection-title">✅ Hallazgos y mejoras detectadas</h3>
+    <ul class="finding-list">
+      <li><strong>Mejora real de CPL en julio:</strong> S/3.22 general (vs S/6.40 en el semestre), gracias a la optimización de campañas de retargeting.</li>
+      <li><strong>Retargeting es la palanca más eficiente:</strong> el conjunto "Retargeting - Imágenes" generó 183 leads a S/2.62, el 51% de los leads del mes.</li>
+      <li><strong>Pieza ganadora identificada:</strong> el formato "precio + saneamiento legal + CTA agendar visita" funciona en múltiples públicos y asesores.</li>
+      <li><strong>Tambo genera ventas sin inversión en pauta:</strong> 18.2% de las ventas del semestre vinieron de canales fuera de pauta digital (referidos/base propia), oportunidad no explotada.</li>
+      <li><strong>Segunda quincena de julio estabiliza el CPL</strong> entre S/2.45-2.70, la mejor racha del año.</li>
+      <li><strong>ROAS alto (43.62x):</strong> el ticket promedio de S/70,636 compensa la baja tasa de conversión, pero hay margen enorme de mejora si se corrige el embudo.</li>
+    </ul>
+  </section>
+
+  <!-- PROYECCIONES -->
+  <section id="proyecciones" class="section">
+    <h2 class="section-title">Proyecciones Julio-Diciembre 2026</h2>
+    <div class="tabs" id="tabsEscenarios">
+      <button class="tab-btn active" data-tab="conservador">Conservador</button>
+      <button class="tab-btn" data-tab="moderado">Moderado (recomendado)</button>
+      <button class="tab-btn" data-tab="optimista">Optimista</button>
+    </div>
+    <div id="kpiProyeccion" class="kpi-grid"></div>
+    <div class="grid2">
+      <div class="card"><div id="chartProyEmbudo" class="chart-box"></div></div>
+      <div class="card"><div id="chartProyRedes" class="chart-box"></div></div>
+    </div>
+  </section>
+
+  <!-- PLAN DE ACCION -->
+  <section id="plan" class="section">
+    <h2 class="section-title">Plan de Mejora y Acciones (Jul-Dic 2026)</h2>
+    <div class="timeline">
+      <div class="timeline-item"><div class="month">Julio-Agosto</div>
+        <p>Retomar frecuencia de publicación orgánica (mín. 4-5 posts/semana), relanzar Zoom/Live semanal, escalar presupuesto en el conjunto "Retargeting - Imágenes" manteniendo CPL de S/2.62-3.22. Ampliar públicos similares (lookalike 1-6%) a todos los asesores.</p>
+      </div>
+      <div class="timeline-item"><div class="month">Agosto</div>
+        <p>Piezas trend con humor neutro (50/50 sin sesgo de género) + contenido educativo ("Cómo elegir bien tu lote", "5 datos antes de comprar"). Aprovechar Día del Niño Peruano y Santa Rosa de Lima para contenido temático.</p>
+      </div>
+      <div class="timeline-item"><div class="month">Septiembre</div>
+        <p>Primer webinar temático (financiamiento/plusvalía) + primer desayuno VIP con leads calificados de Florencia. Contenido de Equinoccio de primavera y Fuerzas Armadas como ganchos de campaña.</p>
+      </div>
+      <div class="timeline-item"><div class="month">Octubre</div>
+        <p>Activaciones de campo en 2 puntos nuevos de alta afluencia. Aprovechar Mes Morado (Señor de los Milagros) y Halloween para piezas de alto engagement.</p>
+      </div>
+      <div class="timeline-item"><div class="month">Noviembre</div>
+        <p>Programa de referidos activo. Campaña especial ligada a Cyber Days / Black Friday con oferta de separación a precio especial.</p>
+      </div>
+      <div class="timeline-item"><div class="month">Diciembre</div>
+        <p>Campaña de cierre de año aprovechando Gratificación de Navidad (liquidez de compradores). Balance de resultados y proyección 2027 con gerencia.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CALENDARIO TEMATICAS -->
+  <section id="tematicas" class="section">
+    <h2 class="section-title">Calendario de Temáticas 2026</h2>
+    <div class="filter-bar">
+      <select id="filtroMes"><option value="">Todos los meses</option></select>
+      <select id="filtroTipo">
+        <option value="">Todos los tipos</option>
+        <option value="Principal">Principal</option>
+        <option value="Apoyo">Apoyo</option>
+        <option value="Otro">Otro</option>
+      </select>
+    </div>
+    <div class="card" style="overflow-x:auto;">
+      <table id="tablaTematicas">
+        <thead><tr><th>Mes</th><th>Fecha</th><th>Temática</th><th>Categoría</th><th>Tipo</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+
+</div>
+
+<div class="footer">Reporte generado para AURUS &mdash; Marketing &amp; Comercial | Corte de datos: 19 de julio 2026</div>
+
+<script>
+const DATA = {"kpis": {"leads": 8351, "citas": 332, "visitas": 97, "separaciones": 42, "ventas": 33, "gasto": 53442.29, "ingresos": 2331000.0, "cpl": 6.4, "roas": 43.62, "tasa_lead_cita": 3.98, "tasa_cita_visita": 29.22, "tasa_visita_sep": 43.3, "tasa_sep_venta": 78.57, "seguidores_actuales": 2604, "seguidores_netos_2026": 290, "interacciones_2026": 1892, "cpl_julio": 3.22}, "embudo_mensual": {"meses": ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio"], "leads": [1889.0, 1764.0, 1292.0, 1236.0, 1465.0, 705.0], "citas": [97, 69, 82, 36, 6, 42], "visitas": [29, 18, 32, 8, 2, 8], "separaciones": [16, 2, 5, 10, 4, 5], "ventas": [13, 3, 5, 3, 5, 4]}, "redes_mensual": {"meses": ["2025-08", "2025-09", "2025-10", "2025-11", "2025-12", "2026-01", "2026-02", "2026-03", "2026-04", "2026-05", "2026-06"], "seguidores_acum": [279, 907, 1312, 1827, 2314, 2505, 2546, 2567, 2574, 2591, 2604], "interacciones": [812, 2118, 1824, 1865, 1760, 689, 398, 148, 132, 298, 227], "alcance": [153570.0, 294480.0, 394267.0, 330551.0, 203159.0, 269199.0, 42581.0, 31066.0, 54329.0, 103835.0, 112948.0]}, "proyecciones": {"conservador": {"Leads_mes": 1392.0, "Citas_mes": 55.0, "Visitas_mes": 16.0, "Separaciones_mes": 7.0, "Ventas_mes": 5.5, "Leads_total": 6959.0, "Citas_total": 277.0, "Visitas_total": 81.0, "Separaciones_total": 35.0, "Ventas_total": 27.5}, "moderado": {"Leads_mes": 2766.0, "Citas_mes": 126.0, "Visitas_mes": 42.0, "Separaciones_mes": 21.2, "Ventas_mes": 17.4, "Leads_total": 13831.0, "Citas_total": 632.0, "Visitas_total": 212.0, "Separaciones_total": 105.8, "Ventas_total": 86.9}, "optimista": {"Leads_mes": 3596.0, "Citas_mes": 186.0, "Visitas_mes": 71.0, "Separaciones_mes": 39.7, "Ventas_mes": 34.0, "Leads_total": 17980.0, "Citas_total": 929.0, "Visitas_total": 353.0, "Separaciones_total": 198.7, "Ventas_total": 170.1}}, "proyecciones_ingresos": {"conservador": 1942500.0, "moderado": 6138300.0, "optimista": 12015245.454545453}, "proyecciones_redes": {"conservador": {"seguidores": 2846, "interacciones": 1577}, "moderado": {"seguidores": 3882, "interacciones": 4978}, "optimista": {"seguidores": 5381, "interacciones": 10055}}, "proyecto_data": [{"Proyecto": "CALIPSO", "Leads": 1396.0, "Citas": 29, "Visitas": 4, "Separaciones": 0, "Ventas": 1, "ROAS": 8.3, "Share_Leads_%": 16.7, "Share_Ventas_%": 3.0}, {"Proyecto": "FLORENCIA", "Leads": 6250.0, "Citas": 219, "Visitas": 74, "Separaciones": 36, "Ventas": 21, "ROAS": 38.05, "Share_Leads_%": 74.8, "Share_Ventas_%": 63.6}, {"Proyecto": "GENERAL", "Leads": 705.0, "Citas": 42, "Visitas": 8, "Separaciones": 5, "Ventas": 4, "ROAS": 47.88, "Share_Leads_%": 8.4, "Share_Ventas_%": 12.1}, {"Proyecto": "TAMBO", "Leads": 0.0, "Citas": 42, "Visitas": 11, "Separaciones": 1, "Ventas": 6, "ROAS": 0.0, "Share_Leads_%": 0.0, "Share_Ventas_%": 18.2}, {"Proyecto": "TERRAZAS", "Leads": 0.0, "Citas": 0, "Visitas": 0, "Separaciones": 0, "Ventas": 1, "ROAS": 0.0, "Share_Leads_%": 0.0, "Share_Ventas_%": 3.0}], "pauta_performance": [{"Nombre de la campaña": "vanessa Condominios Cieneguilla - Video e Imagenes", "Nombre del conjunto de anuncios": "+51 941 554 148 Vanessa", "Gasto": 92.52, "Leads": 54.0, "Alcance": 5658, "CPL": 1.71}, {"Nombre de la campaña": "Conversion - Junior", "Nombre del conjunto de anuncios": "Nuevo conjunto de anuncios de Clientes potenciales", "Gasto": 116.54, "Leads": 52.0, "Alcance": 10896, "CPL": 2.24}, {"Nombre de la campaña": "Conversion - Elizabeth", "Nombre del conjunto de anuncios": "Retargeting - Imagenes", "Gasto": 479.0, "Leads": 183.0, "Alcance": 22409, "CPL": 2.62}, {"Nombre de la campaña": "Condominios Cieneguilla - Video e Imagenes", "Nombre del conjunto de anuncios": "+51 926 397 833 Elizabeth", "Gasto": 29.29, "Leads": 8.0, "Alcance": 673, "CPL": 3.66}, {"Nombre de la campaña": "Conversion - Kiara", "Nombre del conjunto de anuncios": "Seg - Videos", "Gasto": 299.89, "Leads": 61.0, "Alcance": 9942, "CPL": 4.92}, {"Nombre de la campaña": "Conversion - Kiara", "Nombre del conjunto de anuncios": "AVG - Imágenes", "Gasto": 254.94, "Leads": 45.0, "Alcance": 13159, "CPL": 5.67}, {"Nombre de la campaña": "Kiara 25/6/26", "Nombre del conjunto de anuncios": "Audiencia seg", "Gasto": 44.12, "Leads": 6.0, "Alcance": 1150, "CPL": 7.35}], "tematicas": [{"Mes": "2026-07", "Fecha": "23-Jul", "Tematica": "Dia de la Fuerza Aerea del Peru (feriado)", "Categoria": "Festividad patria", "Tipo": "Otro"}, {"Mes": "2026-07", "Fecha": "24-Jul", "Tematica": "Feriado regional Tumbes (Batalla de Zarumilla)", "Categoria": "Festividad regional", "Tipo": "Otro"}, {"Mes": "2026-07", "Fecha": "27-Jul", "Tematica": "Dia no laborable puente", "Categoria": "Festividad patria", "Tipo": "Otro"}, {"Mes": "2026-07", "Fecha": "28-29 jul", "Tematica": "Fiestas Patrias (feriados)", "Categoria": "Festividad patria", "Tipo": "Principal"}, {"Mes": "2026-07", "Fecha": "30-Jul", "Tematica": "Estreno Spider-Man: Un Nuevo Dia (Brand New Day)", "Categoria": "Cine/entretenimiento", "Tipo": "Apoyo"}, {"Mes": "2026-08", "Fecha": "01-Aug", "Tematica": "Dia de la Pachamama (sierra sur)", "Categoria": "Festividad andina", "Tipo": "Otro"}, {"Mes": "2026-08", "Fecha": "06-Aug", "Tematica": "Batalla de Junin (feriado)", "Categoria": "Festividad patria", "Tipo": "Apoyo"}, {"Mes": "2026-08", "Fecha": "13-Aug", "Tematica": "Feriado regional Loreto (Rio Amazonas)", "Categoria": "Festividad regional", "Tipo": "Otro"}, {"Mes": "2026-08", "Fecha": "16-Aug", "Tematica": "Dia del Nino Peruano (3er domingo)", "Categoria": "Festividad familiar", "Tipo": "Apoyo"}, {"Mes": "2026-08", "Fecha": "21-Aug", "Tematica": "Estreno Insidious: The Bleeding World", "Categoria": "Cine/entretenimiento", "Tipo": "Otro"}, {"Mes": "2026-08", "Fecha": "28-Aug", "Tematica": "Dia civico Tacna (Reincorporacion)", "Categoria": "Festividad regional", "Tipo": "Otro"}, {"Mes": "2026-08", "Fecha": "28-Aug", "Tematica": "Estreno Coyote vs. Acme", "Categoria": "Cine/entretenimiento", "Tipo": "Apoyo"}, {"Mes": "2026-08", "Fecha": "30-Aug", "Tematica": "Santa Rosa de Lima (feriado)", "Categoria": "Festividad religiosa", "Tipo": "Principal"}, {"Mes": "2026-09", "Fecha": "08 sep", "Tematica": "Festividad Ntra. Sra. de Cocharcas (Apurimac)", "Categoria": "Festividad regional", "Tipo": "Otro"}, {"Mes": "2026-09", "Fecha": "11 sep", "Tematica": "Estreno Clayface", "Categoria": "Cine/entretenimiento", "Tipo": "Otro"}, {"Mes": "2026-09", "Fecha": "13 sep", "Tematica": "Aniversario departamento de Junin", "Categoria": "Festividad regional", "Tipo": "Otro"}, {"Mes": "2026-09", "Fecha": "14 sep", "Tematica": "Senor de Locumba (Tacna) / Senor de Huanca (Cusco)", "Categoria": "Festividad religiosa", "Tipo": "Otro"}, {"Mes": "2026-09", "Fecha": "18 sep", "Tematica": "Estreno Resident Evil", "Categoria": "Cine/entretenimiento", "Tipo": "Otro"}, {"Mes": "2026-09", "Fecha": "22 sep", "Tematica": "Equinoccio de primavera", "Categoria": "Estacional", "Tipo": "Principal"}, {"Mes": "2026-09", "Fecha": "24 sep", "Tematica": "Dia de las Fuerzas Armadas (observancia)", "Categoria": "Festividad patria", "Tipo": "Apoyo"}, {"Mes": "2026-10", "Fecha": "Todo octubre", "Tematica": "Mes morado - Senor de los Milagros (Lima)", "Categoria": "Festividad religiosa", "Tipo": "Apoyo"}, {"Mes": "2026-10", "Fecha": "02-Oct", "Tematica": "Estreno Verity", "Categoria": "Cine/entretenimiento", "Tipo": "Otro"}, {"Mes": "2026-10", "Fecha": "08-Oct", "Tematica": "Combate de Angamos (feriado)", "Categoria": "Festividad patria", "Tipo": "Apoyo"}, {"Mes": "2026-10", "Fecha": "09-Oct", "Tematica": "Estreno The Legend of Aang: El ultimo maestro del aire", "Categoria": "Cine/entretenimiento", "Tipo": "Otro"}, {"Mes": "2026-10", "Fecha": "14-Oct", "Tematica": "Feriado regional Moquegua (Sta. Fortunata)", "Categoria": "Festividad regional", "Tipo": "Otro"}, {"Mes": "2026-10", "Fecha": "16-Oct", "Tematica": "Estreno Street Fighter", "Categoria": "Cine/entretenimiento", "Tipo": "Apoyo"}, {"Mes": "2026-10", "Fecha": "31-Oct", "Tematica": "Halloween", "Categoria": "Festividad/comercial", "Tipo": "Principal"}, {"Mes": "2026-11", "Fecha": "01-Nov", "Tematica": "Dia de Todos los Santos (feriado)", "Categoria": "Festividad religiosa", "Tipo": "Apoyo"}, {"Mes": "2026-11", "Fecha": "Hasta 15 nov", "Tematica": "Deposito CTS 2do semestre", "Categoria": "Financiero/laboral", "Tipo": "Apoyo"}, {"Mes": "2026-11", "Fecha": "02-05 nov", "Tematica": "Cyber WOW noviembre", "Categoria": "Comercial digital", "Tipo": "Apoyo"}, {"Mes": "2026-11", "Fecha": "Noviembre (fecha TBD)", "Tematica": "Cyber Days 2da edicion", "Categoria": "Comercial digital", "Tipo": "Apoyo"}, {"Mes": "2026-11", "Fecha": "20-Nov", "Tematica": "Estreno Los Juegos del Hambre: Amanecer en la Cosecha", "Categoria": "Cine/entretenimiento", "Tipo": "Otro"}, {"Mes": "2026-11", "Fecha": "Fin de nov", "Tematica": "Black Friday", "Categoria": "Comercial", "Tipo": "Principal"}, {"Mes": "2026-12", "Fecha": "Hasta 15 dic", "Tematica": "Gratificacion de Navidad", "Categoria": "Financiero/laboral", "Tipo": "Apoyo"}, {"Mes": "2026-12", "Fecha": "08-Dec", "Tematica": "Inmaculada Concepcion (feriado)", "Categoria": "Festividad religiosa", "Tipo": "Otro"}, {"Mes": "2026-12", "Fecha": "09-Dec", "Tematica": "Batalla de Ayacucho (feriado)", "Categoria": "Festividad patria", "Tipo": "Apoyo"}, {"Mes": "2026-12", "Fecha": "18-Dec", "Tematica": "Estreno Avengers: Doomsday y Dune: Part Three", "Categoria": "Cine/entretenimiento", "Tipo": "Apoyo"}, {"Mes": "2026-12", "Fecha": "25-Dec", "Tematica": "Navidad (feriado)", "Categoria": "Festividad", "Tipo": "Principal"}, {"Mes": "2026-12", "Fecha": "Fin de dic", "Tematica": "Balance y proyeccion 2027", "Categoria": "Comercial interno", "Tipo": "Otro"}], "ticket_promedio": 70636.0};
+
+function fmt(n){ return new Intl.NumberFormat('es-PE').format(Math.round(n)); }
+function fmtMoney(n){ return 'S/ ' + new Intl.NumberFormat('es-PE').format(Math.round(n)); }
+
+// KPI Resumen
+const kpiResumen = document.getElementById('kpiResumen');
+const kpisR = [
+  {label:'Leads YTD', value: fmt(DATA.kpis.leads)},
+  {label:'Citas YTD', value: fmt(DATA.kpis.citas)},
+  {label:'Visitas YTD', value: fmt(DATA.kpis.visitas)},
+  {label:'Separaciones YTD', value: fmt(DATA.kpis.separaciones)},
+  {label:'Ventas YTD', value: fmt(DATA.kpis.ventas)},
+  {label:'CPL Promedio', value: fmtMoney(DATA.kpis.cpl), cls:'danger'},
+  {label:'CPL Julio (mejorado)', value: fmtMoney(DATA.kpis.cpl_julio), cls:'success'},
+  {label:'ROAS YTD', value: DATA.kpis.roas + 'x', cls:'success'},
+  {label:'Ingresos YTD', value: fmtMoney(DATA.kpis.ingresos)},
+  {label:'Seguidores actuales', value: fmt(DATA.kpis.seguidores_actuales)},
+  {label:'Seguidores netos 2026', value: fmt(DATA.kpis.seguidores_netos_2026), cls:'danger'},
+  {label:'Tasa Lead→Venta', value: '0.40%', cls:'danger'}
+];
+kpisR.forEach(k=>{
+  const div = document.createElement('div');
+  div.className = 'kpi-card' + (k.cls ? ' '+k.cls : '');
+  div.innerHTML = `<div class="value">${k.value}</div><div class="label">${k.label}</div>`;
+  kpiResumen.appendChild(div);
+});
+
+// Chart Embudo mensual
+Plotly.newPlot('chartEmbudoMensual', [
+  {x:DATA.embudo_mensual.meses, y:DATA.embudo_mensual.leads, name:'Leads', type:'bar', marker:{color:'#1a2b4c'}, yaxis:'y2'},
+  {x:DATA.embudo_mensual.meses, y:DATA.embudo_mensual.citas, name:'Citas', type:'scatter', mode:'lines+markers', line:{color:'#c9a24d', width:3}},
+  {x:DATA.embudo_mensual.meses, y:DATA.embudo_mensual.visitas, name:'Visitas', type:'scatter', mode:'lines+markers', line:{color:'#3d9970', width:3}},
+  {x:DATA.embudo_mensual.meses, y:DATA.embudo_mensual.ventas, name:'Ventas', type:'scatter', mode:'lines+markers', line:{color:'#d64545', width:3}}
+], {
+  title:'Embudo Comercial Mensual 2026',
+  yaxis:{title:'Citas / Visitas / Ventas'},
+  yaxis2:{title:'Leads', overlaying:'y', side:'right'},
+  legend:{orientation:'h', y:-0.2},
+  margin:{t:50}
+}, {responsive:true});
+
+// Chart Seguidores
+Plotly.newPlot('chartSeguidores', [
+  {x:DATA.redes_mensual.meses, y:DATA.redes_mensual.seguidores_acum, type:'scatter', mode:'lines+markers', fill:'tozeroy', line:{color:'#1a2b4c', width:3}, name:'Seguidores acumulados'}
+], {title:'Crecimiento de Seguidores', margin:{t:50}}, {responsive:true});
+
+// Chart Interacciones
+Plotly.newPlot('chartInteracciones', [
+  {x:DATA.redes_mensual.meses, y:DATA.redes_mensual.interacciones, type:'bar', marker:{color:'#c9a24d'}, name:'Interacciones'}
+], {title:'Interacciones Mensuales', margin:{t:50}}, {responsive:true});
+
+// Tabla Proyectos
+const tbodyProy = document.querySelector('#tablaProyectos tbody');
+DATA.proyecto_data.forEach(p=>{
+  const tr = document.createElement('tr');
+  tr.innerHTML = `<td><strong>${p.Proyecto}</strong></td><td>${fmt(p.Leads)}</td><td>${p.Citas}</td><td>${p.Visitas}</td><td>${p.Separaciones}</td><td>${p.Ventas}</td><td>${p.ROAS}</td><td>${p['Share_Leads_%']}%</td><td>${p['Share_Ventas_%']}%</td>`;
+  tbodyProy.appendChild(tr);
+});
+
+// Tabla Pauta
+const tbodyPauta = document.querySelector('#tablaPauta tbody');
+DATA.pauta_performance.forEach(p=>{
+  const tr = document.createElement('tr');
+  tr.innerHTML = `<td>${p['Nombre de la campaña']}</td><td>${p['Nombre del conjunto de anuncios']}</td><td>${fmtMoney(p.Gasto)}</td><td>${fmt(p.Leads)}</td><td>${fmt(p.Alcance)}</td><td>${fmtMoney(p.CPL)}</td>`;
+  tbodyPauta.appendChild(tr);
+});
+
+// Proyecciones - tabs
+const escenarioLabels = {
+  Leads_total:'Leads (6m)', Citas_total:'Citas (6m)', Visitas_total:'Visitas (6m)',
+  Separaciones_total:'Separaciones (6m)', Ventas_total:'Ventas (6m)'
+};
+function renderEscenario(key){
+  const kpiDiv = document.getElementById('kpiProyeccion');
+  kpiDiv.innerHTML = '';
+  const esc = DATA.proyecciones[key];
+  const ingresos = DATA.proyecciones_ingresos[key];
+  const redes = DATA.proyecciones_redes[key];
+  const items = [
+    {label:'Leads proyectados', value: fmt(esc.Leads_total)},
+    {label:'Citas proyectadas', value: fmt(esc.Citas_total)},
+    {label:'Visitas proyectadas', value: fmt(esc.Visitas_total)},
+    {label:'Separaciones proyectadas', value: fmt(esc.Separaciones_total)},
+    {label:'Ventas proyectadas', value: fmt(esc.Ventas_total), cls:'success'},
+    {label:'Ingresos estimados', value: fmtMoney(ingresos), cls:'success'},
+    {label:'Seguidores a Dic-2026', value: fmt(redes.seguidores)},
+    {label:'Interacciones (6m)', value: fmt(redes.interacciones)}
+  ];
+  items.forEach(k=>{
+    const div = document.createElement('div');
+    div.className = 'kpi-card' + (k.cls ? ' '+k.cls : '');
+    div.innerHTML = `<div class="value">${k.value}</div><div class="label">${k.label}</div>`;
+    kpiDiv.appendChild(div);
+  });
+
+  Plotly.newPlot('chartProyEmbudo', [{
+    y:['Leads','Citas','Visitas','Separaciones','Ventas'],
+    x:[esc.Leads_total, esc.Citas_total, esc.Visitas_total, esc.Separaciones_total, esc.Ventas_total],
+    type:'funnel',
+    marker:{color:['#1a2b4c','#2c4270','#c9a24d','#f2a94c','#3d9970']}
+  }], {title:'Embudo Proyectado (Jul-Dic 2026) - Escenario ' + key, margin:{t:50}}, {responsive:true});
+
+  Plotly.newPlot('chartProyRedes', [{
+    x:['Seguidores actuales','Seguidores proyectados Dic-26'],
+    y:[DATA.kpis.seguidores_actuales, redes.seguidores],
+    type:'bar', marker:{color:['#9aa5b1','#1a2b4c']}
+  }], {title:'Crecimiento de Seguidores Proyectado', margin:{t:50}}, {responsive:true});
+}
+renderEscenario('conservador');
+document.querySelectorAll('#tabsEscenarios .tab-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('#tabsEscenarios .tab-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    renderEscenario(btn.dataset.tab);
+  });
+});
+
+// Tabla Tematicas
+const tbodyTem = document.querySelector('#tablaTematicas tbody');
+const mesesUnicos = [...new Set(DATA.tematicas.map(t=>t.Mes))];
+const filtroMes = document.getElementById('filtroMes');
+mesesUnicos.forEach(m=>{
+  const opt = document.createElement('option'); opt.value = m; opt.textContent = m;
+  filtroMes.appendChild(opt);
+});
+function renderTematicas(){
+  tbodyTem.innerHTML = '';
+  const fMes = filtroMes.value;
+  const fTipo = document.getElementById('filtroTipo').value;
+  DATA.tematicas.filter(t => (!fMes || t.Mes===fMes) && (!fTipo || t.Tipo===fTipo)).forEach(t=>{
+    const tr = document.createElement('tr');
+    const badgeClass = t.Tipo==='Principal' ? 'badge-principal' : (t.Tipo==='Apoyo' ? 'badge-apoyo' : 'badge-otro');
+    tr.innerHTML = `<td>${t.Mes}</td><td>${t.Fecha}</td><td>${t.Tematica}</td><td>${t.Categoria}</td><td><span class="badge ${badgeClass}">${t.Tipo}</span></td>`;
+    tbodyTem.appendChild(tr);
+  });
+}
+filtroMes.addEventListener('change', renderTematicas);
+document.getElementById('filtroTipo').addEventListener('change', renderTematicas);
+renderTematicas();
+
+// Nav active state on scroll
+const navLinks = document.querySelectorAll('.navlink');
+window.addEventListener('scroll', ()=>{
+  let current = '';
+  document.querySelectorAll('.section').forEach(sec=>{
+    if (window.scrollY >= sec.offsetTop - 100) current = sec.id;
+  });
+  navLinks.forEach(l=>{
+    l.classList.toggle('active', l.getAttribute('href') === '#'+current);
+  });
+});
+</script>
+</body>
+</html>
