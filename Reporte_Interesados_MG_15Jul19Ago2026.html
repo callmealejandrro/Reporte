@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="es-PE" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Grupo MG · Reporte de Interesados 15-Jul → 19-Ago 2026</title>
+<style>
+:root{
+  color-scheme:light;
+  --page:#f9f9f7; --surface-1:#fcfcfb;
+  --text-primary:#0b0b0b; --text-secondary:#52514e; --muted:#898781;
+  --grid:#e1e0d9; --axis:#c3c2b7; --border:rgba(11,11,11,0.10);
+  --series-1:#2a78d6; --series-2:#eb6834; --series-3:#1baf7a; --series-4:#eda100; --series-5:#e87ba4;
+  --seq-100:#cde2fb; --seq-200:#9ec5f4; --seq-300:#6da7ec; --seq-400:#3987e5; --seq-500:#256abf; --seq-600:#184f95; --seq-700:#0d366b;
+  --good:#0ca30c; --warning:#fab219; --serious:#ec835a; --critical:#d03b3b;
+  --ghost:rgba(11,11,11,0.04); --chip:rgba(11,11,11,0.05); --heat-ink-hi:#ffffff;
+}
+html[data-theme="dark"]{
+  color-scheme:dark;
+  --page:#0d0d0d; --surface-1:#1a1a19;
+  --text-primary:#ffffff; --text-secondary:#c3c2b7; --muted:#898781;
+  --grid:#2c2c2a; --axis:#383835; --border:rgba(255,255,255,0.10);
+  --series-1:#3987e5; --series-2:#d95926; --series-3:#199e70; --series-4:#c98500; --series-5:#d55181;
+  --seq-100:#0d366b; --seq-200:#184f95; --seq-300:#256abf; --seq-400:#2a78d6; --seq-500:#3987e5; --seq-600:#6da7ec; --seq-700:#9ec5f4;
+  --ghost:rgba(255,255,255,0.06); --chip:rgba(255,255,255,0.07); --heat-ink-hi:#0b0b0b;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--text-primary);
+  font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-size:14px;line-height:1.5;
+  -webkit-font-smoothing:antialiased}
+.wrap{max-width:1240px;margin:0 auto;padding:28px 20px 80px}
+header.top{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;flex-wrap:wrap;margin-bottom:6px}
+h1{font-size:23px;font-weight:650;letter-spacing:-0.01em;margin:0 0 4px}
+.sub{color:var(--text-secondary);font-size:13px;margin:0}
+.tag{display:inline-block;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+  padding:3px 8px;border-radius:5px;background:var(--chip);color:var(--text-secondary);margin-right:6px}
+.tag.int{background:rgba(208,59,59,.12);color:var(--critical)}
+button.tt{background:var(--surface-1);border:1px solid var(--border);color:var(--text-secondary);
+  border-radius:8px;padding:7px 12px;font-size:13px;cursor:pointer;font-family:inherit}
+button.tt:hover{background:var(--ghost)}
+
+/* filtros */
+.filters{background:var(--surface-1);border:1px solid var(--border);border-radius:12px;
+  padding:14px 16px;margin:20px 0 18px;display:flex;flex-wrap:wrap;gap:18px;align-items:flex-start}
+.fgroup{display:flex;flex-direction:column;gap:7px}
+.flabel{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1px solid var(--border);background:transparent;color:var(--text-secondary);
+  border-radius:20px;padding:5px 11px;font-size:12.5px;cursor:pointer;font-family:inherit;white-space:nowrap;
+  display:inline-flex;align-items:center;gap:6px}
+.chip:hover{background:var(--ghost)}
+.chip[aria-pressed="true"]{background:var(--series-1);border-color:var(--series-1);color:#fff;font-weight:550}
+.chip .n{opacity:.7;font-variant-numeric:tabular-nums;font-size:11.5px}
+.spacer{flex:1}
+input.search{border:1px solid var(--border);background:var(--page);color:var(--text-primary);
+  border-radius:8px;padding:7px 10px;font-size:13px;font-family:inherit;min-width:200px}
+
+/* kpis */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(168px,1fr));gap:12px;margin-bottom:22px}
+.kpi{background:var(--surface-1);border:1px solid var(--border);border-radius:12px;padding:14px 16px}
+.kpi .k{font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.kpi .v{font-size:29px;font-weight:640;letter-spacing:-0.02em;line-height:1.1}
+.kpi .d{font-size:12px;color:var(--text-secondary);margin-top:4px}
+
+/* cards */
+.card{background:var(--surface-1);border:1px solid var(--border);border-radius:12px;padding:18px 20px 16px;margin-bottom:18px}
+.card h2{font-size:15px;font-weight:620;margin:0 0 3px}
+.card .note{font-size:12.5px;color:var(--text-secondary);margin:0 0 14px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media(max-width:900px){.grid2{grid-template-columns:1fr}}
+.legend{display:flex;flex-wrap:wrap;gap:14px;margin-top:12px;font-size:12.5px;color:var(--text-secondary)}
+.legend i{width:11px;height:11px;border-radius:3px;display:inline-block;margin-right:6px;vertical-align:-1px}
+svg{display:block;width:100%;overflow:visible}
+.tick{font-size:11px;fill:var(--muted);font-variant-numeric:tabular-nums}
+.vlabel{font-size:11.5px;fill:var(--text-secondary);font-variant-numeric:tabular-nums;font-weight:550}
+.clabel{font-size:12.5px;fill:var(--text-primary)}
+.gridline{stroke:var(--grid);stroke-width:1}
+.heat-hi{fill:var(--heat-ink-hi)}
+.heat-lo{fill:var(--text-primary)}
+.baseline{stroke:var(--axis);stroke-width:1}
+.bar{transition:opacity .12s}
+.hitrect{fill:transparent;cursor:pointer}
+.crosshair{stroke:var(--axis);stroke-width:1;stroke-dasharray:3 3;pointer-events:none}
+
+/* tooltip */
+#tip{position:fixed;z-index:99;pointer-events:none;opacity:0;transition:opacity .1s;
+  background:var(--surface-1);border:1px solid var(--border);border-radius:9px;padding:9px 11px;
+  box-shadow:0 6px 22px rgba(0,0,0,.16);font-size:12.5px;max-width:300px;color:var(--text-primary)}
+#tip b{font-weight:620}
+#tip .row{display:flex;justify-content:space-between;gap:14px;margin-top:3px;color:var(--text-secondary)}
+#tip .row span:last-child{font-variant-numeric:tabular-nums;color:var(--text-primary);font-weight:550}
+
+/* tabla */
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+th{text-align:left;font-weight:600;font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);
+  padding:8px 9px;border-bottom:1px solid var(--axis);position:sticky;top:0;background:var(--surface-1);cursor:pointer;white-space:nowrap}
+th:hover{color:var(--text-primary)}
+td{padding:8px 9px;border-bottom:1px solid var(--grid);vertical-align:top}
+td.num{font-variant-numeric:tabular-nums;white-space:nowrap}
+.tscroll{max-height:560px;overflow:auto;border:1px solid var(--border);border-radius:10px}
+tr:hover td{background:var(--ghost)}
+a{color:var(--series-1);text-decoration:none}
+a:hover{text-decoration:underline}
+.pill{display:inline-block;font-size:10.5px;font-weight:600;padding:2px 7px;border-radius:20px;
+  background:var(--chip);color:var(--text-secondary);white-space:nowrap}
+.pill.dup{background:rgba(250,178,25,.18);color:#8a6000}
+html[data-theme="dark"] .pill.dup{color:var(--warning)}
+.pill.flag{background:rgba(208,59,59,.14);color:var(--critical)}
+.dot{width:9px;height:9px;border-radius:50%;display:inline-block;margin-right:7px;vertical-align:-1px}
+.msg{color:var(--text-secondary);max-width:230px}
+ul.obs{margin:0;padding-left:18px}
+ul.obs li{margin-bottom:8px}
+.footnote{font-size:12px;color:var(--muted);margin-top:10px}
+.empty{padding:40px;text-align:center;color:var(--muted)}
+</style>
+</head>
+<body>
+<div id="tip"></div>
+<div class="wrap">
+
+<header class="top">
+  <div>
+    <div style="margin-bottom:8px"><span class="tag int">Uso interno</span><span class="tag">Grupo MG</span></div>
+    <h1>Reporte de interesados — portales</h1>
+    <p class="sub">Consultas recibidas del <b>15-Jul-2026</b> al <b>19-Ago-2026</b> (36 días) · Fuente: export Urbania / Adondevivir, sucursal GRUPO MG · <span id="corte"></span></p>
+  </div>
+  <button class="tt" id="themeBtn" type="button">Modo oscuro</button>
+</header>
+
+<div class="filters">
+  <div class="fgroup" style="flex:1;min-width:280px">
+    <span class="flabel">Proyecto</span>
+    <div class="chips" id="fProy"></div>
+  </div>
+  <div class="fgroup">
+    <span class="flabel">Periodo</span>
+    <div class="chips" id="fRango"></div>
+  </div>
+  <div class="fgroup">
+    <span class="flabel">Tipo de contacto</span>
+    <div class="chips" id="fCanal"></div>
+  </div>
+  <div class="fgroup">
+    <span class="flabel">Buscar</span>
+    <input class="search" id="fBusca" placeholder="nombre, correo, teléfono…" type="search">
+  </div>
+</div>
+
+<div class="kpis" id="kpis"></div>
+
+<div class="card">
+  <h2>Consultas por día</h2>
+  <p class="note">Cada barra es un día calendario. La línea es el promedio móvil de 7 días.</p>
+  <div id="chDia"></div>
+  <div class="legend">
+    <span><i style="background:var(--series-1)"></i>Consultas del día</span>
+    <span><svg width="20" height="10" style="display:inline;width:20px;vertical-align:-1px"><line x1="0" y1="5" x2="20" y2="5" stroke="var(--series-2)" stroke-width="2"/></svg> Promedio móvil 7 días</span>
+  </div>
+</div>
+
+<div class="grid2">
+  <div class="card">
+    <h2>Consultas por semana</h2>
+    <p class="note">Semanas de lunes a domingo. La primera y la última están incompletas.</p>
+    <div id="chSem"></div>
+  </div>
+  <div class="card">
+    <h2>Día de la semana</h2>
+    <p class="note">Distribución de las consultas en todo el periodo.</p>
+    <div id="chDow"></div>
+  </div>
+</div>
+
+<div class="card">
+  <h2>Consultas por proyecto</h2>
+  <p class="note">Total de consultas y personas únicas detrás de ellas.</p>
+  <div id="chProy"></div>
+  <div class="legend">
+    <span><i style="background:var(--seq-500)"></i>Consultas</span>
+    <span><i style="background:var(--seq-200)"></i>Personas únicas</span>
+  </div>
+</div>
+
+<div class="card">
+  <h2>Proyecto × semana</h2>
+  <p class="note">Dónde se concentró el interés en el tiempo. Intensidad = número de consultas.</p>
+  <div id="chHeat"></div>
+</div>
+
+<div class="grid2">
+  <div class="card">
+    <h2>Tipo de contacto</h2>
+    <p class="note">Cómo llegó cada consulta. "Vio teléfono" es un evento del portal, no un formulario enviado.</p>
+    <div id="chCanal"></div>
+  </div>
+  <div class="card">
+    <h2>Portal de origen</h2>
+    <p class="note">Solo se puede inferir del texto del mensaje; muchas filas no lo declaran.</p>
+    <div id="chPortal"></div>
+  </div>
+</div>
+
+<div class="card">
+  <h2>Detalle por unidad / aviso</h2>
+  <p class="note">Avisos que generaron consultas, ordenados por volumen.</p>
+  <div class="tscroll" style="max-height:420px"><table id="tblAviso"></table></div>
+</div>
+
+<div class="card">
+  <h2>Base de interesados</h2>
+  <p class="note">Registro completo, filtrable con los controles de arriba. Clic en una columna para ordenar. <b>No compartir fuera del equipo.</b></p>
+  <div class="tscroll"><table id="tblLeads"></table></div>
+  <p class="footnote" id="tblCount"></p>
+</div>
+
+<div class="card">
+  <h2>Lectura y advertencias de calidad de dato</h2>
+  <div id="obs"></div>
+</div>
+
+</div>
+<script>
+const LEADS = [{"nombre":"asdfvewatbw","email":"qwecq1123231wcewq@gmail.com","tel":"978645185","tel2":"978645185","mensaje":"Vió teléfono","fecha":"2026-07-15","hora":"18:24","ts":"2026-07-15 18:24","dow":2,"hh":18,"proyecto":"LIRI SUCRE","unidad":"1501","id_aviso":"150325895","distrito":"Pueblo Libre","tipo_prop":"Departamento","precio":423800,"precio_txt":"S/ 423,800","titulo":"Departamento de 67.30 m² de 2 dormitorios en venta en Pueblo Libre, Lima","url":"https://urbania.pe/propiedades/-150325895.html","dni":"","canal":"Vio teléfono","portal":"No especificado","pkey":"qwecq1123231wcewq@gmail.com","repetido":false},{"nombre":"Daniel Vargas Davila","email":"Danielvargasd764@gmail.com","tel":"969294764","tel2":"969294764","mensaje":"Hola, estoy interesado en esta propiedad que he visto en urbania y quisiera que me contacten para recibir más información.","fecha":"2026-07-16","hora":"00:55","ts":"2026-07-16 00:55","dow":3,"hh":0,"proyecto":"DANAUS","unidad":null,"id_aviso":"141656228","distrito":"Surquillo","tipo_prop":"Proyecto vertical","precio":272000,"precio_txt":"S/ 272,000","titulo":"DANAUS - SURQUILLO","url":"https://urbania.pe/propiedades/-141656228.html","dni":"","canal":"Formulario web","portal":"Urbania","pkey":"danielvargasd764@gmail.com","repetido":false},{"nombre":"Raul","email":"rcastilloaset@gmail.com","tel":"981500716","tel2":"","mensaje":"Vió teléfono","fecha":"2026-07-16","hora":"13:36","ts":"2026-07-16 13:36","dow":3,"hh":13,"proyecto":"VISTA BRASIL","unidad":"2302 B","id_aviso":"150421041","distrito":"Magdalena","tipo_prop":"Departamento","precio":750000,"precio_txt":"S/ 750,000","titulo":"Dúplex de 146 m² con 3 habitaciones en venta en Magdalena, Lima","url":"https://urbania.pe/propiedades/-150421041.html","dni":"","canal":"Vio teléfono","portal":"No especificado","pkey":"rcastilloaset@gmail.com","repetido":false},{"nombre":"Rossil","email":"rossil17@hotmail.com","tel":"977570035","tel2":"977570035","mensaje":"¡Hola! Quiero que se comuniquen conmigo por este inmueble en venta que vi en Adondevivir.","fecha":"2026-07-16","hora":"22:51","ts":"2026-07-16 22:51","dow":3,"hh":22,"proyecto":"LOS PINOS III","unidad":"1507","id_aviso":"150325976","distrito":"Lima Cercado","tipo_prop":"Departamento","precio":470000,"precio_txt":"S/ 470,000","titulo":"Dúplex de 81.9 m² de 3 dormitorios en venta en Santa Beatriz, Lima","url":"https://urbania.pe/propiedades/-150325976.html","dni":"43376497","canal":"Formulario web","portal":"Adondevivir","pkey":"rossil17@hotmail.com","repetido":false},{"nombre":"Martha Uriarte","email":"marthauriarteusa@hotmail.com","tel":"996000824","tel2":"996000824","mensaje":"Contactó por Whatsapp","fecha":"2026-07-17","hora":"15:15","ts":"2026-07-17 15:15","dow":4,"hh":15,"proyecto":"DANAUS","unidad":null,"id_aviso":"141656228","distrito":"Surquillo","tipo_prop":"Proyecto vertical","precio":272000,"precio_txt":"S/ 272,000","titulo":"DANAUS - SURQUILLO","url":"https://urbania.pe/propiedades/-141656228.html","dni":"41146488","canal":"WhatsApp","portal":"No especificado","pkey":"marthauriarteusa@hotmail.com","repetido":false},{"nombre":"Javier Abel Marz Alcntara","email":"bel95marz@gmail.com","tel":"947942348","tel2":"947942348","mensaje":"Hola, estoy interesado en esta propiedad que he visto en adondevivir y quisiera que me contacten para recibir más información.","fecha":"2026-07-17","hora":"18:03","ts":"2026-07-17 18:03","dow":4,"hh":18,"proyecto":"DANAUS","unidad":null,"id_aviso":"141656228","distrito":"Surquillo","tipo_prop":"Proyecto vertical","precio":272000,"precio_txt":"S/ 272,000","titulo":"DANAUS - SURQUILLO","url":"https://urbania.pe/propiedades/-141656228.html","dni":"","canal":"Formulario web","portal":"Adondevivir","pkey":"bel95marz@gmail.com","repetido":false},{"nombre":"Dall","email":"dame.anais7@gmail.com","tel":"908952790","tel2":"","mensaje":"COTIZACION | ¡Hola! Quiero que se comuniquen conmigo por este proyecto que vi en  Urbania.","fecha":"2026-07-18","hora":"01:29","ts":"2026-07-18 01:29","dow":5,"hh":1,"proyecto":"DANAUS","unidad":null,"id_aviso":"150098718","distrito":"Surquillo","tipo_prop":"Departamento","precio":301000,"precio_txt":"S/ 301,000","titulo":"Danaus - Surquillo","url":"https://urbania.pe/propiedades/-150098718.html","dni":"77272494","canal":"Cotización","portal":"Urbania","pkey":"dame.anais7@gmail.com","repetido":true},{"nombre":"Dall","email":"dame.anais7@gmail.com","tel":"908952790","tel2":"","mensaje":"Contactó por Whatsapp","fecha":"2026-07-18","hora":"01:35","ts":"2026-07-18 01:35","dow":5,"hh":1,"proyecto":"DANAUS","unidad":null,"id_aviso":"141656228","distrito":"Surquillo","tipo_prop":"Proyecto vertical","precio":272000,"precio_txt":"S/ 272,000","titulo":"DANAUS - SURQUILLO","url":"https://urbania.pe/propiedades/-141656228.html","dni":"77272494","canal":"WhatsApp","portal":"No especificado","pkey":"dame.anais7@gmail.com","repetido":true},{"nombre":"Maryl Legua Loayza","email":"maryleguialoayza@gmail.com","tel":"972806100","tel2":"972806100","mensaje":"Hola, estoy interesado en esta propiedad que he visto en urbania y quisiera que me contacten para recibir más información.","fecha":"2026-07-18","hora":"12:26","ts":"2026-07-18 12:26","dow":5,"hh":12,"proyecto":"DANAUS","unidad":null,"id_aviso":"141656228","distrito":"Surquillo","tipo_prop":"Proyecto vertical","precio":272000,"precio_txt":"S/ 272,000","titulo":"DANAUS - SURQUILLO","url":"https://urbania.pe/propiedades/-141656228.html","dni":"","canal":"Formulario web","portal":"Urbania","pkey":"maryleguialoayza@gmail.com","repetido":false},{"nombre":"KATHERINE VIOLETA ESTRADA PADILLA","email":"katty_estrada_padilla@hotmail.com","tel":"917507908","tel2":"979357641","mensaje":"¡Hola! Quiero que se comuniquen conmigo por este inmueble en venta que vi en Adondevivir.","fecha":"2026-07-18","hora":"21:49","ts":"2026-07-18 21:49","dow":5,"hh":21,"proyecto":"LOS PINOS III","unidad":"1507","id_aviso":"150325976","distrito":"Lima Cercado","tipo_prop":"Departamento","precio":470000,"precio_txt":"S/ 470,000","titulo":"Dúplex de 81.9 m² de 3 dormitorios en venta en Santa Beatriz, Lima","url":"https://urbania.pe/propiedades/-150325976.html","dni":"44755723","canal":"Formulario web","portal":"Adondevivir","pkey":"katty_estrada_padilla@hotmail.com","repetido":true},{"nombre":"KATHERINE VIOLETA ESTRADA PADILLA","email":"katty_estrada_padilla@hotmail.com","tel":"917507908","tel2":"979357641","mensaje":"¡Hola! Quiero que se comuniquen conmigo por este inmueble en venta que vi en Adondevivir.","fecha":"2026-07-18","hora":"21:52","ts":"2026-07-18 21:52","dow":5,"hh":21,"proyecto":"VISTA VERDE","unidad":"2010","id_aviso":"150302211","distrito":"Lima Cercado","tipo_prop":"Departamento","precio":597182,"precio_txt":"S/ 597,182","titulo":"Dúplex de 103.8 m² de 4 ambientes en venta en Santa Beatriz, Lima","url":"https://urbania.pe/propiedades/-150302211.html","dni":"44755723","canal":"Formulario web","portal":"Adondevivir","pkey":"katty_estrada_padilla@hotmail.com","repetido":true},{"nombre":"KATHERINE VIOLETA ESTRADA PADILLA","email":"katty_estrada_padilla@hotmail.com","tel":"917507908","tel2":"979357641","mensaje":"¡Hola! Quiero que se comuniquen conmigo por este inmueble en venta que vi en Adondevivir.","fecha":"2026-07-19","hora":"01:00","ts":"2026-07-19 01:00","dow":6,"hh":1,"proyecto":"VISTA VERDE","unidad":"2011","id_aviso":"150302702","distrito":"Lima Cercado","tipo_prop":"Departamento","precio":597182,"precio_txt":"S/ 597,182","titulo":"Dúplex de 101 m² de 3 dormitorios en venta en Santa Beatriz, Lima","url":"https://urbania.pe/propiedades/-150302702.html","dni":"44755723","canal":"Formulario web","portal":"Adondevivir","pkey":"katty_estrada_padilla@hotmail.com","repetido":true},{"nombre":"wendy","email":"saldivarwendy1@gmail.com","tel":"932559686","tel2":"932559686","mensaje":"Vió teléfono","fecha":"2026-07-19","hora":"01:40","ts":"2026-07-19 01:40","dow":6,"hh":1,"proyecto":"VISTA BRASIL","unidad":"2301 A","id_aviso":"150292873","distrito":"Magdalena","tipo_prop":"Departamento","precio":838000,"precio_txt":"S/ 838,000","titulo":"Dúplex de 166.50 m2 con 4 dormitorios en venta en Magdalena, Lima","url":"https://urbania.pe/propiedades/-150292873.html","dni":"0000000000","canal":"Vio teléfono","portal":"No especificado","pkey":"saldivarwendy1@gmail.com","repetido":false},{"nombre":"ANGELITA","email":"litagallardo.123@gmail.com","tel":"983849867","tel2":"983849867","mensaje":"¡Hola! Quiero que se comuniquen conmigo por este inmueble en venta que vi en Adondevivir.","fecha":"2026-07-19","hora":"21:29","ts":"2026-07-19 21:29","dow":6,"hh":21,"proyecto":"SMART A","unidad":"1003","id_aviso":"150320047","distrito":"Lima Cercado","tipo_prop":"Departamento","precio":506780,"precio_txt":"S/ 506,780","titulo":"Dúplex inteligente de 83.50 m² de 3 dormitorios en venta en Santa Beatriz, Lima","url":"https://urbania.pe/propiedades/-150320047.html","dni":"","canal":"Formulario web","portal":"Adondevivir","pkey":"litagallardo.123@gmail.com","repetido":false},{"nombre":"Carlos Junior Huapaya Espinoza","email":"huapayaespi@gmail.com","tel":"934107330","tel2":"934107330","mensaje":"¡Hola! Quiero que se comuniquen conmigo por este inmueble en venta que vi en Adondevivir.","fecha":"2026-07-20","hora":"03:40","ts":"2026-07-20 03:40","dow":0,"hh":3,"proyecto":"VISTA BRASIL","unidad":"2302 B","id_aviso":"150421041","distrito":"Magdalena","tipo_prop":"Departamento","precio":750000,"precio_txt":"S/ 750,000","titulo":"Dúplex de 146 m² con 3 habitaciones en venta en Magdalena, Lima","url":"https://urbania.pe/propiedades/-150421041.html","dni":"40206233","canal":"Formulario web","portal":"Adondevivir","pkey":"huapayaespi@gmail.com","repetido":false},{"nombre":"Ricardo Dominguez","email":"ricardo.dominguezn@gmail.com","tel":"934629275","tel2":"934629275","mensaje":"Hola, estoy interesado en esta propiedad que he visto en urbania y quisiera que me contacten para recibir más información.","fecha":"2026-07-21","hora":"19:17","ts":"2026-07-21 19:17","dow":1,"hh":19,"proyecto":"DANAUS","unidad":null,"id_aviso":"141656228","distrito":"Surquillo","tipo_prop":"Proyecto vertical","precio":272000,"precio_txt":"S/ 272,000","titulo":"DANAUS - SURQUILLO","url":"https://urbania.pe/propiedades/-141656228.html","dni":"","canal":"Formulario web","portal":"Urbania","pkey":"ricardo.dominguezn@gmail.com","repetido":false},{"nombre":"Felipe","email":"fguevara@grupomg.pe","tel":"51949700760","tel2":"949700760","mensaje":"Vió teléfono","fecha":"2026-07-22","hora":"14:18","ts":"2026-07-22 14:18","dow":2,"hh":14,"proyecto":"SMART A","unidad":"1001","id_aviso":"150314385","distrito":"Lima Cercado","tipo_prop":"Departamento","precio":499880,"precio_txt":"S/ 499,880","titulo":"Dúplex inteligente de 83.35 m² de 3 dormitorios en venta en Santa Beatriz, Lima","url":"https://urbania.pe/propiedades/-150314385.html","dni":"08674388","canal":"Vio teléfono","portal":"No especificado","pkey":"fguevara@grupomg.pe","repetido":false},{"nombre":"celeste","email":"celeste50@gmail.com","tel":"985632587","tel2":"985632587","mensaje":"Vió teléfono","fecha":"2026-07-22","hora":"15:14","ts":"2026-07-22 15:14","dow":2,"hh":15,"proyecto":"VISTA BRASIL","unidad":"2002","id_aviso":"150420151","distrito":"Magdalena","tipo_prop":"Departamento","precio":507200,"precio_txt":"S/ 507,200","titulo":"Depa de 81 m² con 3 habitaciones en venta en Magdalena, Lima","url":"https://urbania.pe/propiedades/-150420151.html","dni":"","canal":"Vio teléfono","portal":"No especificado","pkey":"celeste50@gmail.com","repetido":false},{"nombre":"Miluska","email":"mkproducciones20@gmail.com","tel":"960627865","tel2":"960627865","mensaje":"Contactó por Whatsapp","fecha":"2026-07-23","hora":"02:01","ts":"2026-07-23 02:01","dow":3,"hh":2,"proyecto":"VISTA BRASIL","unidad":"2302 A","id_aviso":"150301937","distrito":"Magdalena","tipo_prop":"Departamento","precio":795000,"precio_txt":"S/ 795,000","titulo":"Dúplex de 151 m2 de 4 dormitorios en venta en Magdalena","url":"https://urbania.pe/propiedades/-150301937.html","dni":"09571751","canal":"WhatsApp","portal":"No especificado","pkey":"mkproducciones20@gmail.com","repetido":false},{"nombre":"Roy","email":"mg.royzevallosabogado@gmail.com","tel":"920477673","tel2":"","mensaje":"Contactó por Whatsapp","fecha":"2026-07-23","hora":"12:49","ts":"2026-07-23 12:49","dow":3,"hh":12,"proyecto":"DANAUS","unidad":null,"id_aviso":"141656228","distrito":"Surquillo","tipo_prop":"Proyecto vertical","precio":272000,"precio_txt":"S/ 272,000","titulo":"DANAUS - SURQUILLO","url":"https://urbania.pe/propiedades/-141656228.html","dni":"43616304","canal":"WhatsApp","portal":"No especificado","pkey":"mg.royzevallosabogado@gmail.com","repetido":false},{"nombre":"Ciara","email":"Cianoblecilla@gmail.com","tel":"958108115","tel2":"958108115","mensaje":"Contactó por Whatsapp","fecha":"2026-07-23","hora":"23:34","ts":"2026-07-23 23:34","dow":3,"hh":23,"proyecto":"DANAUS","unidad":null,"id_aviso":"141656228","distrito":"Surquillo","tipo_prop":"Proyecto vertical","precio":272000,"precio_txt":"S/ 272,000","titulo":"DANAUS - SURQUILLO","url":"https://urbania.pe/propiedades/-141656228.html","dni":"7238998","canal":"WhatsApp","portal":"No especificado","pkey":"cianoblecilla@gmail.com","repetido":false},{"nombre":"Claudia Paola Vidarte Rivera","email":"cvidarte16@hotmail.com","tel":"997689097","tel2":"997689097","mensaje":"Hola, estoy interesado en esta propiedad que he visto en urbania y quisiera que me contacten para recibir más información.","fecha":"2026-07-24","hora":"10:04","ts":"2026-07-24 10:04","dow":4,"hh":10,"proyecto":"DANAUS","unidad":null,"id_aviso":"141656228","distrito":"Surquillo","tipo_prop":"Proyecto vertical","precio":272000,"precio_txt":"S/ 272,000","titulo":"DANAUS - SURQUILLO","url":"https://urbania.pe/propiedades/-141656228.html","dni":"","canal":"Formulario web","portal":"Urbania","pkey":"cvidarte16@hotmail.com","repetido":false},{"nombre":"jose sanchez","email":"sancheztorales@gmail.com","tel":"941581012","tel2":"941581012","mensaje":"COTIZACION | ¡Hola! Quiero que se comuniquen conmigo por este proyecto que vi en  Urbania.","fecha":"2026-07-28","hora":"11:11","ts":"2026-07-28 11:11","dow":1,"hh":11,"proyecto":"DANAUS","unidad":null,"id_aviso":"150077952","distrito":"Surquillo","tipo_prop":"Departamento","precio":278000,"precio_txt":"S/ 278,000","titulo":"Danaus - Surquillo","url":"https://urbania.pe/propiedades/-150077952.html","dni":"06683219","canal":"Cotización","portal":"Urbania","pkey":"sancheztorales@gmail.com","repetido":false},{"nombre":"gian paul","email":"jeanvera053@gmail.com","tel":"938321263","tel2":"938321263","mensaje":"¡Hola! Quiero recibir información de sus inmuebles disponibles. Gracias.","fecha":"2026-07-28","hora":"22:01","ts":"2026-07-28 22:01","dow":1,"hh":22,"proyecto":"Sin identificar","unidad":null,"id_aviso":"","distrito":"Sin dato","tipo_prop":"Sin dato","precio":null,"precio_txt":"Sin dato","titulo":"Sin dato","url":"","dni":"","canal":"Formulario web","portal":"No especificado","pkey":"jeanvera053@gmail.com","repetido":false},{"nombre":"David Lloclla Maldonado","email":"dhlloclla@gmail.com","tel":"932556592","tel2":"932556592","mensaje":"Hola, estoy interesado en esta propiedad que he visto en adondevivir y quisiera que me contacten para recibir más información.","fecha":"2026-07-28","hora":"23:25","ts":"2026-07-28 23:25","dow":1,"hh":23,"proyecto":"DANAUS","unidad":null,"id_aviso":"141656228","distrito":"Surquillo","tipo_prop":"Proyecto vertical","precio":272000,"precio_txt":"S/ 272,000","titulo":"DANAUS - SURQUILLO","url":"https://urbania.pe/propiedades/-141656228.html","dni":"","canal":"Formulario web","portal":"Adondevivir","pkey":"dhlloclla@gmail.com","repetido":false},{"nombre":"enrique","email":"eriverad13@gmail.com","tel":"944606787","tel2":"944606787","mensaje":"¡Hola! Quiero que se comuniquen conmigo por este proyecto Venta que vi en Urbania.","fecha":"2026-07-29","hora":"19:51","ts":"2026-07-29 19:51","dow":2,"hh":19,"proyecto":"DANAUS","unidad":null,"id_aviso":"141656228","distrito":"Surquillo","tipo_prop":"Proyecto vertical","precio":272000,"precio_txt":"S/ 272,000","titulo":"DANAUS - SURQUILLO","url":"https://urbania.pe/propiedades/-141656228.html","dni":"16413129","canal":"Formulario web","portal":"Urbania","pkey":"eriverad13@gmail.com","repetido":true},{"nombre":"enrique","email":"eriverad13@gmail.com","tel":"944606787","tel2":"944606787","mensaje":"COTIZACION | ¡Hola! Quiero que se comuniquen conmigo por este proyecto que vi en  Urbania.","fecha":"2026-07-29","hora":"19:52","ts":"2026-07-29 19:52","dow":2,"hh":19,"proyecto":"DANAUS","unidad":null,"id_aviso":"150098565","distrito":"Surquillo","tipo_prop":"Departamento","precio":280000,"precio_txt":"S/ 280,000","titulo":"Danaus - Surquillo","url":"https://urbania.pe/propiedades/-150098565.html","dni":"16413129","canal":"Cotización","portal":"Urbania","pkey":"eriverad13@gmail.com","repetido":true},{"nombre":"Maria Ayala","email":"m.aya6.96@gmail.com","tel":"980978607","tel2":"998567485","mensaje":"Vió teléfono","fecha":"2026-07-30","hora":"14:50","ts":"2026-07-30 14:50","dow":3,"hh":14,"proyecto":"LOS PINOS III","unidad":"1507","id_aviso":"150325976","distrito":"Lima Cercado","tipo_prop":"Departamento","precio":470000,"precio_txt":"S/ 470,000","titulo":"Dúplex de 81.9 m² de 3 dormitorios en venta en Santa Beatriz, Lima","url":"https://urbania.pe/propiedades/-150325976.html","dni":"","canal":"Vio teléfono","portal":"No especificado","pkey":"m.aya6.96@gmail.com","repetido":false},{"nombre":"Deborah","email":"debiritah1234@gmail.com","tel":"955898532","tel2":"","mensaje":"¡Hola! Quiero que se comuniquen conmigo por este proyecto en venta que vi en Adondevivir.","fecha":"2026-07-31","hora":"00:18","ts":"2026-07-31 00:18","dow":4,"hh":0,"proyecto":"DANAUS","unidad":null,"id_aviso":"150098588","distrito":"Surquillo","tipo_prop":"Departamento","precio":272000,"precio_txt":"S/ 272,000","titulo":"Danaus - Surquillo","url":"https://urbania.pe/propiedades/-150098588.html","dni":"","canal":"Formulario web","portal":"Adondevivir","pkey":"debiritah1234@gmail.com","repetido":false},{"nombre":"Wilvelder","email":"wilvelder.varona@outlook.es","tel":"976304946","tel2":"976304946","mensaje":"Contactó por Whatsapp","fecha":"2026-07-31","hora":"08:26","ts":"2026-07-31 08:26","dow":4,"hh":8,"proyecto":"LOS PINOS III","unidad":"1507","id_aviso":"150325976","distrito":"Lima Cercado","tipo_prop":"Departamento","precio":470000,"precio_txt":"S/ 470,000","titulo":"Dúplex de 81.9 m² de 3 dormitorios en venta en Santa Beatriz, Lima","url":"https://urbania.pe/propiedades/-150325976.html","dni":"","canal":"WhatsApp","portal":"No especificado","pkey":"wilvelder.varona@outlook.es","repetido":false},{"nombre":"Ruben Zevallos","email":"rzevallosseiya@gmail.com","tel":"999999555","tel2":"999999555","mensaje":"Hola, estoy interesado en esta propiedad que he visto en adondevivir y quisiera que me contacten para recibir más información.","fecha":"2026-08-02","hora":"13:16","ts":"2026-08-02 13:16","dow":6,"hh":13,"proyecto":"DANAUS","unidad":null,"id_aviso":"141656228","distrito":"Surquillo","tipo_prop":"Proyecto vertical","precio":272000,"precio_txt":"S/ 272,000","titulo":"DANAUS - SURQUILLO","url":"https://urbania.pe/propiedades/-141656228.html","dni":"","canal":"Formulario web","portal":"Adondevivir","pkey":"rzevallosseiya@gmail.com","repetido":false},{"nombre":"Genaro Franco","email":"genarofranco202020@gmail.com","tel":"992324546","tel2":"992324546","mensaje":"Contactó por Whatsapp","fecha":"2026-08-02","hora":"23:27","ts":"2026-08-02 23:27","dow":6,"hh":23,"proyecto":"DANAUS","unidad":null,"id_aviso":"141656228","distrito":"Surquillo","tipo_prop":"Proyecto vertical","precio":272000,"precio_txt":"S/ 272,000","titulo":"DANAUS - SURQUILLO","url":"https://urbania.pe/propiedades/-141656228.html","dni":"40788091","canal":"WhatsApp","portal":"No especificado","pkey":"genarofranco202020@gmail.com","repetido":false},{"nombre":"Max Alarco","email":"alarcomax@gmail.com","tel":"979341021","tel2":"979341021","mensaje":"Contactó por Whatsapp","fecha":"2026-08-03","hora":"19:06","ts":"2026-08-03 19:06","dow":0,"hh":19,"proyecto":"FORESTA","unidad":"401","id_aviso":"150303077","distrito":"San Borja","tipo_prop":"Departamento","precio":1233475,"precio_txt":"S/ 1,233,475","titulo":"Dúplex de 182.43 m² de 4 dormitorios en venta en San Borja, Lima","url":"https://urbania.pe/propiedades/-150303077.html","dni":"","canal":"WhatsApp","portal":"No especificado","pkey":"alarcomax@gmail.com","repetido":false},{"nombre":"Stefany VE","email":"stefanyvelasque2001@gmail.com","tel":"918994299","tel2":"918994299","mensaje":"Hola, estoy interesado en esta propiedad que he visto en urbania y quisiera que me contacten para recibir más información.","fecha":"2026-08-03","hora":"21:20","ts":"2026-08-03 21:20","dow":0,"hh":21,"proyecto":"DANAUS","unidad":null,"id_aviso":"141656228","distrito":"Surquillo","tipo_prop":"Proyecto vertical","precio":272000,"precio_txt":"S/ 272,000","titulo":"DANAUS - SURQUILLO","url":"https://urbania.pe/propiedades/-141656228.html","dni":"","canal":"Formulario web","portal":"Urbania","pkey":"stefanyvelasque2001@gmail.com","repetido":false},{"nombre":"Francisco Rodriguez","email":"frodriguez2391@gmail.com","tel":"907257174","tel2":"907257174","mensaje":"Hola, estoy interesado en esta propiedad que he visto en adondevivir y quisiera que me contacten para recibir más información.","fecha":"2026-08-04","hora":"13:43","ts":"2026-08-04 13:43","dow":1,"hh":13,"proyecto":"DANAUS","unidad":null,"id_aviso":"141656228","distrito":"Surquillo","tipo_prop":"Proyecto vertical","precio":272000,"precio_txt":"S/ 272,000","titulo":"DANAUS - SURQUILLO","url":"https://urbania.pe/propiedades/-141656228.html","dni":"","canal":"Formulario web","portal":"Adondevivir","pkey":"frodriguez2391@gmail.com","repetido":false},{"nombre":"JUAN JOSE","email":"jmallquia@hotmail.com","tel":"996941705","tel2":"","mensaje":"Vió teléfono","fecha":"2026-08-04","hora":"14:19","ts":"2026-08-04 14:19","dow":1,"hh":14,"proyecto":"VISTA VERDE","unidad":"2011","id_aviso":"150302702","distrito":"Lima Cercado","tipo_prop":"Departamento","precio":597182,"precio_txt":"S/ 597,182","titulo":"Dúplex de 101 m² de 3 dormitorios en venta en Santa Beatriz, Lima","url":"https://urbania.pe/propiedades/-150302702.html","dni":"","canal":"Vio teléfono","portal":"No especificado","pkey":"jmallquia@hotmail.com","repetido":false},{"nombre":"Marissa Rebaza","email":"marissarebaza@hotmail.com","tel":"950424019","tel2":"950424019","mensaje":"Hola, estoy interesado en esta propiedad que he visto en adondevivir y quisiera que me contacten para recibir más información.","fecha":"2026-08-04","hora":"19:42","ts":"2026-08-04 19:42","dow":1,"hh":19,"proyecto":"DANAUS","unidad":null,"id_aviso":"141656228","distrito":"Surquillo","tipo_prop":"Proyecto vertical","precio":272000,"precio_txt":"S/ 272,000","titulo":"DANAUS - SURQUILLO","url":"https://urbania.pe/propiedades/-141656228.html","dni":"","canal":"Formulario web","portal":"Adondevivir","pkey":"marissarebaza@hotmail.com","repetido":false},{"nombre":"Maria","email":"xxx.avv@gmail.coms","tel":"954888504","tel2":"954888504","mensaje":"Vió teléfono","fecha":"2026-08-05","hora":"15:56","ts":"2026-08-05 15:56","dow":2,"hh":15,"proyecto":"VISTA BRASIL","unidad":"2301 A","id_aviso":"150292873","distrito":"Magdalena","tipo_prop":"Departamento","precio":838000,"precio_txt":"S/ 838,000","titulo":"Dúplex de 166.50 m2 con 4 dormitorios en venta en Magdalena, Lima","url":"https://urbania.pe/propiedades/-150292873.html","dni":"78451236","canal":"Vio teléfono","portal":"No especificado","pkey":"xxx.avv@gmail.coms","repetido":false},{"nombre":"Erika","email":"erikazubiate2911@gmail.com","tel":"989009390","tel2":"989009390","mensaje":"Contactó por Whatsapp","fecha":"2026-08-07","hora":"10:59","ts":"2026-08-07 10:59","dow":4,"hh":10,"proyecto":"VISTA BRASIL","unidad":"2301 A","id_aviso":"150292873","distrito":"Magdalena","tipo_prop":"Departamento","precio":838000,"precio_txt":"S/ 838,000","titulo":"Dúplex de 166.50 m2 con 4 dormitorios en venta en Magdalena, Lima","url":"https://urbania.pe/propiedades/-150292873.html","dni":"40167196","canal":"WhatsApp","portal":"No especificado","pkey":"erikazubiate2911@gmail.com","repetido":false},{"nombre":"Genessis Daniela Mercado Sallo","email":"genessismercado94@gmail.com","tel":"946257425","tel2":"946257425","mensaje":"Contactó por Whatsapp","fecha":"2026-08-07","hora":"21:34","ts":"2026-08-07 21:34","dow":4,"hh":21,"proyecto":"DANAUS","unidad":null,"id_aviso":"141656228","distrito":"Surquillo","tipo_prop":"Proyecto vertical","precio":272000,"precio_txt":"S/ 272,000","titulo":"DANAUS - SURQUILLO","url":"https://urbania.pe/propiedades/-141656228.html","dni":"","canal":"WhatsApp","portal":"No especificado","pkey":"genessismercado94@gmail.com","repetido":false},{"nombre":"Kendy Mamani Aliaga","email":"kenvis92@gmail.com","tel":"988751780","tel2":"988751780","mensaje":"Pregunta: ¿Sigue disponible?","fecha":"2026-08-08","hora":"01:06","ts":"2026-08-08 01:06","dow":5,"hh":1,"proyecto":"VISTA BRASIL","unidad":"2302 A","id_aviso":"150301937","distrito":"Magdalena","tipo_prop":"Departamento","precio":795000,"precio_txt":"S/ 795,000","titulo":"Dúplex de 151 m2 de 4 dormitorios en venta en Magdalena","url":"https://urbania.pe/propiedades/-150301937.html","dni":"","canal":"Pregunta","portal":"No especificado","pkey":"kenvis92@gmail.com","repetido":true},{"nombre":"Kendy Mamani Aliaga","email":"kenvis92@gmail.com","tel":"988751780","tel2":"988751780","mensaje":"Contactó por Whatsapp","fecha":"2026-08-08","hora":"01:07","ts":"2026-08-08 01:07","dow":5,"hh":1,"proyecto":"VISTA BRASIL","unidad":"2302 B","id_aviso":"150421041","distrito":"Magdalena","tipo_prop":"Departamento","precio":750000,"precio_txt":"S/ 750,000","titulo":"Dúplex de 146 m² con 3 habitaciones en venta en Magdalena, Lima","url":"https://urbania.pe/propiedades/-150421041.html","dni":"","canal":"WhatsApp","portal":"No especificado","pkey":"kenvis92@gmail.com","repetido":true},{"nombre":"Maria Elena","email":"Maloza90@hotmail.com","tel":"991246861","tel2":"991246861","mensaje":"Contactó por Whatsapp","fecha":"2026-08-08","hora":"16:05","ts":"2026-08-08 16:05","dow":5,"hh":16,"proyecto":"VISTA BRASIL","unidad":"2302 A","id_aviso":"150301937","distrito":"Magdalena","tipo_prop":"Departamento","precio":795000,"precio_txt":"S/ 795,000","titulo":"Dúplex de 151 m2 de 4 dormitorios en venta en Magdalena","url":"https://urbania.pe/propiedades/-150301937.html","dni":"08125796","canal":"WhatsApp","portal":"No especificado","pkey":"maloza90@hotmail.com","repetido":false},{"nombre":"Dextre Rojas Santy","email":"Dextrers73@gmail.com","tel":"992540759","tel2":"992540759","mensaje":"Hola, estoy interesado en esta propiedad que he visto en adondevivir y quisiera que me contacten para recibir más información.","fecha":"2026-08-09","hora":"10:22","ts":"2026-08-09 10:22","dow":6,"hh":10,"proyecto":"DANAUS","unidad":null,"id_aviso":"141656228","distrito":"Surquillo","tipo_prop":"Proyecto vertical","precio":272000,"precio_txt":"S/ 272,000","titulo":"DANAUS - SURQUILLO","url":"https://urbania.pe/propiedades/-141656228.html","dni":"","canal":"Formulario web","portal":"Adondevivir","pkey":"dextrers73@gmail.com","repetido":false},{"nombre":"CARLOS ROBERTO GUTIERREZ RODRIGUEZ","email":"carlosrob2206@gmail.com","tel":"992232223","tel2":"","mensaje":"Contactó por Whatsapp","fecha":"2026-08-09","hora":"14:18","ts":"2026-08-09 14:18","dow":6,"hh":14,"proyecto":"VISTA BRASIL","unidad":"2302 B","id_aviso":"150421041","distrito":"Magdalena","tipo_prop":"Departamento","precio":750000,"precio_txt":"S/ 750,000","titulo":"Dúplex de 146 m² con 3 habitaciones en venta en Magdalena, Lima","url":"https://urbania.pe/propiedades/-150421041.html","dni":"72084416","canal":"WhatsApp","portal":"No especificado","pkey":"carlosrob2206@gmail.com","repetido":false},{"nombre":"alexandra","email":"alexandradelacruz229@gmail.com","tel":"984465643","tel2":"","mensaje":"Contactó por Whatsapp","fecha":"2026-08-09","hora":"14:59","ts":"2026-08-09 14:59","dow":6,"hh":14,"proyecto":"DANAUS","unidad":null,"id_aviso":"141656228","distrito":"Surquillo","tipo_prop":"Proyecto vertical","precio":272000,"precio_txt":"S/ 272,000","titulo":"DANAUS - SURQUILLO","url":"https://urbania.pe/propiedades/-141656228.html","dni":"","canal":"WhatsApp","portal":"No especificado","pkey":"alexandradelacruz229@gmail.com","repetido":false},{"nombre":"Celso","email":"celso.vilca2011@gmail.com","tel":"957292033","tel2":"957292033","mensaje":"¡Hola! Quiero que se comuniquen conmigo por este proyecto en venta que vi en Urbania.","fecha":"2026-08-10","hora":"01:52","ts":"2026-08-10 01:52","dow":0,"hh":1,"proyecto":"DANAUS","unidad":null,"id_aviso":"141656228","distrito":"Surquillo","tipo_prop":"Proyecto vertical","precio":272000,"precio_txt":"S/ 272,000","titulo":"DANAUS - SURQUILLO","url":"https://urbania.pe/propiedades/-141656228.html","dni":"","canal":"Formulario web","portal":"Urbania","pkey":"celso.vilca2011@gmail.com","repetido":false},{"nombre":"NUOVA","email":"nuovainmobiliariaperu@gmail.com","tel":"987708347","tel2":"936688804","mensaje":"Vió teléfono","fecha":"2026-08-10","hora":"14:34","ts":"2026-08-10 14:34","dow":0,"hh":14,"proyecto":"DANAUS","unidad":null,"id_aviso":"141656228","distrito":"Surquillo","tipo_prop":"Proyecto vertical","precio":272000,"precio_txt":"S/ 272,000","titulo":"DANAUS - SURQUILLO","url":"https://urbania.pe/propiedades/-141656228.html","dni":"73353054","canal":"Vio teléfono","portal":"No especificado","pkey":"nuovainmobiliariaperu@gmail.com","repetido":true},{"nombre":"NUOVA","email":"nuovainmobiliariaperu@gmail.com","tel":"936688804","tel2":"936688804","mensaje":"Vió teléfono","fecha":"2026-08-10","hora":"14:34","ts":"2026-08-10 14:34","dow":0,"hh":14,"proyecto":"Sin identificar","unidad":null,"id_aviso":"","distrito":"Sin dato","tipo_prop":"Sin dato","precio":null,"precio_txt":"Sin dato","titulo":"Sin dato","url":"","dni":"73353054","canal":"Vio teléfono","portal":"No especificado","pkey":"nuovainmobiliariaperu@gmail.com","repetido":true},{"nombre":"Maria Ayala","email":"m.ayala196@gmail.com","tel":"980978604","tel2":"980978604","mensaje":"Vió teléfono","fecha":"2026-08-11","hora":"00:23","ts":"2026-08-11 00:23","dow":1,"hh":0,"proyecto":"SMART A","unidad":"902","id_aviso":"150320230","distrito":"Lima Cercado","tipo_prop":"Departamento","precio":472600,"precio_txt":"S/ 472,600","titulo":"Depa inteligente de 73 m² de 2 dormitorios en venta en Santa Beatriz, Lima","url":"https://urbania.pe/propiedades/-150320230.html","dni":"78969696","canal":"Vio teléfono","portal":"No especificado","pkey":"m.ayala196@gmail.com","repetido":false},{"nombre":"Alvaro","email":"alvaro.lupu@gmail.com","tel":"934120915","tel2":"991558046","mensaje":"Vió teléfono","fecha":"2026-08-11","hora":"10:49","ts":"2026-08-11 10:49","dow":1,"hh":10,"proyecto":"VISTA BRASIL","unidad":"2002","id_aviso":"150420151","distrito":"Magdalena","tipo_prop":"Departamento","precio":507200,"precio_txt":"S/ 507,200","titulo":"Depa de 81 m² con 3 habitaciones en venta en Magdalena, Lima","url":"https://urbania.pe/propiedades/-150420151.html","dni":"","canal":"Vio teléfono","portal":"No especificado","pkey":"alvaro.lupu@gmail.com","repetido":false},{"nombre":"Lima","email":"gianinasalas@gmail.com","tel":"51966888551","tel2":"966888551","mensaje":"Vió teléfono","fecha":"2026-08-11","hora":"16:56","ts":"2026-08-11 16:56","dow":1,"hh":16,"proyecto":"FORESTA","unidad":"401","id_aviso":"150303077","distrito":"San Borja","tipo_prop":"Departamento","precio":1233475,"precio_txt":"S/ 1,233,475","titulo":"Dúplex de 182.43 m² de 4 dormitorios en venta en San Borja, Lima","url":"https://urbania.pe/propiedades/-150303077.html","dni":"10425951446","canal":"Vio teléfono","portal":"No especificado","pkey":"gianinasalas@gmail.com","repetido":false},{"nombre":"tony","email":"flazo_2003@gmail.com","tel":"948289400","tel2":"983320755","mensaje":"Vió teléfono","fecha":"2026-08-13","hora":"10:14","ts":"2026-08-13 10:14","dow":3,"hh":10,"proyecto":"VISTA BRASIL","unidad":"2301 A","id_aviso":"150292873","distrito":"Magdalena","tipo_prop":"Departamento","precio":838000,"precio_txt":"S/ 838,000","titulo":"Dúplex de 166.50 m2 con 4 dormitorios en venta en Magdalena, Lima","url":"https://urbania.pe/propiedades/-150292873.html","dni":"","canal":"Vio teléfono","portal":"No especificado","pkey":"flazo_2003@gmail.com","repetido":false},{"nombre":"Miguel Hori","email":"mighori@outlook.com","tel":"997507026","tel2":"997507026","mensaje":"¡Hola! Quiero que se comuniquen conmigo por este inmueble en venta que vi en Urbania.","fecha":"2026-08-19","hora":"22:30","ts":"2026-08-19 22:30","dow":2,"hh":22,"proyecto":"FORESTA","unidad":"401","id_aviso":"150303077","distrito":"San Borja","tipo_prop":"Departamento","precio":1233475,"precio_txt":"S/ 1,233,475","titulo":"Dúplex de 182.43 m² de 4 dormitorios en venta en San Borja, Lima","url":"https://urbania.pe/propiedades/-150303077.html","dni":"","canal":"Formulario web","portal":"Urbania","pkey":"mighori@outlook.com","repetido":false}];
+const NOMBRE_MES = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Set','Oct','Nov','Dic'];
+const DOWS = ['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'];
+const D0 = '2026-07-15', D1 = '2026-08-19';
+const PROY_ORDEN = [...new Set(LEADS.map(l=>l.proyecto))]
+  .sort((a,b)=> LEADS.filter(l=>l.proyecto===b).length - LEADS.filter(l=>l.proyecto===a).length);
+const CANALES = ['Formulario web','Vio teléfono','WhatsApp','Cotización','Pregunta'];
+const CANAL_COLOR = {'Formulario web':'var(--series-1)','Vio teléfono':'var(--series-2)','WhatsApp':'var(--series-3)','Cotización':'var(--series-4)','Pregunta':'var(--series-5)'};
+
+/* ---------- utilidades ---------- */
+const pad=n=>String(n).padStart(2,'0');
+function toDate(s){const[a,b,c]=s.split('-').map(Number);return new Date(a,b-1,c);}
+function iso(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());}
+function fmtCorto(s){const d=toDate(s);return d.getDate()+' '+NOMBRE_MES[d.getMonth()];}
+function fmtLargo(s){const d=toDate(s);return DOWS[(d.getDay()+6)%7]+' '+d.getDate()+' '+NOMBRE_MES[d.getMonth()];}
+function lunes(s){const d=toDate(s);const off=(d.getDay()+6)%7;d.setDate(d.getDate()-off);return iso(d);}
+function addDays(s,n){const d=toDate(s);d.setDate(d.getDate()+n);return iso(d);}
+function rangoDias(a,b){const out=[];let c=a;while(c<=b){out.push(c);c=addDays(c,1);}return out;}
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
+function nfmt(n){return n.toLocaleString('es-PE');}
+const SVGNS='http://www.w3.org/2000/svg';
+function el(t,a,p){const e=document.createElementNS(SVGNS,t);for(const k in(a||{}))e.setAttribute(k,a[k]);if(p)p.appendChild(e);return e;}
+function svgRoot(host,w,h){host.innerHTML='';const s=el('svg',{viewBox:`0 0 ${w} ${h}`,role:'img'});host.appendChild(s);return s;}
+/* barra con extremo redondeado 4px anclado a la base */
+function barPath(x,y,w,h,r,dir){
+  r=Math.min(r,w/2,h);
+  if(h<=0.4) return '';
+  if(dir==='up')   return `M${x},${y+h}L${x},${y+r}Q${x},${y} ${x+r},${y}L${x+w-r},${y}Q${x+w},${y} ${x+w},${y+r}L${x+w},${y+h}Z`;
+  return `M${x},${y}L${x+w-r},${y}Q${x+w},${y} ${x+w},${y+r}L${x+w},${y+h-r}Q${x+w},${y+h} ${x+w-r},${y+h}L${x},${y+h}Z`;
+}
+/* tooltip */
+const TIP=document.getElementById('tip');
+function showTip(evt,html){TIP.innerHTML=html;TIP.style.opacity=1;moveTip(evt);}
+function moveTip(evt){
+  const r=TIP.getBoundingClientRect();
+  let x=evt.clientX+14, y=evt.clientY+14;
+  if(x+r.width>innerWidth-10) x=evt.clientX-r.width-14;
+  if(y+r.height>innerHeight-10) y=evt.clientY-r.height-14;
+  TIP.style.left=x+'px';TIP.style.top=y+'px';
+}
+function hideTip(){TIP.style.opacity=0;}
+function hoverable(node,html){
+  node.addEventListener('mouseenter',e=>showTip(e,html));
+  node.addEventListener('mousemove',moveTip);
+  node.addEventListener('mouseleave',hideTip);
+}
+
+/* ---------- estado de filtros ---------- */
+const state={proy:new Set(),canal:new Set(),rango:'todo',busca:''};
+function desde(){
+  if(state.rango==='todo')return D0;
+  const n=parseInt(state.rango,10);
+  const d=addDays(D1,-(n-1));
+  return d<D0?D0:d;
+}
+function filtrar(){
+  const dmin=desde();
+  const q=state.busca.trim().toLowerCase();
+  return LEADS.filter(l=>{
+    if(l.fecha<dmin) return false;
+    if(state.proy.size && !state.proy.has(l.proyecto)) return false;
+    if(state.canal.size && !state.canal.has(l.canal)) return false;
+    if(q){
+      const hay=(l.nombre+' '+l.email+' '+l.tel+' '+l.tel2+' '+l.proyecto+' '+(l.unidad||'')+' '+l.mensaje+' '+l.distrito).toLowerCase();
+      if(!hay.includes(q)) return false;
+    }
+    return true;
+  });
+}
+function unicos(rs){return new Set(rs.map(r=>r.pkey)).size;}
+
+/* ---------- controles ---------- */
+function chip(txt,n,on,cb){
+  const b=document.createElement('button');
+  b.className='chip';b.type='button';b.setAttribute('aria-pressed',on?'true':'false');
+  b.innerHTML=esc(txt)+(n!=null?` <span class="n">${n}</span>`:'');
+  b.onclick=()=>{cb();render();};
+  return b;
+}
+function pintarFiltros(){
+  const fp=document.getElementById('fProy');fp.innerHTML='';
+  fp.appendChild(chip('Todos',LEADS.length,state.proy.size===0,()=>state.proy.clear()));
+  PROY_ORDEN.forEach(p=>fp.appendChild(chip(p,LEADS.filter(l=>l.proyecto===p).length,state.proy.has(p),
+    ()=>{state.proy.has(p)?state.proy.delete(p):state.proy.add(p);})));
+  const fr=document.getElementById('fRango');fr.innerHTML='';
+  [['todo','Todo (36 d)'],['30','Últimos 30 d'],['14','Últimos 14 d'],['7','Últimos 7 d']]
+    .forEach(([k,t])=>fr.appendChild(chip(t,null,state.rango===k,()=>state.rango=k)));
+  const fc=document.getElementById('fCanal');fc.innerHTML='';
+  fc.appendChild(chip('Todos',null,state.canal.size===0,()=>state.canal.clear()));
+  CANALES.forEach(c=>{
+    const n=LEADS.filter(l=>l.canal===c).length; if(!n)return;
+    fc.appendChild(chip(c,n,state.canal.has(c),()=>{state.canal.has(c)?state.canal.delete(c):state.canal.add(c);}));
+  });
+}
+document.getElementById('fBusca').addEventListener('input',e=>{state.busca=e.target.value;render();});
+
+/* ---------- KPIs ---------- */
+function pintarKpis(rs){
+  const dmin=desde(), dias=rangoDias(dmin,D1);
+  const porDia={};rs.forEach(r=>porDia[r.fecha]=(porDia[r.fecha]||0)+1);
+  let pico=['—',0];dias.forEach(d=>{if((porDia[d]||0)>pico[1])pico=[d,porDia[d]||0];});
+  const activos=dias.filter(d=>porDia[d]).length;
+  const proys=new Set(rs.map(r=>r.proyecto)).size - (rs.some(r=>r.proyecto==='Sin identificar')?1:0);
+  const nPers=new Set(rs.filter(r=>r.repetido).map(r=>r.pkey)).size;
+  const rep=rs.length-unicos(rs);
+  const prom=dias.length?rs.length/dias.length:0;
+  const k=[
+    ['Consultas',nfmt(rs.length),`en ${dias.length} días`],
+    ['Personas únicas',nfmt(unicos(rs)),rep?`${rep} consultas duplicadas · ${nPers} personas repitieron`:'sin repeticiones'],
+    ['Promedio diario',prom.toFixed(1),`${activos} de ${dias.length} días con actividad`],
+    ['Proyectos con interés',nfmt(proys),`de 19 en portafolio`+(rs.some(r=>r.proyecto==='Sin identificar')?' · +2 sin identificar':'')],
+    ['Día pico',pico[1]?nfmt(pico[1]):'—',pico[1]?fmtLargo(pico[0]):'sin datos'],
+  ];
+  document.getElementById('kpis').innerHTML=k.map(([a,b,c])=>
+    `<div class="kpi"><div class="k">${esc(a)}</div><div class="v">${esc(b)}</div><div class="d">${esc(c)}</div></div>`).join('');
+}
+
+/* ---------- gráfico: consultas por día ---------- */
+function chartDia(rs){
+  const host=document.getElementById('chDia');
+  const dmin=desde(), dias=rangoDias(dmin,D1);
+  const porDia={};rs.forEach(r=>{(porDia[r.fecha]=porDia[r.fecha]||[]).push(r);});
+  const W=1160,H=300,ML=34,MR=14,MT=16,MB=42;
+  const iw=W-ML-MR, ih=H-MT-MB;
+  const max=Math.max(3,...dias.map(d=>(porDia[d]||[]).length));
+  const step=iw/dias.length, bw=Math.max(4,Math.min(26,step-3));
+  const y=v=>MT+ih-(v/max)*ih;
+  const s=svgRoot(host,W,H);
+  s.setAttribute('aria-label','Consultas por día');
+  const ticks=[];for(let i=0;i<=max;i+= (max>8?Math.ceil(max/4):1))ticks.push(i);
+  if(ticks[ticks.length-1]!==max)ticks.push(max);
+  ticks.forEach(t=>{
+    el('line',{x1:ML,x2:W-MR,y1:y(t),y2:y(t),class:t===0?'baseline':'gridline'},s);
+    el('text',{x:ML-8,y:y(t)+4,'text-anchor':'end',class:'tick'},s).textContent=t;
+  });
+  // promedio móvil 7d
+  const serie=dias.map(d=>(porDia[d]||[]).length);
+  if(dias.length>=7){
+    let pts=[];
+    for(let i=0;i<serie.length;i++){
+      const a=Math.max(0,i-6);const win=serie.slice(a,i+1);
+      const m=win.reduce((x,y2)=>x+y2,0)/win.length;
+      pts.push([ML+step*i+step/2, y(m)]);
+    }
+    el('path',{d:'M'+pts.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join('L'),
+      fill:'none',stroke:'var(--series-2)','stroke-width':2,'stroke-linecap':'round','stroke-linejoin':'round'},s);
+  }
+  dias.forEach((d,i)=>{
+    const list=porDia[d]||[], v=list.length;
+    const x=ML+step*i+(step-bw)/2;
+    if(v>0){
+      const p=el('path',{d:barPath(x,y(v),bw,MT+ih-y(v),4,'up'),fill:'var(--series-1)',class:'bar'},s);
+      el('text',{x:x+bw/2,y:y(v)-6,'text-anchor':'middle',class:'vlabel'},s).textContent=v;
+    }
+    const hit=el('rect',{x:ML+step*i,y:MT,width:step,height:ih,class:'hitrect'},s);
+    const byP={};list.forEach(r=>byP[r.proyecto]=(byP[r.proyecto]||0)+1);
+    const detalle=Object.entries(byP).sort((a,b)=>b[1]-a[1])
+      .map(([k,n])=>`<div class="row"><span>${esc(k)}</span><span>${n}</span></div>`).join('');
+    hoverable(hit,`<b>${fmtLargo(d)}</b><div class="row"><span>Consultas</span><span>${v}</span></div>${detalle}`);
+    if(dias.length<=40 || i%3===0){
+      const lb=el('text',{x:ML+step*i+step/2,y:H-MB+18,'text-anchor':'middle',class:'tick'},s);
+      lb.textContent=toDate(d).getDate();
+      if(toDate(d).getDate()===1||i===0){
+        el('text',{x:ML+step*i+step/2,y:H-MB+32,'text-anchor':'middle',class:'tick'},s)
+          .textContent=NOMBRE_MES[toDate(d).getMonth()];
+      }
+    }
+  });
+}
+
+/* ---------- gráfico: semanas ---------- */
+function chartSem(rs){
+  const host=document.getElementById('chSem');
+  const dmin=desde();
+  const semanas=[...new Set(rangoDias(dmin,D1).map(lunes))].sort();
+  const cnt={};rs.forEach(r=>{const w=lunes(r.fecha);cnt[w]=(cnt[w]||0)+1;});
+  const W=560,H=250,ML=30,MR=12,MT=16,MB=44,iw=W-ML-MR,ih=H-MT-MB;
+  const max=Math.max(3,...semanas.map(w=>cnt[w]||0));
+  const step=iw/semanas.length,bw=Math.min(56,step-14);
+  const y=v=>MT+ih-(v/max)*ih;
+  const s=svgRoot(host,W,H);
+  for(let t=0;t<=max;t+=Math.max(1,Math.ceil(max/4))){
+    el('line',{x1:ML,x2:W-MR,y1:y(t),y2:y(t),class:t===0?'baseline':'gridline'},s);
+    el('text',{x:ML-7,y:y(t)+4,'text-anchor':'end',class:'tick'},s).textContent=t;
+  }
+  semanas.forEach((w,i)=>{
+    const v=cnt[w]||0,x=ML+step*i+(step-bw)/2;
+    const parcial = (w<D0)||(addDays(w,6)>D1);
+    if(v>0){
+      el('path',{d:barPath(x,y(v),bw,MT+ih-y(v),4,'up'),fill:'var(--seq-500)',
+        opacity:parcial?0.55:1},s);
+      el('text',{x:x+bw/2,y:y(v)-6,'text-anchor':'middle',class:'vlabel'},s).textContent=v;
+    }
+    const hit=el('rect',{x:ML+step*i,y:MT,width:step,height:ih,class:'hitrect'},s);
+    hoverable(hit,`<b>${fmtCorto(w<D0?D0:w)} – ${fmtCorto(addDays(w,6)>D1?D1:addDays(w,6))}</b>
+      <div class="row"><span>Consultas</span><span>${v}</span></div>${parcial?'<div class="row"><span>Semana incompleta</span><span></span></div>':''}`);
+    const t1=el('text',{x:ML+step*i+step/2,y:H-MB+18,'text-anchor':'middle',class:'tick'},s);
+    t1.textContent=fmtCorto(w);
+    if(parcial) el('text',{x:ML+step*i+step/2,y:H-MB+32,'text-anchor':'middle',class:'tick'},s).textContent='parcial';
+  });
+}
+
+/* ---------- gráfico: día de semana ---------- */
+function chartDow(rs){
+  const host=document.getElementById('chDow');
+  const cnt=[0,0,0,0,0,0,0];rs.forEach(r=>cnt[r.dow]++);
+  const W=560,H=250,ML=30,MR=12,MT=16,MB=44,iw=W-ML-MR,ih=H-MT-MB;
+  const max=Math.max(3,...cnt);const step=iw/7,bw=Math.min(52,step-14);
+  const y=v=>MT+ih-(v/max)*ih;const s=svgRoot(host,W,H);
+  for(let t=0;t<=max;t+=Math.max(1,Math.ceil(max/4))){
+    el('line',{x1:ML,x2:W-MR,y1:y(t),y2:y(t),class:t===0?'baseline':'gridline'},s);
+    el('text',{x:ML-7,y:y(t)+4,'text-anchor':'end',class:'tick'},s).textContent=t;
+  }
+  cnt.forEach((v,i)=>{
+    const x=ML+step*i+(step-bw)/2;
+    if(v>0){
+      el('path',{d:barPath(x,y(v),bw,MT+ih-y(v),4,'up'),fill:'var(--seq-500)'},s);
+      el('text',{x:x+bw/2,y:y(v)-6,'text-anchor':'middle',class:'vlabel'},s).textContent=v;
+    }
+    const hit=el('rect',{x:ML+step*i,y:MT,width:step,height:ih,class:'hitrect'},s);
+    const pct=rs.length?(v/rs.length*100).toFixed(0):0;
+    hoverable(hit,`<b>${DOWS[i]}</b><div class="row"><span>Consultas</span><span>${v}</span></div><div class="row"><span>Del total</span><span>${pct}%</span></div>`);
+    el('text',{x:ML+step*i+step/2,y:H-MB+18,'text-anchor':'middle',class:'tick'},s).textContent=DOWS[i];
+  });
+}
+
+/* ---------- gráfico: proyectos ---------- */
+function chartProy(rs){
+  const host=document.getElementById('chProy');
+  const g={};rs.forEach(r=>{(g[r.proyecto]=g[r.proyecto]||[]).push(r);});
+  const arr=Object.entries(g).map(([k,v])=>({p:k,n:v.length,u:new Set(v.map(x=>x.pkey)).size,rows:v}))
+    .sort((a,b)=>b.n-a.n);
+  if(!arr.length){host.innerHTML='<div class="empty">Sin datos para este filtro.</div>';return;}
+  const rowH=44,W=1160,ML=150,MR=64,MT=8,MB=8;
+  const H=MT+MB+arr.length*rowH, iw=W-ML-MR;
+  const max=Math.max(...arr.map(a=>a.n));
+  const s=svgRoot(host,W,H);
+  arr.forEach((a,i)=>{
+    const yc=MT+i*rowH;
+    el('text',{x:ML-12,y:yc+21,'text-anchor':'end',class:'clabel'},s).textContent=a.p;
+    const wTot=(a.n/max)*iw, wU=(a.u/max)*iw;
+    el('path',{d:barPath(ML,yc+7,Math.max(wTot,1),14,4,'right'),fill:'var(--seq-500)'},s);
+    el('path',{d:barPath(ML,yc+23,Math.max(wU,1),9,4,'right'),fill:'var(--seq-200)'},s);
+    el('text',{x:ML+wTot+9,y:yc+19,class:'vlabel'},s).textContent=a.n;
+    el('text',{x:ML+wU+9,y:yc+32,class:'tick'},s).textContent=a.u;
+    const dist=[...new Set(a.rows.map(r=>r.distrito))].join(', ');
+    const pr=a.rows.map(r=>r.precio).filter(Boolean);
+    const avg=pr.length?Math.round(pr.reduce((x,y2)=>x+y2,0)/pr.length):null;
+    const hit=el('rect',{x:0,y:yc,width:W,height:rowH,class:'hitrect'},s);
+    hoverable(hit,`<b>${esc(a.p)}</b>
+      <div class="row"><span>Consultas</span><span>${a.n}</span></div>
+      <div class="row"><span>Personas únicas</span><span>${a.u}</span></div>
+      <div class="row"><span>Share</span><span>${(a.n/rs.length*100).toFixed(0)}%</span></div>
+      <div class="row"><span>Distrito</span><span>${esc(dist)}</span></div>
+      ${avg?`<div class="row"><span>Precio prom. del aviso</span><span>S/ ${nfmt(avg)}</span></div>`:''}`);
+  });
+}
+
+/* ---------- heatmap proyecto × semana ---------- */
+function chartHeat(rs){
+  const host=document.getElementById('chHeat');
+  const dmin=desde();
+  const semanas=[...new Set(rangoDias(dmin,D1).map(lunes))].sort();
+  const proys=[...new Set(rs.map(r=>r.proyecto))]
+    .sort((a,b)=>rs.filter(r=>r.proyecto===b).length-rs.filter(r=>r.proyecto===a).length);
+  if(!proys.length){host.innerHTML='<div class="empty">Sin datos para este filtro.</div>';return;}
+  const m={};rs.forEach(r=>{const k=r.proyecto+'|'+lunes(r.fecha);m[k]=(m[k]||0)+1;});
+  const max=Math.max(...Object.values(m));
+  const ML=150,MT=30,cw=Math.min(150,(1160-ML)/semanas.length),ch=34,gap=2;
+  const W=ML+semanas.length*cw+70,H=MT+proys.length*ch+16;
+  const s=svgRoot(host,W,H);
+  const RAMP=['--seq-100','--seq-200','--seq-300','--seq-400','--seq-500','--seq-600','--seq-700'];
+  semanas.forEach((w,j)=>{
+    el('text',{x:ML+j*cw+cw/2,y:MT-11,'text-anchor':'middle',class:'tick'},s).textContent=fmtCorto(w);
+  });
+  proys.forEach((p,i)=>{
+    const y=MT+i*ch;
+    el('text',{x:ML-12,y:y+ch/2+4,'text-anchor':'end',class:'clabel'},s).textContent=p;
+    let tot=0;
+    semanas.forEach((w,j)=>{
+      const v=m[p+'|'+w]||0;tot+=v;
+      const x=ML+j*cw;
+      const idx=v===0?-1:Math.min(RAMP.length-1,Math.floor((v/max)*(RAMP.length-1)+0.001));
+      el('rect',{x:x+gap/2,y:y+gap/2,width:cw-gap,height:ch-gap,rx:4,
+        fill:v===0?'var(--ghost)':`var(${RAMP[idx]})`},s);
+      if(v>0){
+        el('text',{x:x+cw/2,y:y+ch/2+4,'text-anchor':'middle',
+          class:'vlabel '+(idx>=4?'heat-hi':'heat-lo')},s).textContent=v;
+      }
+      const hit=el('rect',{x:x,y:y,width:cw,height:ch,class:'hitrect'},s);
+      hoverable(hit,`<b>${esc(p)}</b><div class="row"><span>${fmtCorto(w)} – ${fmtCorto(addDays(w,6))}</span><span>${v}</span></div>`);
+    });
+    el('text',{x:ML+semanas.length*cw+14,y:y+ch/2+4,class:'vlabel'},s).textContent=tot;
+  });
+  el('text',{x:ML+semanas.length*cw+14,y:MT-11,class:'tick'},s).textContent='Total';
+}
+
+/* ---------- barras simples (canal / portal) ---------- */
+function chartCat(hostId,rs,campo,colores){
+  const host=document.getElementById(hostId);
+  const g={};rs.forEach(r=>g[r[campo]]=(g[r[campo]]||0)+1);
+  const arr=Object.entries(g).sort((a,b)=>b[1]-a[1]);
+  if(!arr.length){host.innerHTML='<div class="empty">Sin datos para este filtro.</div>';return;}
+  const rowH=36,ML=140,MR=60,W=560,H=arr.length*rowH+10,iw=W-ML-MR;
+  const max=Math.max(...arr.map(a=>a[1]));
+  const s=svgRoot(host,W,H);
+  arr.forEach(([k,v],i)=>{
+    const y=6+i*rowH;
+    el('text',{x:ML-12,y:y+18,'text-anchor':'end',class:'clabel'},s).textContent=k;
+    const w=Math.max((v/max)*iw,1);
+    el('path',{d:barPath(ML,y+5,w,18,4,'right'),fill:colores?(colores[k]||'var(--seq-400)'):'var(--seq-500)'},s);
+    el('text',{x:ML+w+9,y:y+19,class:'vlabel'},s).textContent=v+' · '+(v/rs.length*100).toFixed(0)+'%';
+    const hit=el('rect',{x:0,y:y,width:W,height:rowH,class:'hitrect'},s);
+    hoverable(hit,`<b>${esc(k)}</b><div class="row"><span>Consultas</span><span>${v}</span></div><div class="row"><span>Del total</span><span>${(v/rs.length*100).toFixed(0)}%</span></div>`);
+  });
+}
+
+/* ---------- tabla por aviso ---------- */
+function tablaAviso(rs){
+  const g={};
+  rs.forEach(r=>{
+    const k=r.proyecto+'|'+(r.unidad||r.id_aviso||'—');
+    (g[k]=g[k]||{proyecto:r.proyecto,unidad:r.unidad,id:r.id_aviso,titulo:r.titulo,url:r.url,
+      distrito:r.distrito,precio:r.precio,rows:[]}).rows.push(r);
+  });
+  const arr=Object.values(g).sort((a,b)=>b.rows.length-a.rows.length||a.proyecto.localeCompare(b.proyecto));
+  const t=document.getElementById('tblAviso');
+  if(!arr.length){t.innerHTML='<tr><td class="empty">Sin datos para este filtro.</td></tr>';return;}
+  t.innerHTML='<thead><tr><th>Proyecto</th><th>Unidad / aviso</th><th>Distrito</th><th>Precio del aviso</th><th>Descripción</th><th class="num">Consultas</th><th class="num">Personas</th><th>Última</th></tr></thead><tbody>'+
+  arr.map(a=>{
+    const u=new Set(a.rows.map(r=>r.pkey)).size;
+    const last=a.rows.map(r=>r.ts).sort().pop();
+    return `<tr>
+      <td><b>${esc(a.proyecto)}</b></td>
+      <td class="num">${esc(a.unidad||('aviso '+a.id))}</td>
+      <td>${esc(a.distrito)}</td>
+      <td class="num">${a.precio?'S/ '+nfmt(a.precio):'sin dato'}</td>
+      <td class="msg">${a.url?`<a href="${esc(a.url)}" target="_blank" rel="noopener">${esc(a.titulo)}</a>`:esc(a.titulo)}</td>
+      <td class="num"><b>${a.rows.length}</b></td>
+      <td class="num">${u}</td>
+      <td class="num">${esc(last.slice(8,10)+'-'+NOMBRE_MES[+last.slice(5,7)-1])}</td>
+    </tr>`;}).join('')+'</tbody>';
+}
+
+/* ---------- tabla de leads ---------- */
+let sortKey='ts',sortDir=-1;
+const COLS=[
+  ['ts','Fecha y hora',r=>esc(fmtCorto(r.fecha))+' <span class="tick" style="color:var(--muted)">'+esc(r.hora)+'</span>','num'],
+  ['proyecto','Proyecto',r=>'<b>'+esc(r.proyecto)+'</b>'+(r.unidad?' <span class="pill">'+esc(r.unidad)+'</span>':''),''],
+  ['distrito','Distrito',r=>esc(r.distrito),''],
+  ['nombre','Interesado',r=>esc(r.nombre)+(r.repetido?' <span class="pill dup">repetido</span>':''),''],
+  ['tel','Teléfono',r=>'<a href="tel:'+esc(r.tel)+'">'+esc(r.tel)+'</a>'+(r.tel2&&r.tel2!==r.tel?'<br><span class="tick" style="color:var(--muted)">'+esc(r.tel2)+'</span>':''),'num'],
+  ['email','Correo',r=>'<a href="mailto:'+esc(r.email)+'">'+esc(r.email)+'</a>',''],
+  ['canal','Contacto',r=>'<span class="dot" style="background:'+(CANAL_COLOR[r.canal]||'var(--muted)')+'"></span>'+esc(r.canal),''],
+  ['portal','Portal',r=>esc(r.portal),''],
+  ['precio','Precio aviso',r=>r.precio?'S/ '+nfmt(r.precio):'sin dato','num'],
+  ['mensaje','Mensaje',r=>'<span class="msg">'+esc(r.mensaje.length>90?r.mensaje.slice(0,90)+'…':r.mensaje)+'</span>',''],
+  ['url','Aviso',r=>r.url?'<a href="'+esc(r.url)+'" target="_blank" rel="noopener">ver ↗</a>':'—',''],
+];
+function tablaLeads(rs){
+  const t=document.getElementById('tblLeads');
+  const ord=[...rs].sort((a,b)=>{
+    let x=a[sortKey],y=b[sortKey];
+    if(typeof x==='number'||typeof y==='number'){x=x||0;y=y||0;return (x-y)*sortDir;}
+    return String(x||'').localeCompare(String(y||''),'es')*sortDir;
+  });
+  t.innerHTML='<thead><tr>'+COLS.map(c=>
+    `<th data-k="${c[0]}">${esc(c[1])}${sortKey===c[0]?(sortDir===1?' ↑':' ↓'):''}</th>`).join('')+'</tr></thead><tbody>'+
+    (ord.length?ord.map(r=>'<tr>'+COLS.map(c=>`<td class="${c[3]}">${c[2](r)}</td>`).join('')+'</tr>').join('')
+      :'<tr><td colspan="11" class="empty">Ningún interesado coincide con los filtros.</td></tr>')+'</tbody>';
+  t.querySelectorAll('th').forEach(th=>th.onclick=()=>{
+    const k=th.dataset.k;
+    if(sortKey===k)sortDir=-sortDir;else{sortKey=k;sortDir=1;}
+    tablaLeads(rs);
+  });
+  document.getElementById('tblCount').textContent=
+    `${ord.length} de ${LEADS.length} consultas · ${unicos(ord)} personas únicas`;
+}
+
+/* ---------- observaciones ---------- */
+function observaciones(){
+  const tot=LEADS.length, uni=unicos(LEADS);
+  const danaus=LEADS.filter(l=>l.proyecto==='DANAUS').length;
+  const vb=LEADS.filter(l=>l.proyecto==='VISTA BRASIL').length;
+  const otros=LEADS.filter(l=>!['DANAUS','VISTA BRASIL','Sin identificar'].includes(l.proyecto));
+  const nOtros=new Set(otros.map(l=>l.proyecto)).size;
+  const sinId=LEADS.filter(l=>l.proyecto==='Sin identificar').length;
+  const vio=LEADS.filter(l=>l.canal==='Vio teléfono').length;
+  const ult=LEADS.filter(l=>l.fecha>='2026-08-13').length;
+  const prev=LEADS.filter(l=>l.fecha<'2026-08-13').length;
+  const semPrev=(prev/29*7).toFixed(1);
+  document.getElementById('obs').innerHTML=`<ul class="obs">
+  <li><b>Concentración fuerte en dos proyectos.</b> DANAUS (${danaus}) y VISTA BRASIL (${vb}) explican
+    ${((danaus+vb)/tot*100).toFixed(0)}% de las ${tot} consultas. Los otros ${nOtros} proyectos con actividad suman ${otros.length}
+    (y ${sinId} consultas no se pueden atribuir a ningún proyecto).
+    De los 19 proyectos del portafolio, solo ${nOtros+2} recibieron consultas en este periodo: el resto no tiene avisos activos
+    en estos portales o no generó contactos — conviene confirmar cuál de las dos cosas es.</li>
+  <li><b>"Vio teléfono" no es un lead calificado.</b> ${vio} de ${tot} consultas (${(vio/tot*100).toFixed(0)}%)
+    son el evento de portal "vio teléfono", no un formulario ni un mensaje. Si el equipo comercial las cuenta como leads,
+    el volumen real de intención declarada es ${tot-vio}.</li>
+  <li><b>Caída fuerte en la última semana.</b> Del 13 al 19 de agosto hay ${ult} consultas, contra ${semPrev} por semana
+    en los 29 días anteriores (${prev} consultas). Es una caída de ~${(100-ult/semPrev*100).toFixed(0)}%.
+    Puede ser fin de campaña, avisos vencidos, cambio de plan en el portal o un export incompleto:
+    <b>verificar con el portal antes de leerlo como caída de demanda</b>.</li>
+  <li><b>${tot-uni} consultas son repeticiones.</b> ${tot} filas corresponden a ${uni} personas.
+    El caso más marcado es Katherine Estrada (3 avisos distintos en 2 días: Vista Verde ×2 y Los Pinos III) —
+    perfil de comprador comparando tipologías en Santa Beatriz, no tres leads.</li>
+  <li><b>Registros a descartar antes de asignar a un asesor.</b> Se detectaron: un correo del propio equipo
+    (<code>fguevara@grupomg.pe</code>), una inmobiliaria competidora contactando por DANAUS
+    (<code>nuovainmobiliariaperu@gmail.com</code>, con fila duplicada sin datos de aviso),
+    un correo con dominio inválido (<code>xxx.avv@gmail.coms</code>), un nombre y correo basura
+    (<code>qwecq1123231wcewq@gmail.com</code>) y un teléfono claramente falso (999999555).</li>
+  <li><b>Dos filas sin proyecto identificable</b> (una consulta genérica y la fila duplicada de NUOVA):
+    aparecen como "Sin identificar" y no deben repartirse entre proyectos.</li>
+  <li><b>El campo "Sucursal" es constante</b> ("GRUPO MG" en las 54 filas), así que no permite separar por sala de ventas.
+    Si quieres reporte por asesor o por sala, hace falta cruzar con el CRM.</li>
+  <li class="footnote">Alcance del dato: este export solo cubre consultas de Urbania/Adondevivir en el periodo indicado.
+    No incluye WhatsApp directo, llamadas a la central, visitas a sala de ventas ni web propia; no representa el total de leads del periodo.
+    Tampoco contiene información de cierre, así que aquí no hay tasa de conversión.</li>
+  </ul>`;
+}
+
+/* ---------- render ---------- */
+function render(){
+  pintarFiltros();
+  const rs=filtrar();
+  pintarKpis(rs);
+  chartDia(rs);chartSem(rs);chartDow(rs);chartProy(rs);chartHeat(rs);
+  chartCat('chCanal',rs,'canal',CANAL_COLOR);
+  chartCat('chPortal',rs,'portal',null);
+  tablaAviso(rs);tablaLeads(rs);
+}
+document.getElementById('corte').textContent='Generado el 20-Ago-2026 · '+LEADS.length+' registros';
+document.getElementById('themeBtn').onclick=function(){
+  const d=document.documentElement.getAttribute('data-theme')==='dark';
+  document.documentElement.setAttribute('data-theme',d?'light':'dark');
+  this.textContent=d?'Modo oscuro':'Modo claro';
+};
+observaciones();
+render();
+</script>
+</body>
+</html>
