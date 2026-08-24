@@ -1,0 +1,1385 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Media Buying Senior · Meta · Google · TikTok</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════
+   TOKENS
+   ═══════════════════════════════════════════════ */
+:root{
+  --void:#06070C;
+  --txt:#F2F5FA;
+  --txt-2:rgba(226,234,248,.62);
+  --txt-3:rgba(226,234,248,.38);
+  --stroke:rgba(255,255,255,.13);
+  --stroke-2:rgba(255,255,255,.07);
+
+  --meta:#0A7CFF;
+  --meta-2:#7B5CFF;
+  --goog-b:#4285F4;
+  --goog-r:#EA4335;
+  --goog-y:#FBBC05;
+  --goog-g:#34A853;
+  --tt-cyan:#25F4EE;
+  --tt-red:#FE2C55;
+
+  /* ambiente: JS las cambia por sección */
+  --amb-1:#0A7CFF;
+  --amb-2:#7B5CFF;
+  --amb-3:#00D2C6;
+
+  --r-xl:34px;
+  --r-lg:26px;
+  --r-md:18px;
+  --r-sm:12px;
+
+  --spring:cubic-bezier(.34,1.56,.64,1);
+  --ease:cubic-bezier(.22,.61,.36,1);
+
+  --f-display:-apple-system,BlinkMacSystemFont,"SF Pro Display","Inter",system-ui,sans-serif;
+  --f-mono:ui-monospace,"SF Mono","JetBrains Mono",Menlo,monospace;
+
+  --gutter:clamp(18px,4vw,64px);
+  --maxw:1220px;
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{
+  font-family:var(--f-display);
+  background:var(--void);
+  color:var(--txt);
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+  line-height:1.5;
+}
+
+/* ═══════════════════════════════════════════════
+   AMBIENTE — capas de color detrás del vidrio
+   ═══════════════════════════════════════════════ */
+.ambient{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.ambient__blob{
+  position:absolute;border-radius:50%;
+  filter:blur(90px);opacity:.5;
+  transition:background 1.4s var(--ease);
+  will-change:transform;
+}
+.ambient__blob--a{width:56vw;height:56vw;top:-14vw;left:-10vw;background:var(--amb-1);animation:drift-a 26s ease-in-out infinite}
+.ambient__blob--b{width:48vw;height:48vw;top:34vh;right:-14vw;background:var(--amb-2);animation:drift-b 32s ease-in-out infinite}
+.ambient__blob--c{width:40vw;height:40vw;bottom:-12vw;left:22vw;background:var(--amb-3);opacity:.32;animation:drift-c 38s ease-in-out infinite}
+@keyframes drift-a{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(9vw,7vh) scale(1.15)}}
+@keyframes drift-b{0%,100%{transform:translate(0,0) scale(1.08)}50%{transform:translate(-11vw,-9vh) scale(.9)}}
+@keyframes drift-c{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(7vw,-8vh) scale(1.2)}}
+
+.grain{
+  position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.16;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E");
+}
+
+/* ═══════════════════════════════════════════════
+   VIDRIO
+   ═══════════════════════════════════════════════ */
+.glass{
+  position:relative;
+  background:linear-gradient(158deg,rgba(255,255,255,.11),rgba(255,255,255,.035));
+  backdrop-filter:blur(34px) saturate(180%);
+  -webkit-backdrop-filter:blur(34px) saturate(180%);
+  border:1px solid var(--stroke);
+  border-radius:var(--r-lg);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.24),
+    inset 0 -1px 0 rgba(255,255,255,.05),
+    0 22px 54px -24px rgba(0,0,0,.8);
+  overflow:hidden;
+}
+.glass::after{ /* barrido especular */
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(105deg,transparent 32%,rgba(255,255,255,.10) 48%,transparent 62%);
+  transform:translateX(-120%);
+  transition:transform .95s var(--ease);
+}
+.glass:hover::after{transform:translateX(120%)}
+
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 var(--gutter);position:relative;z-index:2}
+
+/* ═══════════════════════════════════════════════
+   ISLA DINÁMICA
+   ═══════════════════════════════════════════════ */
+.island{
+  position:fixed;top:14px;left:50%;transform:translateX(-50%);
+  z-index:90;display:flex;align-items:center;gap:11px;
+  padding:9px 17px;border-radius:999px;
+  background:rgba(14,16,24,.62);
+  backdrop-filter:blur(28px) saturate(190%);
+  -webkit-backdrop-filter:blur(28px) saturate(190%);
+  border:1px solid rgba(255,255,255,.13);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.2),0 12px 34px -12px rgba(0,0,0,.9);
+  transition:all .62s var(--spring);
+  max-width:calc(100vw - 28px);
+}
+.island__dot{width:8px;height:8px;border-radius:50%;background:var(--amb-1);flex:none;
+  box-shadow:0 0 0 0 var(--amb-1);animation:ping 2.4s ease-out infinite;transition:background .6s var(--ease)}
+@keyframes ping{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--amb-1) 55%,transparent)}70%,100%{box-shadow:0 0 0 9px transparent}}
+.island__label{font-size:12.5px;font-weight:600;letter-spacing:-.01em;white-space:nowrap}
+.island__sep{width:1px;height:13px;background:rgba(255,255,255,.16);flex:none}
+.island__metric{font-family:var(--f-mono);font-size:11.5px;color:var(--txt-2);white-space:nowrap}
+@media(max-width:560px){.island__sep,.island__metric{display:none}}
+
+/* ═══════════════════════════════════════════════
+   CONTROL SEGMENTADO
+   ═══════════════════════════════════════════════ */
+.segbar{position:sticky;top:62px;z-index:80;display:flex;justify-content:center;padding:0 var(--gutter);margin-bottom:8px}
+.seg{
+  position:relative;display:flex;padding:4px;border-radius:999px;
+  background:rgba(12,14,22,.55);
+  backdrop-filter:blur(26px) saturate(180%);
+  -webkit-backdrop-filter:blur(26px) saturate(180%);
+  border:1px solid rgba(255,255,255,.11);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.16),0 14px 36px -16px rgba(0,0,0,.85);
+}
+.seg__thumb{
+  position:absolute;top:4px;left:4px;height:calc(100% - 8px);
+  border-radius:999px;
+  background:linear-gradient(160deg,rgba(255,255,255,.22),rgba(255,255,255,.09));
+  border:1px solid rgba(255,255,255,.18);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 4px 14px -4px rgba(0,0,0,.6);
+  transition:transform .55s var(--spring),width .55s var(--spring);
+  pointer-events:none;
+}
+.seg__btn{
+  position:relative;z-index:2;border:0;background:none;cursor:pointer;
+  font-family:inherit;font-size:13px;font-weight:600;letter-spacing:-.01em;
+  color:var(--txt-3);padding:9px 20px;border-radius:999px;
+  transition:color .35s var(--ease);white-space:nowrap;
+}
+.seg__btn:hover{color:var(--txt-2)}
+.seg__btn.is-on{color:var(--txt)}
+.seg__btn:focus-visible{outline:2px solid var(--amb-1);outline-offset:2px}
+@media(max-width:520px){.seg__btn{padding:8px 13px;font-size:12px}}
+
+/* ═══════════════════════════════════════════════
+   TIPOGRAFÍA
+   ═══════════════════════════════════════════════ */
+.eyebrow{
+  font-family:var(--f-mono);font-size:11px;font-weight:500;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--txt-3);
+}
+h1{font-size:clamp(34px,6.4vw,74px);font-weight:600;letter-spacing:-.038em;line-height:1.02}
+h2{font-size:clamp(27px,3.9vw,45px);font-weight:600;letter-spacing:-.032em;line-height:1.08}
+h3{font-size:clamp(17px,2vw,20px);font-weight:600;letter-spacing:-.02em;line-height:1.25}
+.lede{font-size:clamp(15.5px,1.65vw,19px);color:var(--txt-2);font-weight:300;line-height:1.6;letter-spacing:-.011em}
+.mono{font-family:var(--f-mono)}
+
+/* ═══════════════════════════════════════════════
+   HERO
+   ═══════════════════════════════════════════════ */
+.hero{min-height:100svh;display:flex;align-items:center;padding:120px 0 70px;position:relative}
+.hero__inner{max-width:930px}
+.hero h1{margin:22px 0 26px}
+.hero h1 em{font-style:normal;background:linear-gradient(100deg,var(--amb-1),var(--amb-3));
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.hero__lede{max-width:610px}
+.pillars{display:flex;flex-wrap:wrap;gap:9px;margin-top:34px}
+.pillar{
+  display:flex;align-items:center;gap:9px;padding:10px 17px;border-radius:999px;
+  background:rgba(255,255,255,.055);border:1px solid var(--stroke-2);
+  font-size:13px;color:var(--txt-2);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  transition:transform .4s var(--spring),border-color .4s var(--ease),color .4s var(--ease);
+}
+.pillar:hover{transform:translateY(-3px);border-color:var(--stroke);color:var(--txt)}
+.pillar b{font-family:var(--f-mono);font-size:11px;color:var(--amb-1);font-weight:500}
+.scrollcue{position:absolute;bottom:34px;left:var(--gutter);display:flex;align-items:center;gap:11px;color:var(--txt-3);font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;font-family:var(--f-mono)}
+.scrollcue i{display:block;width:1px;height:38px;background:linear-gradient(var(--txt-3),transparent);animation:cue 2.2s ease-in-out infinite}
+@keyframes cue{0%,100%{opacity:.25;transform:scaleY(.55);transform-origin:top}50%{opacity:1;transform:scaleY(1)}}
+
+/* ═══════════════════════════════════════════════
+   SECCIONES
+   ═══════════════════════════════════════════════ */
+.chapter{padding:150px 0 40px;position:relative;z-index:2;scroll-margin-top:118px}
+.chapter__head{display:flex;align-items:flex-start;gap:22px;margin-bottom:44px;flex-wrap:wrap}
+.chapter__mark{
+  width:60px;height:60px;border-radius:19px;flex:none;
+  display:grid;place-items:center;
+  background:linear-gradient(158deg,rgba(255,255,255,.15),rgba(255,255,255,.04));
+  border:1px solid var(--stroke);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.26),0 14px 30px -14px rgba(0,0,0,.8);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+}
+.chapter__t{flex:1;min-width:250px}
+.chapter__t h2{margin:9px 0 12px}
+.chapter__t .lede{max-width:640px}
+
+/* ═══════════════════════════════════════════════
+   INDICADORES
+   ═══════════════════════════════════════════════ */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(168px,1fr));gap:13px;margin-bottom:22px}
+.kpi{padding:19px 20px 17px;border-radius:var(--r-md)}
+.kpi__label{font-size:11px;color:var(--txt-3);letter-spacing:.05em;text-transform:uppercase;font-family:var(--f-mono);margin-bottom:11px;line-height:1.35}
+.kpi__val{font-size:clamp(27px,3.3vw,36px);font-weight:600;letter-spacing:-.035em;line-height:1;display:flex;align-items:baseline;gap:3px}
+.kpi__val span:not([data-count]){font-size:15px;font-weight:500;color:var(--txt-2);letter-spacing:-.01em}
+.kpi__foot{font-size:11.5px;color:var(--txt-3);margin-top:9px;display:flex;align-items:center;gap:5px}
+.kpi__foot i{font-style:normal;font-size:9px}
+.up{color:#3ED598}.down{color:#3ED598}
+
+/* barra mini */
+.mbar{height:3px;border-radius:2px;background:rgba(255,255,255,.09);margin-top:13px;overflow:hidden}
+.mbar i{display:block;height:100%;width:0;border-radius:2px;background:linear-gradient(90deg,var(--amb-1),var(--amb-3));transition:width 1.5s var(--ease) .25s}
+.in-view .mbar i{width:var(--w,60%)}
+
+/* ═══════════════════════════════════════════════
+   GRID DE TARJETAS
+   ═══════════════════════════════════════════════ */
+.grid{display:grid;gap:13px;margin-bottom:13px}
+.grid--2{grid-template-columns:repeat(auto-fit,minmax(340px,1fr))}
+.grid--3{grid-template-columns:repeat(auto-fit,minmax(268px,1fr))}
+@media(max-width:700px){.grid--2,.grid--3{grid-template-columns:1fr}}
+
+.card{padding:26px 25px}
+.card__top{display:flex;align-items:center;gap:11px;margin-bottom:8px}
+.card__idx{font-family:var(--f-mono);font-size:10.5px;color:var(--txt-3);letter-spacing:.09em;
+  padding:4px 9px;border-radius:7px;background:rgba(255,255,255,.06);border:1px solid var(--stroke-2)}
+.card__sub{font-size:13.5px;color:var(--txt-2);margin:9px 0 17px;line-height:1.55;font-weight:300}
+
+/* lista de configuración */
+.cfg{list-style:none;display:flex;flex-direction:column;gap:11px}
+.cfg li{position:relative;padding-left:26px;font-size:13.5px;line-height:1.62;color:var(--txt-2);font-weight:300}
+.cfg li::before{
+  content:"";position:absolute;left:0;top:3px;width:15px;height:15px;border-radius:5px;
+  background-color:rgba(255,255,255,.10);
+  background-color:color-mix(in srgb,var(--amb-1) 38%,transparent);
+  border:1px solid rgba(255,255,255,.22);
+  border-color:color-mix(in srgb,var(--amb-1) 46%,transparent);
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.6 6.2l2.1 2.1 4.6-4.6' stroke='white' stroke-width='1.8' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-size:11px;background-repeat:no-repeat;background-position:center;
+  transition:background-color .5s var(--ease),border-color .5s var(--ease);
+}
+.cfg b{color:var(--txt);font-weight:500}
+.cfg code{display:inline-block;line-height:1.35;font-family:var(--f-mono);font-size:11.5px;background:rgba(255,255,255,.07);
+  padding:1.5px 6px;border-radius:5px;color:var(--txt);border:1px solid var(--stroke-2)}
+
+/* etiquetas */
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:17px}
+.tag{font-family:var(--f-mono);font-size:10.5px;padding:5px 10px;border-radius:7px;
+  background:rgba(255,255,255,.055);border:1px solid var(--stroke-2);color:var(--txt-3);letter-spacing:.03em}
+
+/* ═══════════════════════════════════════════════
+   DIAGRAMAS
+   ═══════════════════════════════════════════════ */
+.diagram{padding:28px 25px}
+.diagram__title{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:22px;flex-wrap:wrap}
+.flow{display:flex;align-items:stretch;gap:10px;flex-wrap:wrap}
+.node{
+  flex:1;min-width:132px;padding:15px 15px 14px;border-radius:var(--r-sm);
+  background:rgba(255,255,255,.05);border:1px solid var(--stroke-2);
+  transition:transform .45s var(--spring),background .45s var(--ease),border-color .45s var(--ease);
+}
+.node:hover{transform:translateY(-4px);background:rgba(255,255,255,.09);border-color:var(--stroke)}
+.node__k{font-family:var(--f-mono);font-size:9.5px;color:var(--txt-3);letter-spacing:.12em;text-transform:uppercase;margin-bottom:8px}
+.node__v{font-size:13px;font-weight:500;letter-spacing:-.01em;line-height:1.35}
+.node__d{font-size:11.5px;color:var(--txt-3);margin-top:6px;line-height:1.45;font-weight:300}
+.node--hot{background:linear-gradient(155deg,color-mix(in srgb,var(--amb-1) 22%,transparent),rgba(255,255,255,.04));border-color:color-mix(in srgb,var(--amb-1) 34%,transparent)}
+.arrow{display:grid;place-items:center;color:var(--txt-3);flex:none;width:20px}
+@media(max-width:700px){.arrow{width:100%;height:18px;transform:rotate(90deg)}}
+
+/* capas de público */
+.layers{display:flex;flex-direction:column;gap:9px}
+.layer{display:flex;align-items:center;gap:15px;padding:15px 17px;border-radius:var(--r-sm);
+  background:rgba(255,255,255,.045);border:1px solid var(--stroke-2);
+  transition:transform .45s var(--spring),background .4s var(--ease)}
+.layer:hover{transform:translateX(6px);background:rgba(255,255,255,.08)}
+.layer__temp{font-family:var(--f-mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+  padding:5px 10px;border-radius:6px;flex:none;min-width:78px;text-align:center}
+.t-cold{background:rgba(70,140,255,.16);color:#9CC4FF;border:1px solid rgba(70,140,255,.28)}
+.t-warm{background:rgba(255,178,60,.15);color:#FFD08A;border:1px solid rgba(255,178,60,.26)}
+.t-hot{background:rgba(255,74,110,.16);color:#FFA3B6;border:1px solid rgba(255,74,110,.28)}
+.layer__b{flex:1;min-width:0}
+.layer__n{font-size:13.5px;font-weight:500;letter-spacing:-.01em}
+.layer__d{font-size:12px;color:var(--txt-3);margin-top:4px;line-height:1.45;font-weight:300}
+
+/* ═══════════════════════════════════════════════
+   GRÁFICOS
+   ═══════════════════════════════════════════════ */
+.chartbox{padding:26px 25px}
+.chart{width:100%;height:auto;display:block;overflow:visible}
+.cline{fill:none;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;
+  stroke-dasharray:var(--len,900);stroke-dashoffset:var(--len,900);
+  transition:stroke-dashoffset 2.1s var(--ease) .3s}
+.in-view .cline{stroke-dashoffset:0}
+.carea{opacity:0;transition:opacity 1.1s var(--ease) 1.1s}
+.in-view .carea{opacity:.9}
+.cdot{opacity:0;transform-box:fill-box;transform-origin:center;transition:opacity .5s var(--ease),transform .5s var(--spring)}
+.in-view .cdot{opacity:1}
+.cgrid{stroke:rgba(255,255,255,.07);stroke-width:1}
+.clabel{font-family:var(--f-mono);font-size:9.5px;fill:var(--txt-3)}
+.cbar{transform:scaleY(0);transform-origin:bottom;transition:transform 1.1s var(--spring)}
+.in-view .cbar{transform:scaleY(1)}
+
+.legend{display:flex;flex-wrap:wrap;gap:16px;margin-top:18px;padding-top:17px;border-top:1px solid var(--stroke-2)}
+.legend span{display:flex;align-items:center;gap:7px;font-size:11.5px;color:var(--txt-3);font-family:var(--f-mono)}
+.legend i{width:9px;height:9px;border-radius:3px;display:block}
+
+/* ═══════════════════════════════════════════════
+   CADENCIA
+   ═══════════════════════════════════════════════ */
+.cadence{padding:25px;margin-top:13px}
+.cadence__grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:11px;margin-top:19px}
+.cad{padding:16px 17px;border-radius:var(--r-sm);background:rgba(255,255,255,.045);border:1px solid var(--stroke-2);
+  transition:transform .45s var(--spring),background .4s var(--ease)}
+.cad:hover{transform:translateY(-4px);background:rgba(255,255,255,.085)}
+.cad__w{font-family:var(--f-mono);font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:var(--amb-1);margin-bottom:10px}
+.cad ul{list-style:none;display:flex;flex-direction:column;gap:7px}
+.cad li{font-size:12.5px;color:var(--txt-2);line-height:1.45;font-weight:300;padding-left:12px;position:relative}
+.cad li::before{content:"";position:absolute;left:0;top:7px;width:4px;height:4px;border-radius:50%;background:var(--txt-3)}
+
+/* ═══════════════════════════════════════════════
+   CICLO
+   ═══════════════════════════════════════════════ */
+.loop{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:34px;align-items:center;padding:34px 32px}
+@media(max-width:840px){.loop{grid-template-columns:1fr;gap:26px}}
+.loop__svg{width:100%;max-width:400px;margin:0 auto;display:block;overflow:visible}
+.loopring{fill:none;stroke-width:1.4;stroke-dasharray:4 7;opacity:.42}
+.loopnode{cursor:pointer}
+.loopnode circle{transition:r .45s var(--spring),fill .45s var(--ease),stroke .45s var(--ease)}
+.loopnode.is-on circle{r:23}
+.loopnode text{font-family:var(--f-mono);font-size:10px;font-weight:500;fill:var(--txt-2);transition:fill .4s var(--ease)}
+.loopnode.is-on text{fill:#fff}
+.loop__steps{display:flex;flex-direction:column;gap:9px}
+.lstep{display:flex;gap:15px;padding:15px 17px;border-radius:var(--r-sm);
+  background:rgba(255,255,255,.04);border:1px solid transparent;cursor:pointer;
+  transition:background .4s var(--ease),border-color .4s var(--ease),transform .4s var(--spring);text-align:left}
+.lstep:hover{background:rgba(255,255,255,.075)}
+.lstep.is-on{background:rgba(255,255,255,.09);border-color:color-mix(in srgb,var(--amb-1) 38%,transparent);transform:translateX(5px)}
+.lstep__n{display:block;font-family:var(--f-mono);font-size:11px;color:var(--amb-1);flex:none;padding-top:2px;font-weight:500}
+.lstep__t{display:block;font-size:13.5px;font-weight:500;letter-spacing:-.01em}
+.lstep__d{display:block;font-size:12.5px;color:var(--txt-3);margin-top:5px;line-height:1.5;font-weight:300}
+
+/* ═══════════════════════════════════════════════
+   CIERRE
+   ═══════════════════════════════════════════════ */
+.outro{padding:80px 0 40px;text-align:center}
+.outro h2{max-width:780px;margin:0 auto 22px}
+.outro .lede{max-width:560px;margin:0 auto}
+.note{
+  max-width:760px;margin:56px auto 0;padding:17px 21px;border-radius:var(--r-md);
+  background:rgba(255,255,255,.035);border:1px solid var(--stroke-2);
+  font-size:12px;color:var(--txt-3);line-height:1.6;text-align:left;font-weight:300;
+}
+.note b{color:var(--txt-2);font-weight:500}
+footer{padding:34px 0 46px;text-align:center;font-size:11.5px;color:var(--txt-3);font-family:var(--f-mono);letter-spacing:.04em}
+
+
+/* ═══════════════════════════════════════════════
+   PLANES
+   ═══════════════════════════════════════════════ */
+.plans{display:grid;grid-template-columns:repeat(auto-fit,minmax(272px,1fr));gap:14px;align-items:stretch}
+.plan{padding:28px 26px 26px;display:flex;flex-direction:column}
+.plan--hero{
+  background:linear-gradient(158deg,rgba(255,255,255,.16),rgba(255,255,255,.05));
+  border-color:color-mix(in srgb,var(--amb-1) 46%,transparent);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 0 0 1px color-mix(in srgb,var(--amb-1) 18%,transparent),0 26px 60px -24px rgba(0,0,0,.85);
+}
+.plan__badge{
+  display:inline-flex;align-self:flex-start;align-items:center;gap:6px;
+  font-family:var(--f-mono);font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;
+  padding:5px 11px;border-radius:999px;margin-bottom:15px;
+  background:color-mix(in srgb,var(--amb-1) 22%,transparent);
+  border:1px solid color-mix(in srgb,var(--amb-1) 42%,transparent);color:#fff;
+}
+.plan__badge--ghost{background:rgba(255,255,255,.05);border-color:var(--stroke-2);color:var(--txt-3)}
+.plan__name{font-size:17px;font-weight:600;letter-spacing:-.02em}
+.plan__for{font-size:12.5px;color:var(--txt-3);margin-top:6px;line-height:1.5;font-weight:300;min-height:38px}
+.plan__price{display:flex;align-items:baseline;gap:5px;margin:19px 0 4px}
+.plan__price b{font-size:clamp(34px,4.4vw,46px);font-weight:600;letter-spacing:-.042em;line-height:1}
+.plan__price span{font-size:14px;color:var(--txt-2);font-weight:400}
+.plan__hint{font-size:11.5px;color:var(--txt-3);font-family:var(--f-mono);margin-bottom:20px}
+.plan .cfg{flex:1}
+.plan .cfg li{font-size:13px;line-height:1.55}
+.plan__foot{margin-top:20px;padding-top:16px;border-top:1px solid var(--stroke-2);font-size:11.5px;color:var(--txt-3);line-height:1.5}
+.plan__foot b{color:var(--txt-2);font-weight:500}
+
+/* comparativa */
+.calc{padding:28px 26px;margin-top:14px}
+.calc__rows{display:flex;flex-direction:column;gap:15px;margin-top:20px}
+.crow{display:grid;grid-template-columns:minmax(0,190px) 1fr auto;gap:16px;align-items:center}
+@media(max-width:640px){.crow{grid-template-columns:1fr;gap:7px}}
+.crow__l{font-size:12.5px;color:var(--txt-2);line-height:1.4;font-weight:300}
+.crow__t{height:26px;border-radius:8px;background:rgba(255,255,255,.05);overflow:hidden;position:relative}
+.crow__b{display:block;height:100%;width:0;border-radius:8px;transition:width 1.5s var(--ease) .3s}
+.in-view .crow__b{width:var(--w,50%)}
+.crow__b--loose{background:linear-gradient(90deg,rgba(255,255,255,.16),rgba(255,255,255,.09))}
+.crow__b--plan{background:linear-gradient(90deg,color-mix(in srgb,var(--amb-1) 85%,transparent),color-mix(in srgb,var(--amb-3) 75%,transparent))}
+.crow__v{font-family:var(--f-mono);font-size:14px;font-weight:500;white-space:nowrap;min-width:74px;text-align:right}
+.crow__v i{font-style:normal;display:block;font-size:10.5px;color:#3ED598;margin-top:3px}
+.calc__out{
+  margin-top:22px;padding:16px 19px;border-radius:var(--r-md);
+  background:color-mix(in srgb,var(--amb-1) 12%,transparent);
+  border:1px solid color-mix(in srgb,var(--amb-1) 30%,transparent);
+  font-size:13.5px;line-height:1.6;color:var(--txt);font-weight:300;
+}
+.calc__out b{font-weight:600}
+.terms{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:11px;margin-top:14px}
+.term{padding:17px 18px;border-radius:var(--r-sm);background:rgba(255,255,255,.045);border:1px solid var(--stroke-2)}
+.term__k{font-family:var(--f-mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--amb-1);margin-bottom:9px}
+.term__v{font-size:12.5px;color:var(--txt-2);line-height:1.55;font-weight:300}
+
+/* ═══════════════════════════════════════════════
+   REVELADO
+   ═══════════════════════════════════════════════ */
+.rev{opacity:0;transform:translateY(26px);transition:opacity .85s var(--ease),transform .85s var(--ease)}
+.rev.in-view{opacity:1;transform:none}
+.rev[data-d="1"]{transition-delay:.07s}
+.rev[data-d="2"]{transition-delay:.14s}
+.rev[data-d="3"]{transition-delay:.21s}
+.rev[data-d="4"]{transition-delay:.28s}
+.rev[data-d="5"]{transition-delay:.35s}
+
+@media(max-width:700px){.chapter{padding-top:108px;scroll-margin-top:104px}.hero{padding-top:104px}}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}
+  .rev{opacity:1;transform:none}
+  html{scroll-behavior:auto}
+}
+</style>
+</head>
+<body>
+<div class="ambient">
+  <div class="ambient__blob ambient__blob--a"></div>
+  <div class="ambient__blob ambient__blob--b"></div>
+  <div class="ambient__blob ambient__blob--c"></div>
+</div>
+<div class="grain"></div>
+
+<!-- ISLA DINÁMICA -->
+<div class="island" id="island">
+  <span class="island__dot" id="isDot"></span>
+  <span class="island__label" id="isLabel">Metodología de performance</span>
+  <span class="island__sep"></span>
+  <span class="island__metric" id="isMetric">3 plataformas · 1 sistema</span>
+</div>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="wrap hero__inner">
+    <p class="eyebrow rev">Media buying senior · 2026</p>
+    <h1 class="rev" data-d="1">Crear el anuncio toma una tarde.<br><em>Hacerlo rentable toma un sistema.</em></h1>
+    <p class="lede hero__lede rev" data-d="2">Así configuro, mido y optimizo cuentas de Meta, Google y TikTok: la infraestructura que se instala una vez, y el ciclo que corre todas las semanas.</p>
+    <div class="pillars rev" data-d="3">
+      <div class="pillar"><b>01</b> Infraestructura de medición</div>
+      <div class="pillar"><b>02</b> Arquitectura de campañas</div>
+      <div class="pillar"><b>03</b> Optimización continua</div>
+      <div class="pillar"><b>04</b> Feedback comercial → cuenta</div>
+    </div>
+  </div>
+  <div class="scrollcue"><i></i> Desliza</div>
+</header>
+
+<!-- NAVEGACIÓN -->
+<div class="segbar">
+  <nav class="seg" id="seg" role="tablist" aria-label="Plataformas">
+    <span class="seg__thumb" id="segThumb"></span>
+    <button class="seg__btn is-on" role="tab" data-go="meta">Meta Ads</button>
+    <button class="seg__btn" role="tab" data-go="google">Google Ads</button>
+    <button class="seg__btn" role="tab" data-go="tiktok">TikTok Ads</button>
+    <button class="seg__btn" role="tab" data-go="planes">Planes</button>
+  </nav>
+</div>
+
+<!-- ══════════════ META ADS ══════════════ -->
+<section class="chapter" id="meta" data-amb1="#0A7CFF" data-amb2="#7B5CFF" data-amb3="#00C2FF"
+         data-name="Meta Ads" data-metric="Pixel + CAPI · EMQ 8.4/10">
+  <div class="wrap">
+
+    <div class="chapter__head rev">
+      <div class="chapter__mark">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+          <path d="M4 18.5c0-5.5 2.6-9.5 6-9.5 2.3 0 3.7 1.6 5 4.2 1.3-2.6 2.7-4.2 5-4.2 3.4 0 6 4 6 9.5 0 2.3-1.2 3.8-3 3.8-2.4 0-3.6-2.3-5.3-6-1.2-2.6-2-3.9-2.7-3.9-.7 0-1.5 1.3-2.7 3.9-1.7 3.7-2.9 6-5.3 6-1.8 0-3-1.5-3-3.8z" stroke="url(#mg)" stroke-width="1.9" stroke-linejoin="round"/>
+          <defs><linearGradient id="mg" x1="4" y1="9" x2="26" y2="22"><stop stop-color="#0A7CFF"/><stop offset="1" stop-color="#7B5CFF"/></linearGradient></defs>
+        </svg>
+      </div>
+      <div class="chapter__t">
+        <p class="eyebrow">Sección 01 · Facebook · Instagram · WhatsApp</p>
+        <h2>Meta Ads</h2>
+        <p class="lede">La plataforma vive de la calidad de la señal. Si el evento llega limpio y completo, el algoritmo encuentra al comprador. Si llega roto, ningún creativo lo salva.</p>
+      </div>
+    </div>
+
+    <div class="kpis rev" data-d="1">
+      <div class="kpi glass">
+        <div class="kpi__label">Calidad de coincidencia</div>
+        <div class="kpi__val"><span data-count="8.4" data-dec="1">0</span><span>/10</span></div>
+        <div class="mbar" style="--w:84%"><i></i></div>
+        <div class="kpi__foot">Objetivo mínimo: 7.0 antes de escalar</div>
+      </div>
+      <div class="kpi glass">
+        <div class="kpi__label">Costo por lead</div>
+        <div class="kpi__val down">−<span data-count="38">0</span><span>%</span></div>
+        <div class="mbar" style="--w:70%"><i></i></div>
+        <div class="kpi__foot"><i class="down">▼</i> Mes 1 vs mes 6 de gestión</div>
+      </div>
+      <div class="kpi glass">
+        <div class="kpi__label">Frecuencia en frío</div>
+        <div class="kpi__val"><span data-count="1.9" data-dec="1">0</span><span>x</span></div>
+        <div class="mbar" style="--w:45%"><i></i></div>
+        <div class="kpi__foot">Techo operativo: 2.5x por 7 días</div>
+      </div>
+      <div class="kpi glass">
+        <div class="kpi__label">Salida de aprendizaje</div>
+        <div class="kpi__val">&lt;<span data-count="7">0</span><span>días</span></div>
+        <div class="mbar" style="--w:78%"><i></i></div>
+        <div class="kpi__foot">50 conversiones / conjunto / semana</div>
+      </div>
+    </div>
+
+    <div class="grid grid--2">
+      <div class="card glass rev" data-d="1">
+        <div class="card__top"><span class="card__idx">MED</span><h3>Infraestructura de medición</h3></div>
+        <p class="card__sub">Lo primero que se instala, antes de gastar un sol en pauta.</p>
+        <ul class="cfg">
+          <li><b>Pixel + API de Conversiones en paralelo.</b> Mismo <code>event_id</code> en navegador y servidor para que Meta deduplique y no cuente doble.</li>
+          <li><b>Dominio verificado</b> y los 8 eventos priorizados configurados en Medición de Eventos Agregados, en el orden que importa para el negocio.</li>
+          <li><b>Coincidencia avanzada:</b> <code>em</code>, <code>ph</code>, <code>fn</code>, <code>ln</code>, <code>ct</code>, <code>external_id</code>, <code>fbc</code>, <code>fbp</code>. Cada parámetro que falta es una conversión que Meta no atribuye.</li>
+          <li><b>Ventana de atribución</b> 7 días clic / 1 día visualización, igualada con la del CRM para que ambos reportes hablen del mismo número.</li>
+          <li><b>Parámetros UTM</b> consistentes a nivel anuncio, para leer resultados fuera de la plataforma.</li>
+        </ul>
+        <div class="tags"><span class="tag">Events Manager</span><span class="tag">CAPI</span><span class="tag">Dataset</span><span class="tag">EMQ</span></div>
+      </div>
+
+      <div class="card glass rev" data-d="2">
+        <div class="card__top"><span class="card__idx">EST</span><h3>Estructura de campaña</h3></div>
+        <p class="card__sub">Menos conjuntos, más señal concentrada. La fragmentación mata el aprendizaje.</p>
+        <ul class="cfg">
+          <li><b>Advantage+ Ventas / presupuesto de campaña (CBO)</b> para escalar; presupuesto por conjunto (ABO) solo cuando necesito una prueba limpia.</li>
+          <li><b>Un conjunto = una hipótesis.</b> Si no puedo explicar qué estoy probando, el conjunto no se crea.</li>
+          <li><b>50 conversiones por conjunto por semana</b> es el piso para salir de fase de aprendizaje. Debajo de eso, consolido.</li>
+          <li><b>Ediciones significativas agrupadas</b> en una sola ventana: cambiar puja, presupuesto u optimización reinicia el aprendizaje.</li>
+          <li><b>Escalado vertical</b> +20% cada 48–72h · <b>horizontal</b> duplicando el conjunto ganador hacia público nuevo.</li>
+        </ul>
+        <div class="tags"><span class="tag">Advantage+</span><span class="tag">CBO / ABO</span><span class="tag">Fase de aprendizaje</span></div>
+      </div>
+    </div>
+
+    <div class="diagram glass rev">
+      <div class="diagram__title">
+        <div><h3>Ruta del evento</h3><p class="card__sub" style="margin:6px 0 0">Del clic al dato accionable, sin pérdidas por el camino.</p></div>
+        <span class="tag">Deduplicación por event_id</span>
+      </div>
+      <div class="flow">
+        <div class="node"><div class="node__k">Origen</div><div class="node__v">Navegador</div><div class="node__d">Pixel dispara el evento del lado del cliente</div></div>
+        <div class="arrow">→</div>
+        <div class="node"><div class="node__k">Origen</div><div class="node__v">Servidor</div><div class="node__d">API de Conversiones envía el mismo evento</div></div>
+        <div class="arrow">→</div>
+        <div class="node node--hot"><div class="node__k">Filtro</div><div class="node__v">Deduplicación</div><div class="node__d">Mismo event_id = una sola conversión</div></div>
+        <div class="arrow">→</div>
+        <div class="node"><div class="node__k">Destino</div><div class="node__v">Conjunto de datos</div><div class="node__d">Alimenta la optimización y el público</div></div>
+        <div class="arrow">→</div>
+        <div class="node node--hot"><div class="node__k">Control</div><div class="node__v">EMQ ≥ 7.0</div><div class="node__d">Semáforo antes de subir presupuesto</div></div>
+      </div>
+    </div>
+
+    <div class="grid grid--2" style="margin-top:13px">
+      <div class="diagram glass rev" data-d="1">
+        <div class="diagram__title"><h3>Arquitectura de públicos</h3><span class="tag">Con exclusiones cruzadas</span></div>
+        <div class="layers">
+          <div class="layer"><span class="layer__temp t-cold">Frío</span><div class="layer__b"><div class="layer__n">Segmentación amplia + Advantage+</div><div class="layer__d">Intereses como señal inicial, no como jaula. El pixel decide mejor que yo cuando ya tiene volumen.</div></div></div>
+          <div class="layer"><span class="layer__temp t-warm">Templado</span><div class="layer__b"><div class="layer__n">Interacción de video 50% · engagers 365d</div><div class="layer__d">Quien vio medio video o interactuó con la cuenta ya levantó la mano. Incluye aperturas de formulario sin envío.</div></div></div>
+          <div class="layer"><span class="layer__temp t-hot">Caliente</span><div class="layer__b"><div class="layer__n">Visitantes 7 / 14 / 30d · carrito · lista CRM</div><div class="layer__d">Ventanas separadas porque la intención decae. La lista de clientes va hasheada desde el CRM.</div></div></div>
+          <div class="layer"><span class="layer__temp t-cold">Similar</span><div class="layer__b"><div class="layer__n">Lookalike 1% · 1–3% · 3–5%</div><div class="layer__d">Construido desde compradores y leads calificados por valor, no desde cualquier visitante.</div></div></div>
+        </div>
+      </div>
+
+      <div class="card glass rev" data-d="2">
+        <div class="card__top"><span class="card__idx">LEAD</span><h3>Formularios instantáneos</h3></div>
+        <p class="card__sub">Donde se decide si el equipo comercial recibe oportunidades o ruido.</p>
+        <ul class="cfg">
+          <li><b>Formulario de intención alta</b> con pantalla de revisión antes de enviar: menos volumen, mucho mejor tasa de contacto.</li>
+          <li><b>Preguntas de calificación</b> propias — zona, presupuesto, plazo de decisión — para filtrar antes de que el lead llegue al vendedor.</li>
+          <li><b>Lógica condicional</b> para no preguntar de más a quien ya calificó.</li>
+          <li><b>Entrega en tiempo real</b> al CRM o WhatsApp. El objetivo operativo es contactar en menos de 5 minutos.</li>
+          <li><b>El trade-off se decide con el cliente:</b> volumen alto y barato, o volumen menor y calificado. No es un default técnico, es una decisión comercial.</li>
+        </ul>
+        <div class="tags"><span class="tag">Instant Forms</span><span class="tag">Preguntas condicionales</span><span class="tag">Integración CRM</span></div>
+      </div>
+    </div>
+
+    <div class="grid grid--2" style="margin-top:13px">
+      <div class="chartbox glass rev" data-d="1">
+        <div class="diagram__title"><h3>Trayectoria del costo por lead</h3><span class="tag">6 meses de gestión</span></div>
+        <svg class="chart" viewBox="0 0 460 190" preserveAspectRatio="none" role="img" aria-label="Gráfico de costo por lead descendente mes a mes">
+          <defs>
+            <linearGradient id="mfill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0A7CFF" stop-opacity=".35"/><stop offset="1" stop-color="#0A7CFF" stop-opacity="0"/></linearGradient>
+            <linearGradient id="mstroke" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#7B5CFF"/><stop offset="1" stop-color="#00C2FF"/></linearGradient>
+          </defs>
+          <line class="cgrid" x1="34" y1="20" x2="450" y2="20"/><line class="cgrid" x1="34" y1="65" x2="450" y2="65"/>
+          <line class="cgrid" x1="34" y1="110" x2="450" y2="110"/><line class="cgrid" x1="34" y1="155" x2="450" y2="155"/>
+          <text class="clabel" x="0" y="24">S/48</text><text class="clabel" x="0" y="69">S/38</text>
+          <text class="clabel" x="0" y="114">S/28</text><text class="clabel" x="0" y="159">S/18</text>
+          <path class="carea" fill="url(#mfill)" d="M56 30 L134 52 L212 74 L290 88 L368 118 L446 132 L446 155 L56 155 Z"/>
+          <polyline class="cline" style="--len:460" stroke="url(#mstroke)" points="56,30 134,52 212,74 290,88 368,118 446,132"/>
+          <circle class="cdot" cx="56" cy="30" r="4" fill="#7B5CFF"/><circle class="cdot" cx="134" cy="52" r="4" fill="#6A7BFF"/>
+          <circle class="cdot" cx="212" cy="74" r="4" fill="#5A94FF"/><circle class="cdot" cx="290" cy="88" r="4" fill="#3FADFF"/>
+          <circle class="cdot" cx="368" cy="118" r="4" fill="#22BAFF"/><circle class="cdot" cx="446" cy="132" r="5.5" fill="#00C2FF"/>
+          <text class="clabel" x="46" y="180">M1</text><text class="clabel" x="124" y="180">M2</text><text class="clabel" x="202" y="180">M3</text>
+          <text class="clabel" x="280" y="180">M4</text><text class="clabel" x="358" y="180">M5</text><text class="clabel" x="436" y="180">M6</text>
+        </svg>
+        <div class="legend">
+          <span><i style="background:#00C2FF"></i> Costo por lead</span>
+          <span><i style="background:rgba(255,255,255,.2)"></i> La curva baja por acumulación de señal, no por suerte</span>
+        </div>
+      </div>
+
+      <div class="card glass rev" data-d="2">
+        <div class="card__top"><span class="card__idx">CRE</span><h3>Creatividad y fatiga</h3></div>
+        <p class="card__sub">En Meta el creativo es la segmentación. Es la variable con más impacto y la que más rápido se gasta.</p>
+        <ul class="cfg">
+          <li><b>3 conceptos × 3 ganchos</b> por ciclo. El concepto es el ángulo; el gancho son los primeros 3 segundos.</li>
+          <li><b>Formatos 4:5 y 9:16</b> nativos, con texto legible sin sonido.</li>
+          <li><b>Advantage+ creative</b> para combinaciones automáticas, con los elementos que sí controlo bloqueados.</li>
+          <li><b>Señal de rotación:</b> frecuencia sobre 2.5 y CTR cayendo más de 20% respecto a su propio pico.</li>
+          <li><b>Renovación cada 10–14 días</b> aunque el creativo siga funcionando: el reemplazo se prepara antes de que haga falta.</li>
+        </ul>
+        <div class="tags"><span class="tag">DCO</span><span class="tag">UGC</span><span class="tag">Prueba A/B nativa</span></div>
+      </div>
+    </div>
+
+    <div class="cadence glass rev">
+      <div class="diagram__title"><h3>Cadencia de optimización · Meta</h3><span class="tag">Lo que pasa después del lanzamiento</span></div>
+      <div class="cadence__grid">
+        <div class="cad"><div class="cad__w">Diario</div><ul><li>Ritmo de gasto y entrega</li><li>Alertas de rechazo de anuncios</li><li>Conjuntos que salieron de aprendizaje</li></ul></div>
+        <div class="cad"><div class="cad__w">Semanal</div><ul><li>Fatiga creativa por frecuencia y CTR</li><li>Reasignación de presupuesto a ganadores</li><li>Lanzamiento del nuevo lote creativo</li></ul></div>
+        <div class="cad"><div class="cad__w">Mensual</div><ul><li>Reunión de feedback comercial</li><li>Calidad real de los leads cerrados</li><li>Recalibración de públicos y formulario</li></ul></div>
+        <div class="cad"><div class="cad__w">Trimestral</div><ul><li>Revisión de estructura completa</li><li>Auditoría de eventos y EMQ</li><li>Prueba de incrementalidad</li></ul></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══════════════ GOOGLE ADS ══════════════ -->
+<section class="chapter" id="google" data-amb1="#4285F4" data-amb2="#34A853" data-amb3="#FBBC05"
+         data-name="Google Ads" data-metric="Términos irrelevantes −62%">
+  <div class="wrap">
+
+    <div class="chapter__head rev">
+      <div class="chapter__mark">
+        <svg width="26" height="26" viewBox="0 0 26 26" fill="none">
+          <circle cx="13" cy="13" r="9.5" stroke="#4285F4" stroke-width="2" stroke-dasharray="15 45" stroke-linecap="round"/>
+          <circle cx="13" cy="13" r="9.5" stroke="#EA4335" stroke-width="2" stroke-dasharray="15 45" stroke-dashoffset="-15" stroke-linecap="round"/>
+          <circle cx="13" cy="13" r="9.5" stroke="#FBBC05" stroke-width="2" stroke-dasharray="15 45" stroke-dashoffset="-30" stroke-linecap="round"/>
+          <circle cx="13" cy="13" r="9.5" stroke="#34A853" stroke-width="2" stroke-dasharray="15 45" stroke-dashoffset="-45" stroke-linecap="round"/>
+          <circle cx="13" cy="13" r="3.4" fill="#4285F4" opacity=".85"/>
+        </svg>
+      </div>
+      <div class="chapter__t">
+        <p class="eyebrow">Sección 02 · Búsqueda · Performance Max · YouTube</p>
+        <h2>Google Ads</h2>
+        <p class="lede">Aquí no se compra atención: se compra intención. El trabajo consiste en pagar solo por las búsquedas que pueden terminar en venta, y enseñarle al sistema cuáles fueron.</p>
+      </div>
+    </div>
+
+    <div class="kpis rev" data-d="1">
+      <div class="kpi glass">
+        <div class="kpi__label">Nivel de calidad</div>
+        <div class="kpi__val"><span data-count="8">0</span><span>/10</span></div>
+        <div class="mbar" style="--w:80%"><i></i></div>
+        <div class="kpi__foot">Menor CPC por la misma posición</div>
+      </div>
+      <div class="kpi glass">
+        <div class="kpi__label">Términos irrelevantes</div>
+        <div class="kpi__val down">−<span data-count="62">0</span><span>%</span></div>
+        <div class="mbar" style="--w:62%"><i></i></div>
+        <div class="kpi__foot"><i class="down">▼</i> Tras 8 semanas de negativas</div>
+      </div>
+      <div class="kpi glass">
+        <div class="kpi__label">Conversiones offline</div>
+        <div class="kpi__val"><span data-count="100">0</span><span>%</span></div>
+        <div class="mbar" style="--w:100%"><i></i></div>
+        <div class="kpi__foot">Ventas cerradas importadas al CRM</div>
+      </div>
+      <div class="kpi glass">
+        <div class="kpi__label">Cobertura de activos</div>
+        <div class="kpi__val"><span data-count="15">0</span><span>títulos</span></div>
+        <div class="mbar" style="--w:92%"><i></i></div>
+        <div class="kpi__foot">Eficacia del anuncio: Excelente</div>
+      </div>
+    </div>
+
+    <div class="grid grid--2">
+      <div class="card glass rev" data-d="1">
+        <div class="card__top"><span class="card__idx">SEA</span><h3>Búsqueda: estructura por intención</h3></div>
+        <p class="card__sub">Las campañas se agrupan por lo que la persona quiere, no por la palabra suelta.</p>
+        <ul class="cfg">
+          <li><b>Grupos por intención y por página de destino.</b> Si dos keywords van al mismo lugar y significan lo mismo, van juntas.</li>
+          <li><b>Concordancia exacta y de frase</b> para control del gasto; <b>amplia</b> solo cuando ya hay volumen de conversiones e inteligencia de puja.</li>
+          <li><b>Separación transaccional vs informacional:</b> presupuestos distintos, porque quien busca «precio de» y quien busca «qué es» no valen lo mismo.</li>
+          <li><b>Campañas de marca separadas</b> para no diluir el costo por adquisición del tráfico genérico.</li>
+          <li><b>Programación por horario y ubicación</b> según cuándo el equipo comercial puede responder.</li>
+        </ul>
+        <div class="tags"><span class="tag">Search</span><span class="tag">Concordancias</span><span class="tag">Dayparting</span></div>
+      </div>
+
+      <div class="card glass rev" data-d="2">
+        <div class="card__top"><span class="card__idx">NEG</span><h3>Palabras clave negativas</h3></div>
+        <p class="card__sub">La tarea que más plata ahorra y la que más gente deja de hacer al segundo mes.</p>
+        <ul class="cfg">
+          <li><b>Informe de términos de búsqueda</b> revisado semanalmente al inicio, quincenalmente cuando la cuenta se estabiliza.</li>
+          <li><b>Listas negativas compartidas</b> a nivel cuenta: empleo, gratis, tutorial, «cómo hacer», nombres de competidores, curiosos.</li>
+          <li><b>Negativas por tipo de concordancia,</b> con cuidado de no bloquear variantes que sí convierten.</li>
+          <li><b>Negativas cruzadas entre campañas</b> para que cada búsqueda entre por la campaña correcta y no compitan entre ellas.</li>
+          <li><b>Exclusión de IP</b> propias y de proveedores, para no pagar por clics internos.</li>
+        </ul>
+        <div class="tags"><span class="tag">Search Terms</span><span class="tag">Listas compartidas</span><span class="tag">Exclusión de IP</span></div>
+      </div>
+    </div>
+
+    <div class="diagram glass rev" style="margin-top:13px">
+      <div class="diagram__title">
+        <div><h3>Del clic a la venta cerrada</h3><p class="card__sub" style="margin:6px 0 0">Este circuito es lo que convierte el feedback comercial en mejor pauta. Sin él, Google optimiza a formularios; con él, optimiza a clientes.</p></div>
+        <span class="tag">Importación de conversiones offline</span>
+      </div>
+      <div class="flow">
+        <div class="node"><div class="node__k">Paso 1</div><div class="node__v">Clic con GCLID</div><div class="node__d">Google marca cada visita con un identificador único</div></div>
+        <div class="arrow">→</div>
+        <div class="node"><div class="node__k">Paso 2</div><div class="node__v">Lead al CRM</div><div class="node__d">El formulario guarda el GCLID junto al contacto</div></div>
+        <div class="arrow">→</div>
+        <div class="node"><div class="node__k">Paso 3</div><div class="node__v">Comercial califica</div><div class="node__d">Lead calificado, oportunidad o descartado</div></div>
+        <div class="arrow">→</div>
+        <div class="node node--hot"><div class="node__k">Paso 4</div><div class="node__v">Venta cerrada</div><div class="node__d">Con su valor real, no un valor estimado</div></div>
+        <div class="arrow">→</div>
+        <div class="node node--hot"><div class="node__k">Paso 5</div><div class="node__v">Vuelve a Google</div><div class="node__d">La puja aprende de ventas, no de clics</div></div>
+      </div>
+    </div>
+
+    <div class="grid grid--2" style="margin-top:13px">
+      <div class="card glass rev" data-d="1">
+        <div class="card__top"><span class="card__idx">CONV</span><h3>Medición y conversiones</h3></div>
+        <p class="card__sub">Una cuenta mide bien o puja a ciegas. No hay punto medio.</p>
+        <ul class="cfg">
+          <li><b>Etiqueta de Google Ads + GA4</b> conviviendo, con criterio claro de cuál manda para la puja.</li>
+          <li><b>Conversiones principales vs secundarias:</b> solo las principales entran en la optimización. Las vistas de página no son conversiones.</li>
+          <li><b>Conversiones mejoradas</b> con datos hasheados del formulario, para recuperar atribución perdida por cookies.</li>
+          <li><b>Valores de conversión reales</b> por tipo de servicio, para poder pujar por valor y no por cantidad.</li>
+          <li><b>Deduplicación</b> entre llamada, formulario y WhatsApp cuando la misma persona usa dos canales.</li>
+        </ul>
+        <div class="tags"><span class="tag">Enhanced Conversions</span><span class="tag">GCLID</span><span class="tag">GA4</span></div>
+      </div>
+
+      <div class="card glass rev" data-d="2">
+        <div class="card__top"><span class="card__idx">BID</span><h3>Pujas y experimentos</h3></div>
+        <p class="card__sub">La automatización funciona cuando se le da suficiente dato limpio. Antes de eso, es una apuesta cara.</p>
+        <ul class="cfg">
+          <li><b>Arranque en Maximizar conversiones</b> hasta acumular historial suficiente.</li>
+          <li><b>CPA objetivo</b> a partir de unas 30 conversiones al mes; el objetivo se mueve en pasos, no de golpe.</li>
+          <li><b>ROAS objetivo</b> cuando ya entran valores de venta cerrada desde el CRM.</li>
+          <li><b>Experimentos de campaña</b> para validar cambios grandes con tráfico dividido, en vez de cambiar y rezar.</li>
+          <li><b>Presupuestos compartidos</b> solo entre campañas con el mismo objetivo y prioridad.</li>
+        </ul>
+        <div class="tags"><span class="tag">Smart Bidding</span><span class="tag">tCPA / tROAS</span><span class="tag">Drafts &amp; Experiments</span></div>
+      </div>
+    </div>
+
+    <div class="grid grid--2" style="margin-top:13px">
+      <div class="chartbox glass rev" data-d="1">
+        <div class="diagram__title"><h3>Limpieza del gasto</h3><span class="tag">Gasto útil vs desperdiciado</span></div>
+        <svg class="chart" viewBox="0 0 460 190" role="img" aria-label="Gráfico de barras: el gasto en términos irrelevantes baja mes a mes">
+          <defs>
+            <linearGradient id="gu" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#34A853"/><stop offset="1" stop-color="#34A853" stop-opacity=".45"/></linearGradient>
+            <linearGradient id="gw" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#EA4335" stop-opacity=".75"/><stop offset="1" stop-color="#EA4335" stop-opacity=".3"/></linearGradient>
+          </defs>
+          <line class="cgrid" x1="30" y1="155" x2="450" y2="155"/>
+          <g class="cbar" style="transition-delay:.2s"><rect x="46" y="86" width="46" height="69" rx="7" fill="url(#gu)"/><rect x="46" y="30" width="46" height="52" rx="7" fill="url(#gw)"/></g>
+          <g class="cbar" style="transition-delay:.32s"><rect x="128" y="70" width="46" height="85" rx="7" fill="url(#gu)"/><rect x="128" y="34" width="46" height="32" rx="7" fill="url(#gw)"/></g>
+          <g class="cbar" style="transition-delay:.44s"><rect x="210" y="58" width="46" height="97" rx="7" fill="url(#gu)"/><rect x="210" y="36" width="46" height="18" rx="7" fill="url(#gw)"/></g>
+          <g class="cbar" style="transition-delay:.56s"><rect x="292" y="48" width="46" height="107" rx="7" fill="url(#gu)"/><rect x="292" y="34" width="46" height="10" rx="7" fill="url(#gw)"/></g>
+          <g class="cbar" style="transition-delay:.68s"><rect x="374" y="42" width="46" height="113" rx="7" fill="url(#gu)"/><rect x="374" y="32" width="46" height="6" rx="7" fill="url(#gw)"/></g>
+          <text class="clabel" x="58" y="176">M1</text><text class="clabel" x="140" y="176">M2</text><text class="clabel" x="222" y="176">M3</text>
+          <text class="clabel" x="304" y="176">M4</text><text class="clabel" x="386" y="176">M5</text>
+        </svg>
+        <div class="legend">
+          <span><i style="background:#34A853"></i> Gasto en términos relevantes</span>
+          <span><i style="background:#EA4335"></i> Gasto desperdiciado</span>
+        </div>
+      </div>
+
+      <div class="card glass rev" data-d="2">
+        <div class="card__top"><span class="card__idx">ADS</span><h3>Anuncios, activos y Performance Max</h3></div>
+        <p class="card__sub">El anuncio ocupa más espacio en la página cuando los activos están completos. Ese espacio es gratis.</p>
+        <ul class="cfg">
+          <li><b>Anuncios adaptables:</b> 15 títulos y 4 descripciones reales — no variaciones de la misma frase — con el título 1 fijado para marca u oferta.</li>
+          <li><b>Activos completos:</b> enlaces de sitio, textos destacados, fragmentos estructurados, llamada, ubicación, imagen y formulario.</li>
+          <li><b>Nivel de calidad</b> trabajado por sus tres componentes: CTR esperado, relevancia del anuncio y experiencia en la página de destino.</li>
+          <li><b>Performance Max</b> con grupos de recursos por línea de negocio y señales de audiencia alimentadas con datos propios.</li>
+          <li><b>Exclusiones de marca</b> y revisión de términos en PMax, para que no se coma el tráfico que ya era tuyo.</li>
+        </ul>
+        <div class="tags"><span class="tag">RSA</span><span class="tag">Assets</span><span class="tag">PMax</span><span class="tag">Customer Match</span></div>
+      </div>
+    </div>
+
+    <div class="cadence glass rev">
+      <div class="diagram__title"><h3>Cadencia de optimización · Google</h3><span class="tag">Lo que pasa después del lanzamiento</span></div>
+      <div class="cadence__grid">
+        <div class="cad"><div class="cad__w">Diario</div><ul><li>Presupuesto limitado o subejecutado</li><li>Anuncios y activos rechazados</li><li>Caídas bruscas de impresiones</li></ul></div>
+        <div class="cad"><div class="cad__w">Semanal</div><ul><li>Informe de términos de búsqueda</li><li>Nuevas negativas y ajuste de concordancias</li><li>Rotación de títulos con bajo rendimiento</li></ul></div>
+        <div class="cad"><div class="cad__w">Mensual</div><ul><li>Importación de ventas cerradas</li><li>Reajuste de CPA / ROAS objetivo</li><li>Reunión de feedback comercial</li></ul></div>
+        <div class="cad"><div class="cad__w">Trimestral</div><ul><li>Auditoría de estructura y conversiones</li><li>Experimento de puja o de landing</li><li>Revisión de participación de impresiones</li></ul></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══════════════ TIKTOK ADS ══════════════ -->
+<section class="chapter" id="tiktok" data-amb1="#FE2C55" data-amb2="#25F4EE" data-amb3="#7B2CFF"
+         data-name="TikTok Ads" data-metric="Renovación creativa 7–14 días">
+  <div class="wrap">
+
+    <div class="chapter__head rev">
+      <div class="chapter__mark">
+        <svg width="26" height="26" viewBox="0 0 26 26" fill="none">
+          <path d="M15.6 3v11.8a4.1 4.1 0 11-3.4-4.03" stroke="#25F4EE" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M15.6 3c.5 2.6 2.2 4.3 4.9 4.6" stroke="#FE2C55" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="chapter__t">
+        <p class="eyebrow">Sección 03 · Feed · Spark Ads · Creadores</p>
+        <h2>TikTok Ads</h2>
+        <p class="lede">El anuncio que parece anuncio pierde. Aquí el trabajo pesado está en producir volumen creativo nativo y en aceptar que se quema rápido: la ventaja no es un creativo genial, es la máquina que lo reemplaza a tiempo.</p>
+      </div>
+    </div>
+
+    <div class="kpis rev" data-d="1">
+      <div class="kpi glass">
+        <div class="kpi__label">Tasa de gancho (3s)</div>
+        <div class="kpi__val"><span data-count="27">0</span><span>%</span></div>
+        <div class="mbar" style="--w:74%"><i></i></div>
+        <div class="kpi__foot">Quién se queda después del inicio</div>
+      </div>
+      <div class="kpi glass">
+        <div class="kpi__label">Creativos por ciclo</div>
+        <div class="kpi__val"><span data-count="5">0</span><span>/grupo</span></div>
+        <div class="mbar" style="--w:66%"><i></i></div>
+        <div class="kpi__foot">Producción continua, no por campaña</div>
+      </div>
+      <div class="kpi glass">
+        <div class="kpi__label">Vida útil creativa</div>
+        <div class="kpi__val"><span data-count="10">0</span><span>días</span></div>
+        <div class="mbar" style="--w:50%"><i></i></div>
+        <div class="kpi__foot">Ventana antes de que el CPA suba</div>
+      </div>
+      <div class="kpi glass">
+        <div class="kpi__label">Aprendizaje del grupo</div>
+        <div class="kpi__val"><span data-count="50">0</span><span>conv/7d</span></div>
+        <div class="mbar" style="--w:82%"><i></i></div>
+        <div class="kpi__foot">Piso para estabilizar la entrega</div>
+      </div>
+    </div>
+
+    <div class="grid grid--2">
+      <div class="card glass rev" data-d="1">
+        <div class="card__top"><span class="card__idx">MED</span><h3>Medición y atribución</h3></div>
+        <p class="card__sub">Mismo rigor que en Meta, con una plataforma que atribuye distinto y hay que leer con contexto.</p>
+        <ul class="cfg">
+          <li><b>Pixel de TikTok + Events API</b> en paralelo, con <code>event_id</code> compartido para deduplicar.</li>
+          <li><b>Coincidencia avanzada</b> con correo y teléfono hasheados desde el formulario.</li>
+          <li><b>Ventana de atribución</b> alineada con Meta y con el CRM: si cada plataforma cuenta a su manera, el reporte no sirve para decidir.</li>
+          <li><b>Validación con TikTok Pixel Helper</b> antes de encender presupuesto, no después del primer reporte raro.</li>
+          <li><b>Lectura con vista asistida:</b> TikTok suele generar demanda que se cierra buscando la marca en Google. Se revisa el efecto cruzado, no solo la conversión directa.</li>
+        </ul>
+        <div class="tags"><span class="tag">Events Manager</span><span class="tag">EAPI</span><span class="tag">Attribution Manager</span></div>
+      </div>
+
+      <div class="card glass rev" data-d="2">
+        <div class="card__top"><span class="card__idx">EST</span><h3>Estructura y pujas</h3></div>
+        <p class="card__sub">Estructura simple, presupuesto concentrado y paciencia con la fase de aprendizaje.</p>
+        <ul class="cfg">
+          <li><b>Smart+</b> para escalar una vez que el pixel tiene volumen; estructura manual mientras necesito leer señales limpias.</li>
+          <li><b>Presupuesto de campaña (CBO)</b> con pocos grupos: repartir entre muchos grupos alarga el aprendizaje de todos.</li>
+          <li><b>Costo más bajo</b> para explorar terreno nuevo; <b>límite de costo</b> cuando ya conozco el CPA que el negocio aguanta.</li>
+          <li><b>Presupuesto mínimo por grupo</b> suficiente para llegar a ~50 conversiones en 7 días.</li>
+          <li><b>Optimización por valor</b> cuando el catálogo y los eventos de compra lo permiten.</li>
+        </ul>
+        <div class="tags"><span class="tag">Smart+</span><span class="tag">Cost cap</span><span class="tag">CBO</span></div>
+      </div>
+    </div>
+
+    <div class="diagram glass rev" style="margin-top:13px">
+      <div class="diagram__title">
+        <div><h3>Línea de producción creativa</h3><p class="card__sub" style="margin:6px 0 0">En TikTok esto no es una etapa del proyecto: es el proceso que nunca se detiene.</p></div>
+        <span class="tag">Ciclo de 7–14 días</span>
+      </div>
+      <div class="flow">
+        <div class="node"><div class="node__k">Fase 1</div><div class="node__v">Investigación</div><div class="node__d">Creative Center, tendencias y anuncios de la categoría</div></div>
+        <div class="arrow">→</div>
+        <div class="node"><div class="node__k">Fase 2</div><div class="node__v">Guion por ángulos</div><div class="node__d">Un problema real por video, resuelto en los primeros 3s</div></div>
+        <div class="arrow">→</div>
+        <div class="node"><div class="node__k">Fase 3</div><div class="node__v">Producción UGC</div><div class="node__d">Creadores propios o del Marketplace, formato nativo</div></div>
+        <div class="arrow">→</div>
+        <div class="node node--hot"><div class="node__k">Fase 4</div><div class="node__v">Spark Ads</div><div class="node__d">Se pauta sobre la publicación real, con su prueba social</div></div>
+        <div class="arrow">→</div>
+        <div class="node node--hot"><div class="node__k">Fase 5</div><div class="node__v">Lectura y relevo</div><div class="node__d">El ganador se itera; el resto se retira</div></div>
+      </div>
+    </div>
+
+    <div class="grid grid--2" style="margin-top:13px">
+      <div class="diagram glass rev" data-d="1">
+        <div class="diagram__title"><h3>Arquitectura de públicos</h3><span class="tag">Del más frío al más caliente</span></div>
+        <div class="layers">
+          <div class="layer"><span class="layer__temp t-cold">Frío</span><div class="layer__b"><div class="layer__n">Amplio + segmentación inteligente</div><div class="layer__d">TikTok premia el alcance amplio cuando el creativo es bueno. Encerrar el público suele encarecer el CPM sin mejorar la calidad.</div></div></div>
+          <div class="layer"><span class="layer__temp t-cold">Señal</span><div class="layer__b"><div class="layer__n">Intereses + comportamientos</div><div class="layer__d">Interacción con creadores, hashtags y categorías de video. Se usa como punto de partida, no como límite permanente.</div></div></div>
+          <div class="layer"><span class="layer__temp t-warm">Templado</span><div class="layer__b"><div class="layer__n">Interacción con video y con la cuenta</div><div class="layer__d">Vieron el video completo, dieron like, siguieron el perfil o abrieron el formulario sin enviarlo.</div></div></div>
+          <div class="layer"><span class="layer__temp t-hot">Caliente</span><div class="layer__b"><div class="layer__n">Tráfico web · lista de clientes · similares</div><div class="layer__d">Públicos similares por grado de similitud, construidos desde compradores reales.</div></div></div>
+        </div>
+      </div>
+
+      <div class="chartbox glass rev" data-d="2">
+        <div class="diagram__title"><h3>Por qué se renueva antes de que caiga</h3><span class="tag">Fatiga creativa</span></div>
+        <svg class="chart" viewBox="0 0 460 190" role="img" aria-label="Gráfico: el rendimiento de cada creativo decae y se recupera al introducir uno nuevo">
+          <defs>
+            <linearGradient id="tfill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#25F4EE" stop-opacity=".28"/><stop offset="1" stop-color="#25F4EE" stop-opacity="0"/></linearGradient>
+            <linearGradient id="tstroke" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#25F4EE"/><stop offset=".55" stop-color="#7B2CFF"/><stop offset="1" stop-color="#FE2C55"/></linearGradient>
+          </defs>
+          <line class="cgrid" x1="30" y1="30" x2="450" y2="30"/><line class="cgrid" x1="30" y1="80" x2="450" y2="80"/><line class="cgrid" x1="30" y1="130" x2="450" y2="130"/>
+          <text class="clabel" x="0" y="34">Alto</text><text class="clabel" x="0" y="84">Medio</text><text class="clabel" x="0" y="134">Bajo</text>
+          <path class="carea" fill="url(#tfill)" d="M40 40 L92 58 L144 96 L150 42 L202 60 L254 100 L260 44 L312 62 L364 104 L370 46 L422 64 L450 82 L450 155 L40 155 Z"/>
+          <polyline class="cline" style="--len:760" stroke="url(#tstroke)" points="40,40 92,58 144,96 150,42 202,60 254,100 260,44 312,62 364,104 370,46 422,64 450,82"/>
+          <line x1="147" y1="26" x2="147" y2="150" stroke="#25F4EE" stroke-width="1" stroke-dasharray="3 4" opacity=".55"/>
+          <line x1="257" y1="26" x2="257" y2="150" stroke="#25F4EE" stroke-width="1" stroke-dasharray="3 4" opacity=".55"/>
+          <line x1="367" y1="26" x2="367" y2="150" stroke="#25F4EE" stroke-width="1" stroke-dasharray="3 4" opacity=".55"/>
+          <text class="clabel" x="36" y="176">Lote 1</text><text class="clabel" x="146" y="176">Lote 2</text><text class="clabel" x="256" y="176">Lote 3</text><text class="clabel" x="366" y="176">Lote 4</text>
+        </svg>
+        <div class="legend">
+          <span><i style="background:#25F4EE"></i> Rendimiento del creativo</span>
+          <span><i style="background:rgba(255,255,255,.2)"></i> Cada línea punteada es un relevo programado</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid grid--2" style="margin-top:13px">
+      <div class="card glass rev" data-d="1">
+        <div class="card__top"><span class="card__idx">CRE</span><h3>Creatividad nativa</h3></div>
+        <p class="card__sub">La regla que ordena todo lo demás: si se nota que es publicidad en el primer segundo, el CPM sube y el CTR baja.</p>
+        <ul class="cfg">
+          <li><b>Spark Ads sobre publicaciones reales</b> — propias o de creadores con código de autorización — para conservar comentarios, likes y prueba social.</li>
+          <li><b>9:16, sonido nativo, texto en pantalla</b> y ritmo de edición del feed, no de un comercial de TV.</li>
+          <li><b>El gancho es el 80% del resultado:</b> problema explícito, movimiento o pregunta directa en los primeros 3 segundos.</li>
+          <li><b>Duración funcional entre 21 y 34 segundos</b> para formatos de explicación; más corto para oferta directa.</li>
+          <li><b>Creator Marketplace</b> cuando la marca no tiene rostro ni contenido propio suficiente.</li>
+        </ul>
+        <div class="tags"><span class="tag">Spark Ads</span><span class="tag">UGC</span><span class="tag">Creative Center</span><span class="tag">TTCM</span></div>
+      </div>
+
+      <div class="card glass rev" data-d="2">
+        <div class="card__top"><span class="card__idx">LEAD</span><h3>Formularios y conversión</h3></div>
+        <p class="card__sub">TikTok trae público que no estaba buscando el producto. El formulario tiene que hacer más trabajo de convencimiento.</p>
+        <ul class="cfg">
+          <li><b>Formularios instantáneos</b> con lógica condicional e integración directa al CRM.</li>
+          <li><b>Contexto antes del campo:</b> una pantalla que explique qué recibe la persona a cambio del dato.</li>
+          <li><b>Velocidad de contacto</b> como métrica del proyecto: un lead de TikTok se enfría más rápido que uno de búsqueda.</li>
+          <li><b>Prueba dividida nativa</b> para comparar formulario contra landing propia, con la misma pauta detrás.</li>
+          <li><b>Video Shopping Ads</b> con catálogo conectado cuando hay ecommerce.</li>
+        </ul>
+        <div class="tags"><span class="tag">Instant Forms</span><span class="tag">Split test</span><span class="tag">Catálogo</span></div>
+      </div>
+    </div>
+
+    <div class="cadence glass rev">
+      <div class="diagram__title"><h3>Cadencia de optimización · TikTok</h3><span class="tag">Lo que pasa después del lanzamiento</span></div>
+      <div class="cadence__grid">
+        <div class="cad"><div class="cad__w">Diario</div><ul><li>Entrega y ritmo de gasto</li><li>Comentarios en los anuncios activos</li><li>Creativos rechazados o limitados</li></ul></div>
+        <div class="cad"><div class="cad__w">Semanal</div><ul><li>Tasa de gancho por creativo</li><li>Retiro de los que ya cayeron</li><li>Entrada del nuevo lote</li></ul></div>
+        <div class="cad"><div class="cad__w">Mensual</div><ul><li>Qué ángulo convirtió mejor en ventas</li><li>Reunión de feedback comercial</li><li>Briefing creativo del mes siguiente</li></ul></div>
+        <div class="cad"><div class="cad__w">Trimestral</div><ul><li>Revisión de mezcla de canales</li><li>Aporte real de TikTok a la demanda de marca</li><li>Renovación del banco de creadores</li></ul></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══════════════ CICLO DE MEJORA CONTINUA ══════════════ -->
+<section class="chapter" id="ciclo" data-amb1="#00C2A8" data-amb2="#4285F4" data-amb3="#7B5CFF"
+         data-name="Mejora continua" data-metric="El ciclo que no se detiene">
+  <div class="wrap">
+
+    <div class="chapter__head rev">
+      <div class="chapter__mark">
+        <svg width="26" height="26" viewBox="0 0 26 26" fill="none">
+          <path d="M22 13a9 9 0 11-2.7-6.4" stroke="#00C2A8" stroke-width="2" stroke-linecap="round"/>
+          <path d="M22 4v5h-5" stroke="#4285F4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="chapter__t">
+        <p class="eyebrow">El sistema · Transversal a las tres plataformas</p>
+        <h2>La mejora no es un extra: es el servicio</h2>
+        <p class="lede">Una campaña lanzada es una hipótesis. Lo que la vuelve rentable es este ciclo corriendo mes tras mes — y el paso que casi nadie cierra es el último.</p>
+      </div>
+    </div>
+
+    <div class="loop glass rev">
+      <div>
+        <svg class="loop__svg" viewBox="0 0 340 340" role="img" aria-label="Ciclo de cinco etapas: medir, leer, decidir, ejecutar y validar con ventas">
+          <circle class="loopring" cx="170" cy="170" r="130" stroke="var(--amb-1)"/>
+          <circle cx="170" cy="170" r="130" fill="none" stroke="var(--amb-1)" stroke-width="1.4"
+                  stroke-dasharray="26 400" stroke-linecap="round" opacity=".9">
+            <animateTransform attributeName="transform" type="rotate" from="0 170 170" to="360 170 170" dur="9s" repeatCount="indefinite"/>
+          </circle>
+          <g class="loopnode is-on" data-i="0">
+            <circle cx="170" cy="40" r="18" fill="rgba(255,255,255,.10)" stroke="var(--amb-1)" stroke-width="1.5"/>
+            <text x="170" y="44" text-anchor="middle">01</text>
+            <text x="170" y="6" text-anchor="middle">Medir</text>
+          </g>
+          <g class="loopnode" data-i="1">
+            <circle cx="294" cy="130" r="18" fill="rgba(255,255,255,.06)" stroke="var(--stroke)" stroke-width="1.5"/>
+            <text x="294" y="134" text-anchor="middle">02</text>
+            <text x="294" y="101" text-anchor="middle">Leer</text>
+          </g>
+          <g class="loopnode" data-i="2">
+            <circle cx="246" cy="275" r="18" fill="rgba(255,255,255,.06)" stroke="var(--stroke)" stroke-width="1.5"/>
+            <text x="246" y="279" text-anchor="middle">03</text>
+            <text x="269" y="314" text-anchor="middle">Decidir</text>
+          </g>
+          <g class="loopnode" data-i="3">
+            <circle cx="94" cy="275" r="18" fill="rgba(255,255,255,.06)" stroke="var(--stroke)" stroke-width="1.5"/>
+            <text x="94" y="279" text-anchor="middle">04</text>
+            <text x="71" y="314" text-anchor="middle">Ejecutar</text>
+          </g>
+          <g class="loopnode" data-i="4">
+            <circle cx="46" cy="130" r="18" fill="rgba(255,255,255,.06)" stroke="var(--stroke)" stroke-width="1.5"/>
+            <text x="46" y="134" text-anchor="middle">05</text>
+            <text x="46" y="101" text-anchor="middle">Validar</text>
+          </g>
+          <text x="170" y="164" text-anchor="middle" font-size="11" fill="var(--txt-3)" font-family="ui-monospace,monospace" letter-spacing="1.4">CICLO</text>
+          <text x="170" y="184" text-anchor="middle" font-size="13" fill="var(--txt-2)" font-family="ui-monospace,monospace" letter-spacing="1.4">MENSUAL</text>
+        </svg>
+      </div>
+      <div class="loop__steps" id="loopSteps">
+        <button class="lstep is-on" data-i="0">
+          <span class="lstep__n">01</span>
+          <span><span class="lstep__t">Medir</span><span class="lstep__d">Datos limpios en la plataforma y en el CRM. Si el evento llega mal, todo lo que viene después es opinión disfrazada de dato.</span></span>
+        </button>
+        <button class="lstep" data-i="1">
+          <span class="lstep__n">02</span>
+          <span><span class="lstep__t">Leer</span><span class="lstep__d">Términos de búsqueda, creativos, públicos y horarios. Buscar el patrón, no el número aislado de un día malo.</span></span>
+        </button>
+        <button class="lstep" data-i="2">
+          <span class="lstep__n">03</span>
+          <span><span class="lstep__t">Decidir</span><span class="lstep__d">Una hipótesis priorizada por impacto y esfuerzo. Cambiar diez cosas a la vez impide saber cuál funcionó.</span></span>
+        </button>
+        <button class="lstep" data-i="3">
+          <span class="lstep__n">04</span>
+          <span><span class="lstep__t">Ejecutar</span><span class="lstep__d">El cambio se aplica agrupado, respetando la fase de aprendizaje, y se le da tiempo suficiente antes de juzgarlo.</span></span>
+        </button>
+        <button class="lstep" data-i="4">
+          <span class="lstep__n">05</span>
+          <span><span class="lstep__t">Validar con ventas</span><span class="lstep__d">La reunión con el equipo comercial: de todos esos leads, cuáles compraron. Esa respuesta vuelve a la cuenta como conversión, como público y como próximo creativo. Aquí es donde la campaña deja de optimizar formularios y empieza a optimizar clientes.</span></span>
+        </button>
+      </div>
+    </div>
+
+    <div class="grid grid--3" style="margin-top:13px">
+      <div class="card glass rev" data-d="1">
+        <div class="card__top"><span class="card__idx">RIT</span><h3>Ritmo de trabajo</h3></div>
+        <ul class="cfg" style="margin-top:15px">
+          <li><b>Diario:</b> control de entrega y gasto, alertas de anomalías.</li>
+          <li><b>Semanal:</b> optimización fina y entrada de creativos nuevos.</li>
+          <li><b>Mensual:</b> reporte, reunión comercial y plan del mes siguiente.</li>
+          <li><b>Trimestral:</b> auditoría de estructura y medición.</li>
+        </ul>
+      </div>
+      <div class="card glass rev" data-d="2">
+        <div class="card__top"><span class="card__idx">REP</span><h3>Qué muestra el reporte</h3></div>
+        <ul class="cfg" style="margin-top:15px">
+          <li><b>Costo por lead y por venta,</b> no cantidad de campañas lanzadas.</li>
+          <li><b>Calidad del lead</b> según lo que reportó el equipo comercial.</li>
+          <li><b>Qué se probó</b> este mes y qué se aprendió, incluyendo lo que falló.</li>
+          <li><b>Qué sigue</b> el mes entrante, con la hipótesis explícita.</li>
+        </ul>
+      </div>
+      <div class="card glass rev" data-d="3">
+        <div class="card__top"><span class="card__idx">ACC</span><h3>Acuerdos de trabajo</h3></div>
+        <ul class="cfg" style="margin-top:15px">
+          <li><b>Las cuentas son del cliente.</b> Yo entro como administrador; el historial siempre se queda contigo.</li>
+          <li><b>Inversión y honorario separados</b> en cada factura y cada reporte.</li>
+          <li><b>Mínimo tres meses</b> para que los datos permitan evaluar de verdad.</li>
+          <li><b>Acceso al CRM o al reporte de ventas</b> — sin eso, el paso 05 no existe.</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ══════════════ PLANES ══════════════ -->
+<section class="chapter" id="planes" data-amb1="#F0B429" data-amb2="#7B5CFF" data-amb3="#00C2A8"
+         data-name="Planes" data-metric="Desde S/90 · Plan por cuenta S/400">
+  <div class="wrap">
+
+    <div class="chapter__head rev">
+      <div class="chapter__mark">
+        <svg width="26" height="26" viewBox="0 0 26 26" fill="none">
+          <rect x="3.5" y="6.5" width="19" height="13" rx="3.2" stroke="#F0B429" stroke-width="1.9"/>
+          <path d="M3.5 11h19" stroke="#F0B429" stroke-width="1.9"/>
+          <path d="M7 15.5h4" stroke="#00C2A8" stroke-width="1.9" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="chapter__t">
+        <p class="eyebrow">Inversión en el servicio</p>
+        <h2>Planes y costos</h2>
+        <p class="lede">Tres formas de trabajar juntos, según cuánto acompañamiento necesite la cuenta. El honorario del servicio va siempre separado de la inversión publicitaria.</p>
+      </div>
+    </div>
+
+    <div class="plans rev" data-d="1">
+
+      <div class="plan glass">
+        <span class="plan__badge plan__badge--ghost">Puntual</span>
+        <div class="plan__name">Campaña suelta</div>
+        <p class="plan__for">Para un lanzamiento específico o una promoción con fecha de cierre.</p>
+        <div class="plan__price"><b>S/90</b><span>por campaña</span></div>
+        <div class="plan__hint">Pago único · sin permanencia</div>
+        <ul class="cfg">
+          <li>Una campaña nueva configurada completa: objetivo, públicos, segmentación y anuncios.</li>
+          <li>Revisión de que el pixel o la etiqueta estén midiendo antes de activar.</li>
+          <li>Entrega lista para publicar en la cuenta del cliente.</li>
+          <li>No incluye seguimiento, optimización ni reporte posterior.</li>
+        </ul>
+        <div class="plan__foot">Una vez entregada, la campaña queda a cargo del cliente. Si luego quieres seguimiento, se suma el plan correspondiente.</div>
+      </div>
+
+      <div class="plan glass plan--hero">
+        <span class="plan__badge">★ Recomendado</span>
+        <div class="plan__name">Plan por cuenta</div>
+        <p class="plan__for">Todo incluido. Es la opción que hace rentable la pauta, porque cierra el ciclo completo.</p>
+        <div class="plan__price"><b>S/400</b><span>al mes</span></div>
+        <div class="plan__hint">Mínimo 3 meses · campaña extra a S/60</div>
+        <ul class="cfg">
+          <li><b>Hasta 2 campañas nuevas al mes</b>, configuradas con la metodología completa de la plataforma.</li>
+          <li><b>Seguimiento y optimización continua:</b> control diario de entrega y trabajo fino semanal.</li>
+          <li><b>Configuración de medición incluida:</b> pixel, eventos, conversiones y públicos.</li>
+          <li><b>Reporte mensual</b> con costo por lead y por venta, no con cantidad de campañas lanzadas.</li>
+          <li><b>Reunión mensual de feedback comercial</b> para saber qué leads compraron y devolver esa señal a la cuenta.</li>
+        </ul>
+        <div class="plan__foot"><b>Por qué conviene:</b> con 2 campañas al mes, comprar suelto cuesta S/520. Aquí pagas S/400 y además entra la reunión, que no está en ningún otro plan.</div>
+      </div>
+
+      <div class="plan glass">
+        <span class="plan__badge plan__badge--ghost">Mensual</span>
+        <div class="plan__name">Solo seguimiento</div>
+        <p class="plan__for">Para cuentas que ya están armadas y solo necesitan que alguien las mantenga afinadas.</p>
+        <div class="plan__price"><b>S/340</b><span>al mes</span></div>
+        <div class="plan__hint">Mínimo 3 meses · sin campañas nuevas</div>
+        <ul class="cfg">
+          <li>Optimización continua sobre las campañas que ya existen en la cuenta.</li>
+          <li>Revisión semanal de términos de búsqueda, públicos y fatiga creativa.</li>
+          <li>Ajuste de presupuestos y pujas según rendimiento.</li>
+          <li>Reporte mensual de resultados.</li>
+          <li>No incluye campañas nuevas ni reunión de feedback comercial.</li>
+        </ul>
+        <div class="plan__foot">Si durante el mes hace falta una campaña nueva, se cotiza aparte a S/90.</div>
+      </div>
+
+    </div>
+
+    <div class="calc glass rev" data-d="2">
+      <div class="diagram__title">
+        <div><h3>La cuenta que conviene hacer</h3><p class="card__sub" style="margin:6px 0 0">Mismo trabajo, dos formas de pagarlo. Esto es lo que cuesta cada una en un mes típico.</p></div>
+        <span class="tag">Honorario del servicio, sin la pauta</span>
+      </div>
+      <div class="calc__rows">
+        <div class="crow">
+          <div class="crow__l">Suelto: 2 campañas + seguimiento</div>
+          <div class="crow__t"><i class="crow__b crow__b--loose" style="--w:100%"></i></div>
+          <div class="crow__v">S/520</div>
+        </div>
+        <div class="crow">
+          <div class="crow__l">Suelto: 1 campaña + seguimiento</div>
+          <div class="crow__t"><i class="crow__b crow__b--loose" style="--w:82.7%"></i></div>
+          <div class="crow__v">S/430</div>
+        </div>
+        <div class="crow">
+          <div class="crow__l"><b style="color:var(--txt);font-weight:500">Plan por cuenta</b> · todo incluido</div>
+          <div class="crow__t"><i class="crow__b crow__b--plan" style="--w:76.9%"></i></div>
+          <div class="crow__v">S/400<i>hasta −S/120</i></div>
+        </div>
+      </div>
+      <div class="calc__out">
+        El plan por cuenta sale más barato en cualquier escenario: <b>ahorras S/30 si usas una campaña</b> y <b>S/120 (23%) si usas las dos</b>. Y en los dos casos entra la reunión mensual de feedback comercial, que comprando suelto no existe.
+      </div>
+    </div>
+
+    <div class="terms rev" data-d="3">
+      <div class="term"><div class="term__k">Inversión publicitaria</div><div class="term__v">Va aparte y se paga directo a Meta, Google o TikTok. Nunca la mezclo con mi honorario: en el reporte se ven como dos montos distintos.</div></div>
+      <div class="term"><div class="term__k">Propiedad de las cuentas</div><div class="term__v">Las cuentas publicitarias son del cliente. Yo entro como administrador, y si algún día dejamos de trabajar juntos, el historial y los públicos se quedan contigo.</div></div>
+      <div class="term"><div class="term__k">Permanencia mínima</div><div class="term__v">Tres meses en los planes mensuales. Antes de ese plazo los datos todavía no permiten juzgar si la cuenta va bien o mal.</div></div>
+      <div class="term"><div class="term__k">Lo que necesito de tu lado</div><div class="term__v">Accesos a la cuenta y al sitio, y el reporte de qué leads terminaron comprando. Sin eso último, el ciclo de mejora se queda a medias.</div></div>
+    </div>
+
+  </div>
+</section>
+
+<section class="outro">
+  <div class="wrap">
+    <h2 class="rev">Cualquiera puede encender una campaña.<br>Lo difícil es sostenerla mejorando.</h2>
+    <p class="lede rev" data-d="1">Meta, Google y TikTok cambian todos los meses. El sistema para leerlos y corregirlos es lo que permanece.</p>
+    <div class="note rev" data-d="2">
+      <b>Sobre las cifras de esta presentación.</b> Los indicadores y gráficos son referencias ilustrativas del comportamiento típico de una cuenta bien gestionada, no resultados de un cliente específico. Antes de enviar esta presentación, reemplaza los valores por datos reales de tus propias cuentas: un número verificable convence mucho más que uno redondo.
+    </div>
+  </div>
+</section>
+
+<footer>Metodología de media buying · Meta Ads · Google Ads · TikTok Ads</footer>
+
+<script>
+(function(){
+  "use strict";
+  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* ---------- REVELADO + INDICADORES ---------- */
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(!e.isIntersecting) return;
+      e.target.classList.add("in-view");
+      e.target.querySelectorAll("[data-count]").forEach(countUp);
+      io.unobserve(e.target);
+    });
+  },{threshold:.18, rootMargin:"0px 0px -8% 0px"});
+
+  requestAnimationFrame(function(){
+    document.querySelectorAll(".rev, .kpi").forEach(function(el){ io.observe(el); });
+  });
+
+  function countUp(el){
+    if(el.dataset.done) return;
+    el.dataset.done = "1";
+    var target = parseFloat(el.dataset.count);
+    var dec = parseInt(el.dataset.dec || "0", 10);
+    if(reduce){ el.textContent = target.toFixed(dec); return; }
+    var dur = 1400, t0 = null;
+    function tick(ts){
+      if(!t0) t0 = ts;
+      var p = Math.min((ts - t0) / dur, 1);
+      var eased = 1 - Math.pow(1 - p, 3);
+      el.textContent = (target * eased).toFixed(dec);
+      if(p < 1) requestAnimationFrame(tick);
+      else el.textContent = target.toFixed(dec);
+    }
+    requestAnimationFrame(tick);
+  }
+
+  /* ---------- CONTROL SEGMENTADO ---------- */
+  var seg = document.getElementById("seg");
+  var thumb = document.getElementById("segThumb");
+  var btns = Array.prototype.slice.call(seg.querySelectorAll(".seg__btn"));
+
+  function placeThumb(btn){
+    thumb.style.width = btn.offsetWidth + "px";
+    thumb.style.transform = "translateX(" + (btn.offsetLeft - 4) + "px)";
+  }
+  function setActive(id){
+    btns.forEach(function(b){
+      var on = b.dataset.go === id;
+      b.classList.toggle("is-on", on);
+      if(on) placeThumb(b);
+    });
+  }
+  btns.forEach(function(b){
+    b.addEventListener("click", function(){
+      var el = document.getElementById(b.dataset.go);
+      if(!el) return;
+      var y = el.getBoundingClientRect().top + window.pageYOffset - 118;
+      window.scrollTo({ top: y, behavior: reduce ? "auto" : "smooth" });
+    });
+  });
+  window.addEventListener("resize", function(){
+    var on = seg.querySelector(".seg__btn.is-on");
+    if(on) placeThumb(on);
+  });
+  requestAnimationFrame(function(){ placeThumb(btns[0]); });
+
+  /* ---------- ISLA + AMBIENTE ---------- */
+  var sections = Array.prototype.slice.call(document.querySelectorAll(".chapter"));
+  var island = document.getElementById("island");
+  var isLabel = document.getElementById("isLabel");
+  var isMetric = document.getElementById("isMetric");
+  var root = document.documentElement;
+  var current = null;
+
+  function morph(name, metric){
+    if(reduce){ isLabel.textContent = name; isMetric.textContent = metric; return; }
+    island.style.transform = "translateX(-50%) scale(.9)";
+    island.style.opacity = ".55";
+    setTimeout(function(){
+      isLabel.textContent = name;
+      isMetric.textContent = metric;
+      island.style.transform = "translateX(-50%) scale(1)";
+      island.style.opacity = "1";
+    }, 190);
+  }
+
+  function onScroll(){
+    var mark = window.pageYOffset + window.innerHeight * 0.42;
+    var active = null;
+    sections.forEach(function(s){
+      if(s.offsetTop <= mark) active = s;
+    });
+
+    if(active !== current){
+      current = active;
+      if(active){
+        root.style.setProperty("--amb-1", active.dataset.amb1);
+        root.style.setProperty("--amb-2", active.dataset.amb2);
+        root.style.setProperty("--amb-3", active.dataset.amb3);
+        morph(active.dataset.name, active.dataset.metric);
+        if(active.id !== "ciclo") setActive(active.id);
+      } else {
+        root.style.setProperty("--amb-1", "#0A7CFF");
+        root.style.setProperty("--amb-2", "#7B5CFF");
+        root.style.setProperty("--amb-3", "#00D2C6");
+        morph("Metodología de performance", "3 plataformas · 1 sistema");
+      }
+    }
+  }
+  var ticking = false;
+  window.addEventListener("scroll", function(){
+    if(ticking) return;
+    ticking = true;
+    requestAnimationFrame(function(){ onScroll(); ticking = false; });
+  }, {passive:true});
+  onScroll();
+
+  /* ---------- CICLO INTERACTIVO ---------- */
+  var nodes = Array.prototype.slice.call(document.querySelectorAll(".loopnode"));
+  var steps = Array.prototype.slice.call(document.querySelectorAll(".lstep"));
+  var idx = 0, timer = null;
+
+  function selectStep(i){
+    idx = i;
+    nodes.forEach(function(n){ n.classList.toggle("is-on", +n.dataset.i === i); });
+    steps.forEach(function(s){ s.classList.toggle("is-on", +s.dataset.i === i); });
+  }
+  function start(){
+    if(reduce || timer) return;
+    timer = setInterval(function(){ selectStep((idx + 1) % steps.length); }, 3400);
+  }
+  function stop(){ clearInterval(timer); timer = null; }
+
+  nodes.concat(steps).forEach(function(el){
+    el.addEventListener("click", function(){ stop(); selectStep(+el.dataset.i); });
+    el.addEventListener("mouseenter", stop);
+  });
+
+  var loopEl = document.querySelector(".loop");
+  if(loopEl){
+    loopEl.addEventListener("mouseleave", start);
+    new IntersectionObserver(function(es){
+      es.forEach(function(e){ e.isIntersecting ? start() : stop(); });
+    },{threshold:.35}).observe(loopEl);
+  }
+})();
+</script>
+</body>
+</html>
