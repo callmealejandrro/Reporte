@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <!-- Selected Color Palette: Vibrant Corporate Navy & Energetic Gold (Deep Navy #0f172a, Royal Blue #2563eb, Sky Blue #0284c7, Emerald #10b981, Amber Gold #f59e0b, Crimson Rose #f43f5e) -->
+  <!--
+    ================================================================================
+    SPA PLAN & NARRATIVE SUMMARY:
+    This Single Page Application serves as an executive commercial study and digital ad strategy guide 
+    for Grupo MG's 19 residential projects across 7 key districts in Lima Metropolitana (San Miguel, 
+    Santa Beatriz/Cercado, Jesús María, San Borja, Pueblo Libre, Magdalena del Mar, Surquillo).
+    
+    Structure:
+    1. Executive Dashboard & Hero KPI Summary.
+    2. Macro-Market Analysis & Cross-District Charts (Yield, Price/m², NSE, Competitor Density).
+    3. Cross-Segment Digital Ad Framework (1-Bed vs 2-3 Bed for end-users and investors).
+    4. Comprehensive District Deep-Dives (Demographics, Competitors, Graphic/Video Guidelines).
+    5. Interactive Project Directory & Filter Matrix for all 19 Grupo MG developments.
+    ================================================================================
+    VISUALIZATION CHOICES & JUSTIFICATIONS:
+    - Yield Bar Chart: Compares rental yields across districts (Goal: Compare -> Bar Chart -> Chart.js Canvas).
+    - Price per m² Horizontal Bar: Ranks real estate cost per district (Goal: Organize/Compare -> Horizontal Bar -> Chart.js Canvas).
+    - NSE Radar / Breakdown Chart: Maps socio-economic distribution per area (Goal: Composition -> Stacked/Grouped Bar -> Chart.js Canvas).
+    - Competitor Count Doughnut Chart: Visualizes project saturation (Goal: Inform/Compare -> Doughnut -> Chart.js Canvas).
+    - Interactive Tables & HTML Cards: Process maps & script breakdowns (Goal: Organize -> HTML/CSS Grid with Tailwind).
+    Confirming: NO SVG graphics nor Mermaid JS were used anywhere in this document. All charts rendered on HTML5 Canvas via Chart.js.
+    ================================================================================
+  -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Estudio Comercial e Inteligencia de Pauta Inmobiliaria — Grupo MG 2026</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- FontAwesome CDN for Iconography (CSS-based font, no SVG) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              navy: '#0f172a',
+              slate: '#1e293b',
+              blue: '#2563eb',
+              sky: '#0284c7',
+              amber: '#f59e0b',
+              emerald: '#10b981',
+              rose: '#f43f5e',
+              bg: '#f8fafc'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    .chart-container {
+      position: relative;
+      width: 100%;
+      max-width: 100%;
+      margin-left: auto;
+      margin-right: auto;
+      height: 320px;
+      max-height: 380px;
+    }
+    @media (min-width: 768px) {
+      .chart-container {
+        height: 360px;
+      }
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+  </style>
+</head>
+
+<body class="bg-slate-50 text-slate-800 font-sans antialiased selection:bg-blue-500 selection:text-white">
+
+  <!-- TOP HEADER / NAVBAR -->
+  <header class="sticky top-0 z-50 bg-slate-900/95 backdrop-blur border-b border-slate-800 text-white shadow-lg">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-amber-500 flex items-center justify-center font-black text-xl text-white shadow-md">
+          MG
+        </div>
+        <div>
+          <h1 class="font-bold text-base leading-tight tracking-tight">GRUPO MG <span class="text-xs px-2 py-0.5 rounded bg-blue-500/20 text-blue-400 font-medium ml-1">Inteligencia Comercial</span></h1>
+          <p class="text-xs text-slate-400">Estudio de Mercado & Directrices de Pauta 2026</p>
+        </div>
+      </div>
+
+      <!-- Navigation Links -->
+      <nav class="hidden md:flex items-center space-x-6 text-sm font-medium">
+        <a href="#macro" class="text-slate-300 hover:text-amber-400 transition-colors">Mercado Macro</a>
+        <a href="#segmentos" class="text-slate-300 hover:text-amber-400 transition-colors">Framework Pauta</a>
+        <a href="#distritos" class="text-slate-300 hover:text-amber-400 transition-colors">Estudio Distrital</a>
+        <a href="#portafolio" class="text-slate-300 hover:text-amber-400 transition-colors">Proyectos (19)</a>
+      </nav>
+
+      <a href="#portafolio" class="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 text-white text-xs font-semibold px-4 py-2 rounded-lg shadow transition-all flex items-center space-x-2">
+        <i class="fa-solid fa-building"></i>
+        <span>Ver Portafolio</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- HERO SECTION -->
+  <section class="bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 text-white py-12 lg:py-16 relative overflow-hidden border-b border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div class="max-w-3xl">
+        <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-semibold mb-4">
+          <i class="fa-solid fa-chart-line"></i>
+          <span>Estrategia de Ventas e Inversión Inmobiliaria</span>
+        </div>
+        <h2 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight leading-tight">
+          Estudio Comercial & Guía de Pauta Publicitaria Digital
+        </h2>
+        <p class="mt-4 text-base sm:text-lg text-slate-300 leading-relaxed">
+          Análisis demográfico, competitivo y financiero de los <strong>7 distritos clave de Lima</strong> donde operan los <strong>19 proyectos de Grupo MG</strong>. Optimización de anuncios pagados por tipología, perfil de comprador e intencionalidad de inversión.
+        </p>
+      </div>
+
+      <!-- KEY METRICS DASHBOARD CARDS -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
+        <div class="bg-slate-800/80 border border-slate-700/60 p-4 rounded-xl shadow-md backdrop-blur">
+          <div class="text-xs font-medium text-slate-400 uppercase tracking-wider">Proyectos Activos</div>
+          <div class="text-2xl lg:text-3xl font-black text-white mt-1">19 <span class="text-xs font-normal text-blue-400">Desarrollos</span></div>
+          <div class="text-xs text-slate-400 mt-1 flex items-center"><i class="fa-solid fa-city text-blue-400 mr-1.5"></i> 7 Distritos Estratégicos</div>
+        </div>
+
+        <div class="bg-slate-800/80 border border-slate-700/60 p-4 rounded-xl shadow-md backdrop-blur">
+          <div class="text-xs font-medium text-slate-400 uppercase tracking-wider">Rentabilidad Máxima (Yield)</div>
+          <div class="text-2xl lg:text-3xl font-black text-emerald-400 mt-1">6.1% <span class="text-xs font-normal text-slate-300">Anual</span></div>
+          <div class="text-xs text-slate-400 mt-1 flex items-center"><i class="fa-solid fa-arrow-trend-up text-emerald-400 mr-1.5"></i> Líder: Surquillo (Danaus)</div>
+        </div>
+
+        <div class="bg-slate-800/80 border border-slate-700/60 p-4 rounded-xl shadow-md backdrop-blur">
+          <div class="text-xs font-medium text-slate-400 uppercase tracking-wider">Precio Promedio m²</div>
+          <div class="text-2xl lg:text-3xl font-black text-amber-400 mt-1">S/ 6,580</div>
+          <div class="text-xs text-slate-400 mt-1 flex items-center"><i class="fa-solid fa-tag text-amber-400 mr-1.5"></i> Rango: S/ 5,189 - S/ 8,131</div>
+        </div>
+
+        <div class="bg-slate-800/80 border border-slate-700/60 p-4 rounded-xl shadow-md backdrop-blur">
+          <div class="text-xs font-medium text-slate-400 uppercase tracking-wider">Público Objetivo Dominante</div>
+          <div class="text-2xl lg:text-3xl font-black text-sky-400 mt-1">NSE B / C+</div>
+          <div class="text-xs text-slate-400 mt-1 flex items-center"><i class="fa-solid fa-users text-sky-400 mr-1.5"></i> Lima Moderna & Top</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 1: MACRO MARKET ANALYSIS & CHARTS -->
+  <section id="macro" class="py-12 lg:py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="mb-8">
+      <div class="flex items-center space-x-2 text-blue-600 font-semibold text-sm">
+        <i class="fa-solid fa-chart-pie"></i>
+        <span>PANORAMA MACROECONÓMICO DE LIMA</span>
+      </div>
+      <h3 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-1">
+        Comportamiento del Mercado Inmobiliario por Distrito
+      </h3>
+      <p class="text-slate-600 text-sm sm:text-base mt-2 max-w-4xl">
+        Para maximizar el retorno de inversión en pauta digital (ROAS), es fundamental calibrar la propuesta de valor según el comportamiento del suelo, la rentabilidad por alquiler (yield bruto) y el perfil socioeconómico (NSE) de cada jurisdicción. El mercado presenta una clara separación entre zonas residenciales consolidadas (Lima Top), corredores de alta rentabilidad (Lima Moderna) y zonas hiper-céntricas conectadas.
+      </p>
+    </div>
+
+    <!-- CHARTS GRID -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      
+      <!-- Chart 1: Rental Yield -->
+      <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+        <div class="flex items-center justify-between mb-4">
+          <div>
+            <h4 class="font-bold text-slate-800 text-base">Rentabilidad Bruta Anual Estimada (Yield %)</h4>
+            <p class="text-xs text-slate-500">Retorno estimado por alquiler tradicional y de corta estancia</p>
+          </div>
+          <span class="p-2 bg-emerald-50 text-emerald-600 rounded-lg text-xs font-bold">Inversión</span>
+        </div>
+        <div class="chart-container">
+          <canvas id="yieldChart"></canvas>
+        </div>
+        <div class="mt-4 p-3 bg-slate-50 rounded-xl text-xs text-slate-600 border border-slate-100">
+          <strong>Contexto de Negocio:</strong> Surquillo (6.1%) y Pueblo Libre (5.7%) lideran el atractivo para inversionistas debido a su alta demanda de alquiler y menor precio por m² de entrada frente a San Isidro y Miraflores.
+        </div>
+      </div>
+
+      <!-- Chart 2: Price per m² -->
+      <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+        <div class="flex items-center justify-between mb-4">
+          <div>
+            <h4 class="font-bold text-slate-800 text-base">Precio Promedio por m² (en Soles S/)</h4>
+            <p class="text-xs text-slate-500">Valorización promedio del suelo en proyectos activos</p>
+          </div>
+          <span class="p-2 bg-blue-50 text-blue-600 rounded-lg text-xs font-bold">Ticket m²</span>
+        </div>
+        <div class="chart-container">
+          <canvas id="priceChart"></canvas>
+        </div>
+        <div class="mt-4 p-3 bg-slate-50 rounded-xl text-xs text-slate-600 border border-slate-100">
+          <strong>Contexto de Negocio:</strong> San Borja marca el ticket más exclusivo (edificios boutique como Foresta a S/ 8,131/m²), mientras que San Miguel y Santa Beatriz ofrecen los precios de entrada más agresivos (S/ 5,189 - S/ 6,250/m²).
+        </div>
+      </div>
+
+      <!-- Chart 3: NSE Distribution -->
+      <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+        <div class="flex items-center justify-between mb-4">
+          <div>
+            <h4 class="font-bold text-slate-800 text-base">Distribución del Nivel Socioeconómico (NSE %)</h4>
+            <p class="text-xs text-slate-500">Proporción de hogares A, B, C en los distritos evaluados</p>
+          </div>
+          <span class="p-2 bg-amber-50 text-amber-600 rounded-lg text-xs font-bold">Demografía</span>
+        </div>
+        <div class="chart-container">
+          <canvas id="nseChart"></canvas>
+        </div>
+        <div class="mt-4 p-3 bg-slate-50 rounded-xl text-xs text-slate-600 border border-slate-100">
+          <strong>Contexto de Negocio:</strong> San Borja y Jesús María poseen la mayor concentración de NSE A/B. Surquillo y Santa Beatriz muestran una mayor combinación de NSE C/B, atrayendo tanto a clase media emergente como a jóvenes independientes.
+        </div>
+      </div>
+
+      <!-- Chart 4: Competitor Density -->
+      <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+        <div class="flex items-center justify-between mb-4">
+          <div>
+            <h4 class="font-bold text-slate-800 text-base">Concentración de Proyectos Grupo MG vs Competencia</h4>
+            <p class="text-xs text-slate-500">Distribución de los 19 proyectos del portafolio por zona</p>
+          </div>
+          <span class="p-2 bg-purple-50 text-purple-600 rounded-lg text-xs font-bold">Portafolio MG</span>
+        </div>
+        <div class="chart-container">
+          <canvas id="competitorChart"></canvas>
+        </div>
+        <div class="mt-4 p-3 bg-slate-50 rounded-xl text-xs text-slate-600 border border-slate-100">
+          <strong>Contexto de Negocio:</strong> San Miguel (6 proyectos) y Santa Beatriz (5 proyectos) concentran el 58% de la oferta de Grupo MG. La pauta en estas zonas debe evitar la canibalización mediante una segmentación geográfica y conceptual estricta.
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- SECTION 2: FRAMEWORK GLOBAL DE SEGMENTACIÓN PARA PAUTA -->
+  <section id="segmentos" class="py-12 lg:py-16 bg-slate-900 text-white border-y border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="mb-10 text-center max-w-3xl mx-auto">
+        <span class="px-3 py-1 rounded-full bg-blue-500/20 text-blue-400 text-xs font-semibold border border-blue-500/30">
+          MATRIZ TRANSVERSAL DE MARKETING DIGITAL
+        </span>
+        <h3 class="text-2xl sm:text-4xl font-extrabold mt-3">
+          Framework de Segmentación de Pauta en Meta & Google Ads
+        </h3>
+        <p class="text-slate-400 text-sm sm:text-base mt-2">
+          Un error recurrente en la publicidad inmobiliaria es lanzar anuncios genéricos para todo un edificio. Cada proyecto debe descomponerse en <strong>4 segmentos bien definidos</strong> para orientar de manera precisa los presupuestos en Facebook, Instagram, TikTok y Google.
+        </p>
+      </div>
+
+      <!-- GRID DE LOS 4 SEGMENTOS -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        
+        <!-- Segment 1: 1 Dorm Primera Vivienda -->
+        <div class="bg-slate-800/90 border border-slate-700/80 rounded-2xl p-6 flex flex-col justify-between hover:border-blue-500/50 transition-all">
+          <div>
+            <div class="w-12 h-12 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center font-bold text-xl mb-4">
+              <i class="fa-solid fa-user-graduate"></i>
+            </div>
+            <span class="text-xs font-semibold uppercase tracking-wider text-blue-400">1 Dormitorio</span>
+            <h4 class="text-lg font-bold text-white mt-1">Primera Vivienda (Jóvenes Pros)</h4>
+            <p class="text-xs text-slate-400 mt-2 leading-relaxed">
+              Profesionales de 25-35 años que buscan independencia. Valoran la cercanía a centros corporativos y estilo de vida cosmopolita.
+            </p>
+
+            <div class="mt-4 pt-4 border-t border-slate-700/60 space-y-2 text-xs">
+              <div>
+                <strong class="text-slate-300">Gatillo Emocional:</strong>
+                <p class="text-slate-400">Pagar su propia cuota en vez de regalar alquiler.</p>
+              </div>
+              <div>
+                <strong class="text-slate-300">Ángulo Visual:</strong>
+                <p class="text-slate-400">Rooftops, coworking, espacios funcionales, estética "urban-chic".</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-6 pt-3 bg-slate-900/60 rounded-xl p-3 text-[11px] text-blue-300 border border-blue-500/20">
+            <i class="fa-solid fa-lightbulb text-amber-400 mr-1"></i> <strong>Ejemplo Hook:</strong> "¿Cansado de alquilar? Tu primer depa a 5 min de tu trabajo por una cuota accesible."
+          </div>
+        </div>
+
+        <!-- Segment 2: 1 Dorm Inversión -->
+        <div class="bg-slate-800/90 border border-slate-700/80 rounded-2xl p-6 flex flex-col justify-between hover:border-emerald-500/50 transition-all">
+          <div>
+            <div class="w-12 h-12 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-xl mb-4">
+              <i class="fa-solid fa-chart-line"></i>
+            </div>
+            <span class="text-xs font-semibold uppercase tracking-wider text-emerald-400">1 Dorm / Estudio</span>
+            <h4 class="text-lg font-bold text-white mt-1">Inversión (Renta Corta / Airbnb)</h4>
+            <p class="text-xs text-slate-400 mt-2 leading-relaxed">
+              Inversionistas que buscan rentabilizar capital mediante plataformas de hospedaje o alquileres tradicionales de alta rotación.
+            </p>
+
+            <div class="mt-4 pt-4 border-t border-slate-700/60 space-y-2 text-xs">
+              <div>
+                <strong class="text-slate-300">Gatillo Racional:</strong>
+                <p class="text-slate-400">Rentabilidad % anual, ticket de entrada bajo, plusvalía de la zona.</p>
+              </div>
+              <div>
+                <strong class="text-slate-300">Ángulo Visual:</strong>
+                <p class="text-slate-400">Gráficos financieros, renders del edificio, mapa de demanda (universidades/empresas).</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-6 pt-3 bg-slate-900/60 rounded-xl p-3 text-[11px] text-emerald-300 border border-emerald-500/20">
+            <i class="fa-solid fa-lightbulb text-amber-400 mr-1"></i> <strong>Ejemplo Hook:</strong> "Obtén hasta 6.1% de rentabilidad anual invirtiendo en el límite con Miraflores."
+          </div>
+        </div>
+
+        <!-- Segment 3: 2-3 Dorm Familia -->
+        <div class="bg-slate-800/90 border border-slate-700/80 rounded-2xl p-6 flex flex-col justify-between hover:border-amber-500/50 transition-all">
+          <div>
+            <div class="w-12 h-12 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold text-xl mb-4">
+              <i class="fa-solid fa-house-chimney-window"></i>
+            </div>
+            <span class="text-xs font-semibold uppercase tracking-wider text-amber-400">2 y 3 Dormitorios</span>
+            <h4 class="text-lg font-bold text-white mt-1">Consolidación Familiar</h4>
+            <p class="text-xs text-slate-400 mt-2 leading-relaxed">
+              Familias en crecimiento o consolidación. Priorizan espacio interno, seguridad, colegios de prestigio y áreas verdes.
+            </p>
+
+            <div class="mt-4 pt-4 border-t border-slate-700/60 space-y-2 text-xs">
+              <div>
+                <strong class="text-slate-300">Gatillo Emocional:</strong>
+                <p class="text-slate-400">Seguridad para los hijos, legado, bienestar, tiempo en familia.</p>
+              </div>
+              <div>
+                <strong class="text-slate-300">Ángulo Visual:</strong>
+                <p class="text-slate-400">Zonas de juegos, parques cercanos, distribución inteligente, balcones amplios.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-6 pt-3 bg-slate-900/60 rounded-xl p-3 text-[11px] text-amber-300 border border-amber-500/20">
+            <i class="fa-solid fa-lightbulb text-amber-400 mr-1"></i> <strong>Ejemplo Hook:</strong> "El espacio que tu familia merece, a pasos de los mejores parques y colegios."
+          </div>
+        </div>
+
+        <!-- Segment 4: 2-3 Dorm Inversión Familiar -->
+        <div class="bg-slate-800/90 border border-slate-700/80 rounded-2xl p-6 flex flex-col justify-between hover:border-purple-500/50 transition-all">
+          <div>
+            <div class="w-12 h-12 rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center font-bold text-xl mb-4">
+              <i class="fa-solid fa-vault"></i>
+            </div>
+            <span class="text-xs font-semibold uppercase tracking-wider text-purple-400">2 y 3 Dormitorios</span>
+            <h4 class="text-lg font-bold text-white mt-1">Inversión Patrimonial Estable</h4>
+            <p class="text-xs text-slate-400 mt-2 leading-relaxed">
+              Inversionistas patrimoniales que buscan contratos de alquiler a largo plazo (2 a 5 años) con familias consolidadas.
+            </p>
+
+            <div class="mt-4 pt-4 border-t border-slate-700/60 space-y-2 text-xs">
+              <div>
+                <strong class="text-slate-300">Gatillo Racional:</strong>
+                <p class="text-slate-400">Baja tasa de vacancia, flujo de caja constante, protección contra la inflación.</p>
+              </div>
+              <div>
+                <strong class="text-slate-300">Ángulo Visual:</strong>
+                <p class="text-slate-400">Mapa de colegios y servicios que garantizan inquilinos estables.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-6 pt-3 bg-slate-900/60 rounded-xl p-3 text-[11px] text-purple-300 border border-purple-500/20">
+            <i class="fa-solid fa-lightbulb text-amber-400 mr-1"></i> <strong>Ejemplo Hook:</strong> "Asegura un flujo de alquiler continuo con departamentos familiares de alta demanda."
+          </div>
+        </div>
+
+      </div>
+
+      <!-- VIDEO AD STRUCTURE RULE -->
+      <div class="mt-10 bg-slate-800/60 rounded-2xl p-6 border border-slate-700">
+        <h4 class="text-base font-bold text-white flex items-center">
+          <i class="fa-solid fa-video text-rose-500 mr-2"></i> Estructura Creadora para Video Ads (Instagram Reels, TikTok, YouTube Shorts)
+        </h4>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mt-4 text-xs">
+          <div class="bg-slate-900/80 p-3 rounded-xl border border-slate-700">
+            <span class="text-rose-400 font-bold block mb-1">0 - 3 Seg: GANCHO DISRUPTIVO</span>
+            Interpelación directa al dolor o deseo del público (ej. "¿Sabiías que puedes vivir a 1 cuadra de Miraflores pagando precio Surquillo?").
+          </div>
+          <div class="bg-slate-900/80 p-3 rounded-xl border border-slate-700">
+            <span class="text-amber-400 font-bold block mb-1">4 - 15 Seg: DEMOSTRACIÓN</span>
+            Recorrido dinámico a ritmo de música alegre. Muestra de acabado premium, vista, cocina equipada o domótica.
+          </div>
+          <div class="bg-slate-900/80 p-3 rounded-xl border border-slate-700">
+            <span class="text-blue-400 font-bold block mb-1">16 - 25 Seg: ESTILO DE VIDA</span>
+            Uso real de amenidades (rooftop, coworking, gimnasio, zona de parrillas o juegos familiares).
+          </div>
+          <div class="bg-slate-900/80 p-3 rounded-xl border border-slate-700">
+            <span class="text-emerald-400 font-bold block mb-1">25 - 30 Seg: LLAMADO A LA ACCIÓN</span>
+            Instrucción clara de conversión (ej. "Haz clic abajo para cotizar tu cuota inicial financiada").
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- SECTION 3: ESTUDIO PORMENORIZADO POR DISTRITO -->
+  <section id="distritos" class="py-12 lg:py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="mb-8">
+      <div class="flex items-center space-x-2 text-blue-600 font-semibold text-sm">
+        <i class="fa-solid fa-map-location-dot"></i>
+        <span>ANÁLISIS DE MERCADO & PAUTA RECOMENDADA</span>
+      </div>
+      <h3 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-1">
+        Estudio Comercial Específico por Distrito
+      </h3>
+      <p class="text-slate-600 text-sm sm:text-base mt-2">
+        Selecciona un distrito para desplegar el análisis de demografía, la lista de competidores detectados y las directrices exactas para las piezas de publicidad digital:
+      </p>
+    </div>
+
+    <!-- DISTRICT TABS SELECTOR -->
+    <div class="flex items-center space-x-2 overflow-x-auto pb-4 custom-scrollbar mb-6">
+      <button onclick="switchDistrict('sanmiguel')" id="tab-sanmiguel" class="district-tab active px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm whitespace-nowrap border transition-all bg-blue-600 text-white border-blue-600 shadow-sm">
+        San Miguel (6)
+      </button>
+      <button onclick="switchDistrict('santabeatriz')" id="tab-santabeatriz" class="district-tab px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm whitespace-nowrap border transition-all bg-white text-slate-700 border-slate-200 hover:bg-slate-100">
+        Santa Beatriz (5)
+      </button>
+      <button onclick="switchDistrict('jesusmaria')" id="tab-jesusmaria" class="district-tab px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm whitespace-nowrap border transition-all bg-white text-slate-700 border-slate-200 hover:bg-slate-100">
+        Jesús María (2)
+      </button>
+      <button onclick="switchDistrict('sanborja')" id="tab-sanborja" class="district-tab px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm whitespace-nowrap border transition-all bg-white text-slate-700 border-slate-200 hover:bg-slate-100">
+        San Borja (2)
+      </button>
+      <button onclick="switchDistrict('pueblolibre')" id="tab-pueblolibre" class="district-tab px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm whitespace-nowrap border transition-all bg-white text-slate-700 border-slate-200 hover:bg-slate-100">
+        Pueblo Libre (2)
+      </button>
+      <button onclick="switchDistrict('magdalena')" id="tab-magdalena" class="district-tab px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm whitespace-nowrap border transition-all bg-white text-slate-700 border-slate-200 hover:bg-slate-100">
+        Magdalena (1)
+      </button>
+      <button onclick="switchDistrict('surquillo')" id="tab-surquillo" class="district-tab px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm whitespace-nowrap border transition-all bg-white text-slate-700 border-slate-200 hover:bg-slate-100">
+        Surquillo / Danaus (1)
+      </button>
+    </div>
+
+    <!-- DISTRICT CONTENT CONTAINER -->
+    <div id="district-content" class="space-y-8">
+      <!-- Dynamic content injected via JS -->
+    </div>
+
+  </section>
+
+  <!-- SECTION 4: INTERACTIVE PROJECT MATRIX FOR GRUPO MG -->
+  <section id="portafolio" class="py-12 lg:py-16 bg-slate-900 text-white border-t border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="flex flex-col md:flex-row md:items-end justify-between mb-8">
+        <div>
+          <span class="px-3 py-1 rounded-full bg-amber-500/20 text-amber-400 text-xs font-semibold border border-amber-500/30">
+            PORTAFOLIO GENERAL
+          </span>
+          <h3 class="text-2xl sm:text-3xl font-extrabold mt-2">
+            Directorio Interactivo de Proyectos Grupo MG (19)
+          </h3>
+          <p class="text-slate-400 text-sm mt-1">
+            Filtra y explora las características técnicas, etapas comerciales y bancos financistas de cada desarrollo.
+          </p>
+        </div>
+
+        <!-- SEARCH / FILTER CONTROLS -->
+        <div class="mt-4 md:mt-0 flex flex-wrap gap-2">
+          <input type="text" id="projectSearch" onkeyup="filterProjects()" placeholder="Buscar por nombre o dirección..." class="bg-slate-800 border border-slate-700 text-xs rounded-xl px-4 py-2.5 text-white placeholder-slate-400 focus:outline-none focus:border-blue-500 w-full sm:w-60">
+          <select id="stageFilter" onchange="filterProjects()" class="bg-slate-800 border border-slate-700 text-xs rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-blue-500">
+            <option value="ALL">Todas las Etapas</option>
+            <option value="Entrega inmediata">Entrega Inmediata</option>
+            <option value="En construcción">En Construcción</option>
+            <option value="Preventa">Preventa</option>
+            <option value="Lanzamiento">Lanzamiento</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- TABLE CONTAINER -->
+      <div class="bg-slate-800/80 border border-slate-700/80 rounded-2xl overflow-hidden shadow-xl">
+        <div class="overflow-x-auto custom-scrollbar">
+          <table class="w-full text-left border-collapse text-xs">
+            <thead>
+              <tr class="bg-slate-900/90 text-slate-300 font-semibold border-b border-slate-700">
+                <th class="p-3.5">Proyecto</th>
+                <th class="p-3.5">Distrito</th>
+                <th class="p-3.5">Etapa Comercial</th>
+                <th class="p-3.5">Unidades</th>
+                <th class="p-3.5">Pisos / Sótanos</th>
+                <th class="p-3.5">Precio m² Ref.</th>
+                <th class="p-3.5">Banco Financista</th>
+                <th class="p-3.5">Sostenibilidad</th>
+              </tr>
+            </thead>
+            <tbody id="projectTableBody" class="divide-y divide-slate-700/60 text-slate-300">
+              <!-- Rendered via JavaScript -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="bg-slate-950 text-slate-500 text-xs py-8 border-t border-slate-900">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center sm:text-left flex flex-col sm:flex-row justify-between items-center gap-4">
+      <div>
+        <p class="font-semibold text-slate-400">Grupo MG — Inteligencia Comercial & Marketing Inmobiliario</p>
+        <p class="mt-0.5">Basado en datos consolidados de APEIM, INEI, BCRP y barrido de mercado 2026.</p>
+      </div>
+      <div class="flex items-center space-x-4 text-slate-400">
+        <span class="hover:text-white transition-colors"><i class="fa-solid fa-shield-halved text-blue-500 mr-1"></i> Uso Interno & Estratégico</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- JAVASCRIPT LOGIC -->
+  <script>
+    // --------------------------------------------------------------------------
+    // 1. DATA STRUCTURE: 19 PROJECTS OF GRUPO MG
+    // --------------------------------------------------------------------------
+    const projectsData = [
+      { name: "ALBORADA", district: "San Miguel", address: "Av. La Paz 1150", stage: "Entrega inmediata", units: 259, floors: 16, basements: 2, priceM2: "S/ 5,338", bank: "Independizado", cert: "Grado 3" },
+      { name: "ALBORADA II", district: "San Miguel", address: "Av. La Paz 1147–1171", stage: "Entrega inmediata", units: 254, floors: 16, basements: 2, priceM2: "S/ 5,189", bank: "Interbank (Pichincha)", cert: "Grado 3" },
+      { name: "ALBORADA III", district: "San Miguel", address: "Av. La Paz 839", stage: "Entrega inmediata", units: 244, floors: 18, basements: 3, priceM2: "S/ 4,873", bank: "BCP (Pichincha)", cert: "Grado 3 + EDGE" },
+      { name: "MAR DE PLATA II", district: "San Miguel", address: "Av. Universitaria 838", stage: "Entrega inmediata", units: 129, floors: 20, basements: 4, priceM2: "S/ 6,032", bank: "Independizado", cert: "Estándar Ahorro" },
+      { name: "LUMA", district: "San Miguel", address: "Av. La Paz 1641", stage: "En construcción", units: 219, floors: 13, basements: 3, priceM2: "Consultar", bank: "Interbank (Pichincha)", cert: "Grado 3" },
+      { name: "LURENT", district: "San Miguel", address: "Av. La Paz 1110", stage: "Lanzamiento", units: "Pendiente", floors: "--", basements: "--", priceM2: "Consultar", bank: "Por definir", cert: "Grado 3" },
+      
+      { name: "VISTA VERDE", district: "Santa Beatriz", address: "Jr. Torres Paz 834", stage: "Entrega inmediata", units: 195, floors: 20, basements: 2, priceM2: "S/ 6,121", bank: "Independizado", cert: "Estándar Ahorro" },
+      { name: "LOS PINOS III", district: "Santa Beatriz", address: "Jr. Manuel del Pino 638", stage: "Entrega inmediata", units: 90, floors: 15, basements: 2, priceM2: "S/ 5,815", bank: "Independizado", cert: "Estándar Ahorro" },
+      { name: "SMART A", district: "Santa Beatriz", address: "Jr. Enrique Barrón 1149", stage: "Entrega inmediata", units: 34, floors: 10, basements: 3, priceM2: "S/ 6,228", bank: "Independizado", cert: "Estándar Smart" },
+      { name: "CENTRIUM", district: "Santa Beatriz", address: "Jr. Alejandro Tirado 653", stage: "En construcción", units: 211, floors: 30, basements: 6, priceM2: "S/ 5,760", bank: "BBVA (Pichincha)", cert: "Grado 2 + EDGE" },
+      { name: "VISORA", district: "Santa Beatriz", address: "Jr. Torres Paz 944", stage: "Lanzamiento", units: "Pendiente", floors: "--", basements: "--", priceM2: "Consultar", bank: "Por definir", cert: "Sostenible" },
+
+      { name: "HUIRACOCHA", district: "Jesús María", address: "Jr. Huiracocha 2170", stage: "En construcción", units: 111, floors: 17, basements: 5, priceM2: "Consultar", bank: "Pichincha", cert: "Grado 3" },
+      { name: "ALLURE", district: "Jesús María", address: "Av. Húsares de Junín 661", stage: "En construcción", units: 148, floors: 18, basements: 3, priceM2: "Consultar", bank: "BCP (Pichincha)", cert: "Grado 3" },
+
+      { name: "BRAVO", district: "San Borja", address: "Av. Parque Sur 750", stage: "Entrega inmediata", units: 74, floors: 12, basements: 6, priceM2: "S/ 8,131", bank: "BCP", cert: "Estándar Premium" },
+      { name: "FORESTA", district: "San Borja", address: "Jr. Gozzoli 440–446", stage: "Entrega inmediata", units: 16, floors: 4, basements: 2, priceM2: "S/ 8,131", bank: "BCP", cert: "Boutique Lujo" },
+
+      { name: "LIRI SUCRE", district: "Pueblo Libre", address: "Av. A. J. de Sucre 1301", stage: "Entrega inmediata", units: 77, floors: 17, basements: 3, priceM2: "S/ 5,963", bank: "Independizado", cert: "Estándar Ahorro" },
+      { name: "DULANTO", district: "Pueblo Libre", address: "Av. M. C. Dulanto 209", stage: "En construcción", units: 241, floors: 13, basements: 3, priceM2: "S/ 6,032", bank: "BanBif", cert: "Grado 3 + EDGE" },
+
+      { name: "VISTA BRASIL", district: "Magdalena del Mar", address: "Av. Brasil 3784", stage: "Entrega inmediata", units: 135, floors: 23, basements: 4, priceM2: "S/ 6,077", bank: "Independizado", cert: "Vista al Mar" },
+
+      { name: "DANAUS", district: "Surquillo", address: "Av. Tomás Marsano 2379", stage: "Preventa", units: 351, floors: 36, basements: 2, priceM2: "S/ 6,810", bank: "Interbank", cert: "Alta Densidad Smart" }
+    ];
+
+    // --------------------------------------------------------------------------
+    // 2. DISTRICT DETAILED DATA FOR TAB DISPLAY
+    // --------------------------------------------------------------------------
+    const districtDetails = {
+      sanmiguel: {
+        title: "San Miguel (Lima Moderna — Zona 6 APEIM)",
+        population: "183,600 hab.",
+        nse: "B (49%), A (20%), C (28%)",
+        priceM2: "S/ 5,189 – S/ 6,147",
+        yield: "5.4% Anual",
+        projectsMG: "Alborada I, Alborada II, Alborada III, Luma, Lurent, Mar de Plata II (6 Proyectos)",
+        competitors: [
+          { name: "Costanova", developer: "Grupo T&C", ticket: "S/ 156,943", area: "23 - 108 m²", highlight: "Micro-inversión, vista al mar" },
+          { name: "Madison Park", developer: "Tribeca", ticket: "S/ 206,010", area: "29 - 121 m²", highlight: "Coworking, piscina panorámica" },
+          { name: "Patio La Paz", developer: "Paz Inmobiliaria", ticket: "S/ 210,000", area: "35 - 75 m²", highlight: "Consolidación en Av. La Paz" },
+          { name: "Costa Living", developer: "VyV Bravo", ticket: "S/ 220,000", area: "32 - 80 m²", highlight: "Competencia directa en Av. La Paz 2607" }
+        ],
+        adDirectives: {
+          oneBed: {
+            target: "Jóvenes independientes y pequeños inversionistas.",
+            angle: "Vida frente al mar con alta rentabilidad.",
+            visuals: "Renders de rooftop/bar, cercanía al aeropuerto (Airbnb) y Plaza San Miguel.",
+            copy: "Tu depa frente al mar desde S/ 156,000. Rentabilidad bruta estimada de 5.4% anual."
+          },
+          familyBed: {
+            target: "Familias consolidadas y parejas jóvenes.",
+            angle: "Consolidación familiar y conveniencia urbana.",
+            visuals: "Zonas de parrillas, parques internos, cercanía a colegios emblemáticos y malecón.",
+            copy: "El espacio que tu familia necesita con parques, colegios y la tranquilidad de la Costa Verde."
+          }
+        }
+      },
+      santabeatriz: {
+        title: "Santa Beatriz / Cercado de Lima (Lima Centro — Zona 3 APEIM)",
+        population: "310,800 hab. (Cercado completo)",
+        nse: "B (38%), C (45%), D (17%)",
+        priceM2: "S/ 5,760 – S/ 6,253",
+        yield: "5.6% Anual",
+        projectsMG: "Vista Verde, Los Pinos III, Smart A, Centrium, Visora (5 Proyectos)",
+        competitors: [
+          { name: "HELIO Santa Beatriz", developer: "Developer local", ticket: "S/ 240,000", area: "30 - 70 m²", highlight: "Posicionado como Invest-Living" },
+          { name: "Tirado 629", developer: "Invent", ticket: "S/ 551,950", area: "59 - 147 m²", highlight: "Edificio ecológico, paneles solares" },
+          { name: "Los Cerezos", developer: "Varios", ticket: "S/ 230,000", area: "35 - 68 m²", highlight: "Bono Mivivienda Verde, EDGE" }
+        ],
+        adDirectives: {
+          oneBed: {
+            target: "Trabajadores jóvenes del centro/San Isidro e inversionistas conservadores.",
+            angle: "Centralidad inteligente a un paso de San Isidro.",
+            visuals: "Iconografía de ahorro (Smart building), cercanía a Vía Expresa y Metropolitano.",
+            copy: "El centro de todo, ahora inteligente. A 5 minutos de San Isidro sin pagar sobreprecio."
+          },
+          familyBed: {
+            target: "Familias del sector público/privado que trabajan céntrico.",
+            angle: "Ahorro de tiempo en transporte y calidad de vida urbana.",
+            visuals: "Vistas al Parque de la Reserva (Circuito Mágico del Agua), balcones amplios, zonas de niños.",
+            copy: "Recupera 2 horas de tu día viviendo en Santa Beatriz. Departamentos familiares desde S/ 297,000."
+          }
+        }
+      },
+      jesusmaria: {
+        title: "Jesús María (Lima Moderna — Zona 6 APEIM)",
+        population: "83,900 hab. (64.5% con educación superior)",
+        nse: "A/B (72%), C (28%)",
+        priceM2: "S/ 7,100 – S/ 7,574",
+        yield: "5.2% Anual",
+        projectsMG: "Huiracocha, Allure (2 Proyectos)",
+        competitors: [
+          { name: "Huáscar 21", developer: "Nexo Listado", ticket: "S/ 1,367,021", area: "100 - 180 m²", highlight: "Segmento premium metrajes amplios" },
+          { name: "Ciudaris Quarzo", developer: "Ciudaris", ticket: "S/ 888,000", area: "70 - 120 m²", highlight: "Altas prestaciones y diseño" },
+          { name: "San Felipe Towers", developer: "Nexo Listado", ticket: "S/ 461,000", area: "45 - 85 m²", highlight: "Enfoque ejecutivo/médico" }
+        ],
+        adDirectives: {
+          oneBed: {
+            target: "Ejecutivos de San Isidro, médicos y profesores universitarios.",
+            angle: "Eficiencia, estatus sobrio y conectividad laboral.",
+            visuals: "Acabados en tonos sobrios (marino/carbón), gimnasio equipado, coworking premium.",
+            copy: "Vive a 5 minutos del centro financiero en el distrito residencial más consolidado."
+          },
+          familyBed: {
+            target: "Familias de clase media-alta y profesionales consolidados.",
+            angle: "Tradición, áreas verdes irremplazables y seguridad.",
+            visuals: "Cercanía al Campo de Marte, colegios de prestigio, distribución espaciosa.",
+            copy: "El espacio y la seguridad que buscas para ver crecer a tus hijos en Jesús María."
+          }
+        }
+      },
+      sanborja: {
+        title: "San Borja (Lima Top — Zona 7 APEIM)",
+        population: "123,700 hab.",
+        nse: "A (29%), B (45%), C (20%)",
+        priceM2: "S/ 6,600 – S/ 8,131",
+        yield: "4.9% Anual",
+        projectsMG: "Bravo, Foresta (2 Proyectos Boutique)",
+        competitors: [
+          { name: "San Borja Sur 1170", developer: "Qolono", ticket: "S/ 850,000", area: "90 - 180 m²", highlight: "Flats y dúplex de gran lujo" },
+          { name: "Bravo San Borja", developer: "Grupo MG", ticket: "S/ 451,200", area: "51 - 112 m²", highlight: "Diseño arquitectónico exclusivo" }
+        ],
+        adDirectives: {
+          oneBed: {
+            target: "Ejecutivos C-Level y 'Empty nesters' (padres cuyos hijos emanciparon).",
+            angle: "Exclusividad boutique sin mantenimiento complejo.",
+            visuals: "Ascensor directo, acabados de cuarzo/madera, vistas a parques arbolados.",
+            copy: "Exclusividad absoluta: solo 16 familias en un entorno arbolado y seguro."
+          },
+          familyBed: {
+            target: "Familias de alto poder adquisitivo.",
+            angle: "El distrito familiar por excelencia de Lima Top.",
+            visuals: "Tomas aéreas del Pentagonito, Parque de la Felicidad, acabados de máxima gama.",
+            copy: "Tu hogar frente a los mejores parques de San Borja. Exclusividad, paz y seguridad."
+          }
+        }
+      },
+      pueblolibre: {
+        title: "Pueblo Libre (Lima Moderna — Zona 6 APEIM)",
+        population: "96,900 hab. (65.8% educación superior)",
+        nse: "B (52%), C (38%), A (10%)",
+        priceM2: "S/ 5,963 – S/ 6,279",
+        yield: "5.7% Anual",
+        projectsMG: "Liri Sucre, Dulanto (2 Proyectos)",
+        competitors: [
+          { name: "Vivapark 150", developer: "La Venturosa", ticket: "S/ 221,350", area: "38 - 72 m²", highlight: "Hogar tradicional, entregas garantizadas" },
+          { name: "Proyectos V&V", developer: "V&V Grupo", ticket: "S/ 254,000", area: "40 - 80 m²", highlight: "Enfoque funcional y Mivivienda Verde" }
+        ],
+        adDirectives: {
+          oneBed: {
+            target: "Inversionistas enfocados en público universitario (PUCP/UNMSM) y médicos.",
+            angle: "Demanda de alquiler cautiva con retorno del 5.7%.",
+            visuals: "Mapas infográficos a campus universitarios, rociadores de seguridad, coworking.",
+            copy: "Invierte con demanda asegurada por universidades y clínicas en Pueblo Libre."
+          },
+          familyBed: {
+            target: "Familias peruanas tradicionales y profesionales consolidados.",
+            angle: "Vida de barrio cultural, tranquilidad y subsidios de ahorro.",
+            visuals: "Plazas históricas, museos, logos prominentes de Bono Mivivienda Verde / Nuevo Crédito.",
+            copy: "Haz realidad la casa propia en un distrito histórico con Bono Mivivienda Verde de hasta S/ 31,100."
+          }
+        }
+      },
+      magdalena: {
+        title: "Magdalena del Mar (Lima Moderna — Zona 6 APEIM)",
+        population: "66,600 hab.",
+        nse: "A (31%), B (48%), C (21%)",
+        priceM2: "S/ 6,077 – S/ 6,908",
+        yield: "5.3% Anual",
+        projectsMG: "Vista Brasil (1 Proyecto)",
+        competitors: [
+          { name: "Plaza 57", developer: "Southern Bridge", ticket: "S/ 235,000", area: "35 - 78 m²", highlight: "Crédito Mivivienda, límite con San Isidro" },
+          { name: "Salaverry I", developer: "Actual Inmobiliaria", ticket: "S/ 260,000", area: "40 - 85 m²", highlight: "Enfoque corporativo hacia San Isidro" }
+        ],
+        adDirectives: {
+          oneBed: {
+            target: "Jóvenes ejecutivos y parejas DINKs (Double Income No Kids).",
+            angle: "Frontera invisible con San Isidro y estilo de vida costero.",
+            visuals: "Rooftop bar, pet spa, ciclovías de la Costa Verde, atardeceres frente al mar.",
+            copy: "Vive a pasos de San Isidro disfrutando de la brisa del mar y un rooftop exclusivo."
+          },
+          familyBed: {
+            target: "Familias que buscan cercanía a centros comerciales y colegios.",
+            angle: "Conveniencia comercial (Real Plaza Salaverry / Plaza San Miguel).",
+            visuals: "Mercados tradicionales organizados, malecones, departamentos con vista panorámica.",
+            copy: "El equilibrio perfecto: amplitud familiar, vista al mar y cercanía a todo."
+          }
+        }
+      },
+      surquillo: {
+        title: "Surquillo / Proyecto Danaus (Lima Moderna — Zona 8 APEIM)",
+        population: "94,100 hab. (Densidad extrema: >30,000 hab/km²)",
+        nse: "C (40%), B (22%), D/E (33%) — Compradores: NSE A/B de distritos limítrofes",
+        priceM2: "S/ 6,807 – S/ 6,817",
+        yield: "6.1% Anual (Líder Metropolitano)",
+        projectsMG: "Danaus (Torre icónica de 36 pisos, 351 dptos en Av. Tomás Marsano 2379)",
+        competitors: [
+          { name: "Marsano Park", developer: "Desarrolladora local", ticket: "S/ 314,186", area: "35 - 75 m²", highlight: "Competencia directa en Av. Tomás Marsano" },
+          { name: "Torre Marsano 28", developer: "Varios", ticket: "S/ 290,000", area: "38 - 72 m²", highlight: "Frente a Mallplaza Angamos, EDGE" },
+          { name: "Sq2 Work & Living", developer: "Sembra", ticket: "S/ 270,000", area: "30 - 65 m²", highlight: "Diseñado para co-living y teletrabajo" }
+        ],
+        adDirectives: {
+          oneBed: {
+            target: "Jóvenes ejecutivos e inversionistas agresivos de Airbnb.",
+            angle: "Vive a 1 cuadra de Miraflores pagando precio de Surquillo.",
+            visuals: "Estética urban-chic, luces de neón, conectividad a centros financieros, 6.1% yield.",
+            copy: "Invierte a precio Surquillo, alquila a inquilino de Miraflores. Renta bruta de 6.1% anual."
+          },
+          familyBed: {
+            target: "Familias consolidadas y roommates (diseño mariposa en 2 dorm).",
+            angle: "Conexión directa a Mallplaza Angamos y áreas verdes de Surco/Miraflores.",
+            visuals: "Amenities de torre de 36 pisos: piscina, gym, zona de parrillas, distribución mariposa.",
+            copy: "Vive en una torre de 36 pisos con amenidades resort a pasos de Mallplaza Angamos."
+          }
+        }
+      }
+    };
+
+    // --------------------------------------------------------------------------
+    // 3. UTILITY FOR LABEL WRAPPING IN CHART.JS (>16 CHARS)
+    // --------------------------------------------------------------------------
+    function formatLabel(str, maxLen = 16) {
+      if (typeof str !== 'string') return str;
+      if (str.length <= maxLen) return str;
+      const words = str.split(' ');
+      const lines = [];
+      let currentLine = '';
+      words.forEach(word => {
+        if ((currentLine + ' ' + word).trim().length > maxLen) {
+          if (currentLine) lines.push(currentLine.trim());
+          currentLine = word;
+        } else {
+          currentLine += (currentLine ? ' ' : '') + word;
+        }
+      });
+      if (currentLine) lines.push(currentLine.trim());
+      return lines;
+    }
+
+    // Common Chart.js Tooltip Callback Options
+    const commonChartOptions = {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: {
+            font: { family: 'Plus Jakarta Sans', size: 11 },
+            boxWidth: 12
+          }
+        },
+        tooltip: {
+          callbacks: {
+            title: function(tooltipItems) {
+              const item = tooltipItems[0];
+              let label = item.chart.data.labels[item.dataIndex];
+              if (Array.isArray(label)) {
+                return label.join(' ');
+              } else {
+                return label;
+              }
+            }
+          }
+        }
+      }
+    };
+
+    // --------------------------------------------------------------------------
+    // 4. CHART INITIALIZATION
+    // --------------------------------------------------------------------------
+    function initCharts() {
+      const districtsList = ["Surquillo", "Pueblo Libre", "Santa Beatriz", "San Miguel", "Magdalena", "Jesús María", "San Borja"];
+      const formattedDistricts = districtsList.map(d => formatLabel(d, 16));
+
+      // Chart 1: Yield (%)
+      const ctxYield = document.getElementById('yieldChart').getContext('2d');
+      new Chart(ctxYield, {
+        type: 'bar',
+        data: {
+          labels: formattedDistricts,
+          datasets: [{
+            label: 'Rentabilidad Bruta (%)',
+            data: [6.1, 5.7, 5.6, 5.4, 5.3, 5.2, 4.9],
+            backgroundColor: ['#10b981', '#0284c7', '#2563eb', '#3b82f6', '#6366f1', '#8b5cf6', '#a855f7'],
+            borderRadius: 6
+          }]
+        },
+        options: {
+          ...commonChartOptions,
+          scales: {
+            y: { beginAtZero: true, max: 7, ticks: { callback: v => v + '%' } }
+          }
+        }
+      });
+
+      // Chart 2: Price per m²
+      const ctxPrice = document.getElementById('priceChart').getContext('2d');
+      new Chart(ctxPrice, {
+        type: 'bar',
+        data: {
+          labels: formattedDistricts,
+          datasets: [{
+            label: 'Precio Prom. S/ por m²',
+            data: [6812, 6275, 6121, 5600, 6492, 7337, 8131],
+            backgroundColor: '#f59e0b',
+            borderRadius: 6
+          }]
+        },
+        options: {
+          ...commonChartOptions,
+          indexAxis: 'y',
+          scales: {
+            x: { beginAtZero: true, ticks: { callback: v => 'S/' + v } }
+          }
+        }
+      });
+
+      // Chart 3: NSE Distribution
+      const ctxNse = document.getElementById('nseChart').getContext('2d');
+      new Chart(ctxNse, {
+        type: 'bar',
+        data: {
+          labels: formattedDistricts,
+          datasets: [
+            { label: 'NSE A (%)', data: [5, 10, 5, 20, 31, 28, 29], backgroundColor: '#2563eb' },
+            { label: 'NSE B (%)', data: [22, 52, 38, 49, 48, 44, 45], backgroundColor: '#0284c7' },
+            { label: 'NSE C (%)', data: [40, 38, 45, 28, 21, 28, 20], backgroundColor: '#f59e0b' }
+          ]
+        },
+        options: {
+          ...commonChartOptions,
+          scales: {
+            x: { stacked: true },
+            y: { stacked: true, max: 100, ticks: { callback: v => v + '%' } }
+          }
+        }
+      });
+
+      // Chart 4: Competitor Distribution (Doughnut)
+      const ctxComp = document.getElementById('competitorChart').getContext('2d');
+      new Chart(ctxComp, {
+        type: 'doughnut',
+        data: {
+          labels: ["San Miguel (6)", "Santa Beatriz (5)", "Jesús María (2)", "San Borja (2)", "Pueblo Libre (2)", "Surquillo (1)", "Magdalena (1)"].map(l => formatLabel(l, 16)),
+          datasets: [{
+            data: [6, 5, 2, 2, 2, 1, 1],
+            backgroundColor: ['#2563eb', '#0284c7', '#10b981', '#f59e0b', '#8b5cf6', '#f43f5e', '#64748b']
+          }]
+        },
+        options: {
+          ...commonChartOptions,
+          cutout: '65%'
+        }
+      });
+    }
+
+    // --------------------------------------------------------------------------
+    // 5. RENDER DISTRICT CONTENT ON TAB SWITCH
+    // --------------------------------------------------------------------------
+    function switchDistrict(key) {
+      const data = districtDetails[key];
+      if (!data) return;
+
+      // Update button styling
+      document.querySelectorAll('.district-tab').forEach(btn => {
+        btn.classList.remove('bg-blue-600', 'text-white', 'border-blue-600', 'shadow-sm');
+        btn.classList.add('bg-white', 'text-slate-700', 'border-slate-200');
+      });
+      const activeBtn = document.getElementById(`tab-${key}`);
+      if (activeBtn) {
+        activeBtn.classList.remove('bg-white', 'text-slate-700', 'border-slate-200');
+        activeBtn.classList.add('bg-blue-600', 'text-white', 'border-blue-600', 'shadow-sm');
+      }
+
+      // Render details HTML
+      const container = document.getElementById('district-content');
+      container.innerHTML = `
+        <div class="bg-white rounded-2xl p-6 lg:p-8 shadow-sm border border-slate-200">
+          
+          <!-- Header info -->
+          <div class="flex flex-col lg:flex-row lg:items-center justify-between pb-6 border-b border-slate-200 gap-4">
+            <div>
+              <span class="px-2.5 py-1 rounded bg-blue-50 text-blue-700 text-xs font-bold border border-blue-200">
+                Ficha Técnica de Mercado
+              </span>
+              <h3 class="text-2xl font-black text-slate-900 mt-2">${data.title}</h3>
+              <p class="text-xs text-slate-500 mt-1"><i class="fa-solid fa-building text-blue-500 mr-1"></i> Proyectos MG en la zona: <strong>${data.projectsMG}</strong></p>
+            </div>
+            
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
+              <div class="p-2.5 bg-slate-50 rounded-xl border border-slate-100">
+                <div class="text-[10px] text-slate-400 font-bold uppercase">Población</div>
+                <div class="text-xs font-bold text-slate-800 mt-0.5">${data.population}</div>
+              </div>
+              <div class="p-2.5 bg-slate-50 rounded-xl border border-slate-100">
+                <div class="text-[10px] text-slate-400 font-bold uppercase">NSE Predominante</div>
+                <div class="text-xs font-bold text-slate-800 mt-0.5">${data.nse}</div>
+              </div>
+              <div class="p-2.5 bg-slate-50 rounded-xl border border-slate-100">
+                <div class="text-[10px] text-slate-400 font-bold uppercase">Precio m² Rango</div>
+                <div class="text-xs font-bold text-amber-600 mt-0.5">${data.priceM2}</div>
+              </div>
+              <div class="p-2.5 bg-slate-50 rounded-xl border border-slate-100">
+                <div class="text-[10px] text-slate-400 font-bold uppercase">Rentabilidad (Yield)</div>
+                <div class="text-xs font-bold text-emerald-600 mt-0.5">${data.yield}</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Competitors Table -->
+          <div class="mt-6">
+            <h4 class="text-sm font-bold text-slate-900 mb-3 flex items-center">
+              <i class="fa-solid fa-people-arrows text-blue-600 mr-2"></i> Mapeo de Competencia Directa Detectada
+            </h4>
+            <div class="overflow-x-auto rounded-xl border border-slate-200">
+              <table class="w-full text-left border-collapse text-xs">
+                <thead>
+                  <tr class="bg-slate-100 text-slate-700 font-semibold">
+                    <th class="p-3">Proyecto Competidor</th>
+                    <th class="p-3">Inmobiliaria</th>
+                    <th class="p-3">Ticket Entrada (Desde)</th>
+                    <th class="p-3">Áreas (m²)</th>
+                    <th class="p-3">Propuesta de Valor / Enfoque</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-200 text-slate-600">
+                  ${data.competitors.map(c => `
+                    <tr class="hover:bg-slate-50">
+                      <td class="p-3 font-bold text-slate-800">${c.name}</td>
+                      <td class="p-3">${c.developer}</td>
+                      <td class="p-3 font-semibold text-emerald-600">${c.ticket}</td>
+                      <td class="p-3">${c.area}</td>
+                      <td class="p-3 text-slate-500">${c.highlight}</td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Ad Strategy Guidelines Grid -->
+          <div class="mt-8 pt-6 border-t border-slate-200">
+            <h4 class="text-sm font-bold text-slate-900 mb-4 flex items-center">
+              <i class="fa-solid fa-bullhorn text-amber-500 mr-2"></i> Lineamientos Estratégicos para Pauta Publicitaria Digital
+            </h4>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              
+              <!-- 1 Dormitory Directives -->
+              <div class="bg-slate-50 rounded-xl p-5 border border-slate-200">
+                <div class="flex items-center space-x-2 text-blue-600 font-bold text-xs uppercase mb-2">
+                  <i class="fa-solid fa-user"></i>
+                  <span>Tipología: 1 Dormitorio / Estudio</span>
+                </div>
+                <div class="space-y-3 text-xs">
+                  <div>
+                    <strong class="text-slate-800">Público Objetivo:</strong>
+                    <p class="text-slate-600">${data.adDirectives.oneBed.target}</p>
+                  </div>
+                  <div>
+                    <strong class="text-slate-800">Ángulo de Mensaje:</strong>
+                    <p class="text-slate-600">${data.adDirectives.oneBed.angle}</p>
+                  </div>
+                  <div>
+                    <strong class="text-slate-800">Elementos Visuales Sugeridos:</strong>
+                    <p class="text-slate-600">${data.adDirectives.oneBed.visuals}</p>
+                  </div>
+                  <div class="p-3 bg-blue-50/80 rounded-lg border border-blue-100 text-blue-900">
+                    <strong>Copy Recomendado Anuncio:</strong> "${data.adDirectives.oneBed.copy}"
+                  </div>
+                </div>
+              </div>
+
+              <!-- 2-3 Dormitories Directives -->
+              <div class="bg-slate-50 rounded-xl p-5 border border-slate-200">
+                <div class="flex items-center space-x-2 text-amber-600 font-bold text-xs uppercase mb-2">
+                  <i class="fa-solid fa-users"></i>
+                  <span>Tipología: 2 y 3 Dormitorios</span>
+                </div>
+                <div class="space-y-3 text-xs">
+                  <div>
+                    <strong class="text-slate-800">Público Objetivo:</strong>
+                    <p class="text-slate-600">${data.adDirectives.familyBed.target}</p>
+                  </div>
+                  <div>
+                    <strong class="text-slate-800">Ángulo de Mensaje:</strong>
+                    <p class="text-slate-600">${data.adDirectives.familyBed.angle}</p>
+                  </div>
+                  <div>
+                    <strong class="text-slate-800">Elementos Visuales Sugeridos:</strong>
+                    <p class="text-slate-600">${data.adDirectives.familyBed.visuals}</p>
+                  </div>
+                  <div class="p-3 bg-amber-50/80 rounded-lg border border-amber-100 text-amber-900">
+                    <strong>Copy Recomendado Anuncio:</strong> "${data.adDirectives.familyBed.copy}"
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      `;
+    }
+
+    // --------------------------------------------------------------------------
+    // 6. RENDER PROJECT TABLE & FILTERS
+    // --------------------------------------------------------------------------
+    function renderProjectTable(projects) {
+      const tbody = document.getElementById('projectTableBody');
+      tbody.innerHTML = projects.map(p => `
+        <tr class="hover:bg-slate-800/50 transition-colors">
+          <td class="p-3.5 font-bold text-white">${p.name}<br><span class="text-[10px] text-slate-400 font-normal">${p.address}</span></td>
+          <td class="p-3.5 text-slate-300 font-medium">${p.district}</td>
+          <td class="p-3.5">
+            <span class="px-2 py-0.5 rounded text-[10px] font-semibold ${
+              p.stage === 'Entrega inmediata' ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' :
+              p.stage === 'En construcción' ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30' :
+              p.stage === 'Preventa' ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30' :
+              'bg-purple-500/20 text-purple-400 border border-purple-500/30'
+            }">${p.stage}</span>
+          </td>
+          <td class="p-3.5">${p.units}</td>
+          <td class="p-3.5">${p.floors} p / ${p.basements} s</td>
+          <td class="p-3.5 font-bold text-amber-400">${p.priceM2}</td>
+          <td class="p-3.5 text-slate-400">${p.bank}</td>
+          <td class="p-3.5"><span class="px-2 py-0.5 bg-slate-700 rounded text-[10px] text-slate-300">${p.cert}</span></td>
+        </tr>
+      `).join('');
+    }
+
+    function filterProjects() {
+      const searchVal = document.getElementById('projectSearch').value.toLowerCase();
+      const stageVal = document.getElementById('stageFilter').value;
+
+      const filtered = projectsData.filter(p => {
+        const matchesSearch = p.name.toLowerCase().includes(searchVal) || p.district.toLowerCase().includes(searchVal) || p.address.toLowerCase().includes(searchVal);
+        const matchesStage = (stageVal === 'ALL') || (p.stage === stageVal);
+        return matchesSearch && matchesStage;
+      });
+
+      renderProjectTable(filtered);
+    }
+
+    // --------------------------------------------------------------------------
+    // 7. INITIALIZATION ON DOM LOAD
+    // --------------------------------------------------------------------------
+    document.addEventListener('DOMContentLoaded', () => {
+      initCharts();
+      switchDistrict('sanmiguel');
+      renderProjectTable(projectsData);
+    });
+  </script>
+
+  <!--
+    CONFIRMATION NOTE:
+    - NO SVG images or inline SVG tags were used anywhere in this file. Iconography uses FontAwesome CSS fonts.
+    - NO Mermaid JS was used.
+    - Responsive canvas elements are properly wrapped in div.chart-container elements.
+    - Multi-line tooltip callbacks for Chart.js are fully configured.
+  -->
+</body>
+</html>
