@@ -1,0 +1,412 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Rest Perú Google Ads</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=Source+Serif+4:opsz,wght@8..60,600&display=swap">
+<style>
+:root{
+  --bg:#F4F6F9; --paper:#FFFFFF; --ink:#1B2333; --ink-2:#4E5870; --ink-3:#7A8499;
+  --line:#D9DEE8; --line-2:#EAEEF4;
+  --accent:#1E4E9B; --accent-soft:#E4ECF9;
+  --crit:#B3271B; --crit-soft:#FCEBE8; --warn:#A8701A; --warn-soft:#FBF0DA; --ok:#1E7A4C; --ok-soft:#E0F3E7;
+  --sans:"Source Sans 3",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --serif:"Source Serif 4",Georgia,"Times New Roman",serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#101623; --paper:#182032; --ink:#EAEEF6; --ink-2:#B8C0D2; --ink-3:#8590A8;
+    --line:#2B3449; --line-2:#232B3E;
+    --accent:#86ACEC; --accent-soft:#1E2B47;
+    --crit:#F29288; --crit-soft:#3B201F; --warn:#E6B86C; --warn-soft:#3A2F18; --ok:#82CFA2; --ok-soft:#183428;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#101623; --paper:#182032; --ink:#EAEEF6; --ink-2:#B8C0D2; --ink-3:#8590A8;
+  --line:#2B3449; --line-2:#232B3E;
+  --accent:#86ACEC; --accent-soft:#1E2B47;
+  --crit:#F29288; --crit-soft:#3B201F; --warn:#E6B86C; --warn-soft:#3A2F18; --ok:#82CFA2; --ok-soft:#183428;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.55;margin:0}
+.wrap{max-width:900px;margin:0 auto;padding-inline:20px;padding-block:36px 80px}
+h1,h2,h3{font-family:var(--serif);font-weight:600;text-wrap:balance;margin:0;line-height:1.2}
+h1{font-size:2.1rem}
+h2{font-size:1.55rem;margin-block:60px 16px;padding-top:20px;border-top:2px solid var(--ink)}
+h3{font-size:1.2rem;margin-block:30px 10px}
+p{margin:0 0 14px;max-width:70ch}
+ul,ol{margin:0 0 16px;padding-left:24px;max-width:72ch}
+li{margin-bottom:7px}
+strong{font-weight:600}
+a{color:var(--accent)}
+.sub{color:var(--ink-2);font-size:1rem;margin-bottom:10px}
+.meta{color:var(--ink-2);font-size:.95rem;margin-top:16px;line-height:1.7}
+.meta b{color:var(--ink);font-weight:600}
+.lede{font-size:1.15rem;color:var(--ink-2);max-width:66ch;margin-top:20px}
+
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-top:28px}
+.tile{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:14px 16px}
+.tile .k{font-size:.9rem;color:var(--ink-2)}
+.tile .v{font-family:var(--serif);font-size:1.7rem;font-weight:600;font-variant-numeric:tabular-nums;margin-top:2px}
+.tile .s{font-size:.88rem;color:var(--ink-3);margin-top:2px}
+
+.actions{counter-reset:a;list-style:none;padding:0;margin:20px 0 0;max-width:none;display:grid;gap:12px}
+.actions li{break-inside:avoid;counter-increment:a;display:grid;grid-template-columns:36px 1fr;gap:12px;background:var(--paper);border:1px solid var(--line);border-left:5px solid var(--crit);border-radius:8px;padding:14px 16px;margin:0}
+.actions li::before{content:counter(a);font-family:var(--serif);font-size:1.5rem;font-weight:600;color:var(--crit);line-height:1.1}
+.actions li.w{border-left-color:var(--warn)} .actions li.w::before{color:var(--warn)}
+.actions li div{min-width:0}
+.actions li b{display:block;font-weight:600;font-size:1.08rem;margin-bottom:4px}
+.actions li span{color:var(--ink-2)}
+
+.pill{display:inline-block;font-size:.85rem;font-weight:600;padding:2px 10px;border-radius:999px;white-space:nowrap}
+.pill.crit{background:var(--crit-soft);color:var(--crit)} .pill.warn{background:var(--warn-soft);color:var(--warn)} .pill.ok{background:var(--ok-soft);color:var(--ok)} .pill.info{background:var(--accent-soft);color:var(--accent)}
+
+.tbl{margin:14px 0 20px;border:1px solid var(--line);border-radius:8px;background:var(--paper);overflow:hidden}
+table{border-collapse:collapse;width:100%;font-size:.97rem}
+th,td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--line-2);vertical-align:top}
+th{font-weight:600;color:var(--ink-2);background:var(--bg);font-size:.9rem}
+tbody tr:last-child td{border-bottom:0}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+tfoot td{font-weight:600;border-top:1px solid var(--line);background:var(--bg)}
+.cap{font-size:.9rem;color:var(--ink-3);margin:-10px 0 20px}
+.kwt{font-family:var(--mono);font-size:.9rem}
+
+/* En pantallas angostas cada fila se convierte en una ficha */
+@media (max-width:700px){
+  .tbl table,.tbl thead,.tbl tbody,.tbl tfoot,.tbl tr,.tbl td,.tbl th{display:block}
+  .tbl thead{display:none}
+  .tbl tr{padding:8px 0;border-bottom:1px solid var(--line)}
+  .tbl tbody tr:last-child{border-bottom:0}
+  .tbl td{display:grid;grid-template-columns:44% 1fr;gap:10px;border:0;padding:4px 12px}
+  .tbl td::before{content:attr(data-label);color:var(--ink-3);font-size:.9rem}
+  .tbl td.n{text-align:left;white-space:normal}
+  .tbl td.first{grid-template-columns:1fr;font-weight:600;padding-top:8px}
+  .tbl td.first::before{display:none}
+  .tbl tfoot td{background:transparent}
+}
+
+.callout{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:16px 18px;margin:18px 0 22px}
+.callout.crit{border-color:var(--crit);background:var(--crit-soft)}
+.callout.warn{border-color:var(--warn);background:var(--warn-soft)}
+.callout.ok{border-color:var(--ok);background:var(--ok-soft)}
+.callout p{max-width:none}
+.callout p:last-child{margin-bottom:0}
+.callout .t{font-weight:600;margin-bottom:6px}
+
+.kwgrid{display:grid;grid-template-columns:1fr;gap:14px;margin:16px 0 10px}
+.kw{background:var(--paper);border:1px solid var(--line);border-radius:8px;display:flex;flex-direction:column;min-width:0}
+.kw header{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;padding:12px 14px;border-bottom:1px solid var(--line-2)}
+.kw header b{display:block;font-weight:600}
+.kw header small{color:var(--ink-2);font-size:.9rem;display:block}
+.chips{display:flex;flex-wrap:wrap;gap:6px;padding:12px 14px}
+.chips span{font-family:var(--mono);font-size:.86rem;line-height:1.4;padding:3px 8px;border:1px solid var(--line);border-radius:5px;background:var(--bg);color:var(--ink);white-space:nowrap}
+.kw{break-inside:avoid;page-break-inside:avoid}
+button.copy{font:600 .88rem var(--sans);border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:6px;padding:6px 12px;cursor:pointer;white-space:nowrap;flex:none}
+button.copy:hover{border-color:var(--accent);color:var(--accent)}
+button.copy:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+button.copy.done{border-color:var(--ok);color:var(--ok)}
+
+.plan{display:grid;gap:12px;margin-top:16px}
+.week{break-inside:avoid;background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:14px 18px}
+.week b{font-family:var(--serif);font-size:1.15rem;display:block;margin-bottom:8px}
+.week ul{margin-bottom:0;max-width:none}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px}
+.small{font-size:.95rem;color:var(--ink-2)}
+@media (max-width:520px){ body{font-size:16px} h1{font-size:1.7rem} .wrap{padding-inline:16px} h2{margin-top:46px;font-size:1.4rem} }
+@media (prefers-reduced-motion: no-preference){ button.copy{transition:color .15s,border-color .15s} }
+</style>
+
+<div class="wrap">
+  <div class="sub">Rest Perú · Google Ads · cuenta 789-572-8599 · moneda soles</div>
+  <h1>Plan de acción para las campañas de búsqueda</h1>
+  <div class="meta">
+    Periodo analizado: <b>24 de junio al 22 de septiembre de 2026</b> (90 días)<br>
+    Fuente: <b>datos diarios de la API de Google Ads cargados en Axiom</b><br>
+    Fecha del informe: <b>25 de septiembre de 2026</b>
+  </div>
+  <p class="lede">La cuenta tiene una base sana: marca reconocible, palabras clave correctas y anuncios calificados como "Excelente" en Lima. El problema es que está tomando decisiones con señales falsas. Tres errores de configuración explican la mayor parte del gasto improductivo y hay que resolverlos antes de tocar pujas o presupuestos.</p>
+
+  <div class="tiles">
+    <div class="tile"><div class="k">Inversión en 90 días</div><div class="v">S/ 7,416</div><div class="s">4 campañas activas</div></div>
+    <div class="tile"><div class="k">En búsquedas reales</div><div class="v">S/ 4,043</div><div class="s">55 % del total</div></div>
+    <div class="tile"><div class="k">Display sin querer</div><div class="v">S/ 1,642</div><div class="s">banners dentro de campañas de búsqueda</div></div>
+    <div class="tile"><div class="k">Campaña Display</div><div class="v">S/ 1,731</div><div class="s">2,425 "conversiones" a S/ 0.71 cada una</div></div>
+    <div class="tile"><div class="k">Semanas sin medición</div><div class="v">5</div><div class="s">del 20 de julio al 23 de agosto</div></div>
+  </div>
+
+  <h2>Las cinco acciones que importan</h2>
+  <p>En orden de impacto. Las tres primeras se hacen en una tarde y no requieren rediseñar nada.</p>
+  <ol class="actions">
+    <li><div><b>Desactivar la Red de Display en las tres campañas de búsqueda.</b><span>Las tres tienen activada la opción "Incluir Red de Display". En 90 días eso se llevó S/ 979 de la campaña B2B (71 % de su gasto) y S/ 659 de Arequipa (40 %). Son clics en banners dentro de aplicaciones, casi todos de madrugada y en celular, que nunca fueron búsquedas.</span></div></li>
+    <li><div><b>Arreglar qué cuenta como conversión.</b><span>Hoy 29 acciones son "principales" y alimentan las pujas automáticas: vistas de página del test STOP-Bang, clics en "Ver más" de servicios y cinco variantes de "cita médica" que cuentan el mismo evento. La campaña Display registra 100 conversiones diarias con 300 clics, algo imposible. Deben quedar como principales solo el contacto por WhatsApp, el formulario y la cita confirmada; el resto pasa a secundarias.</span></div></li>
+    <li><div><b>Quitar las negativas que bloquean la demanda principal.</b><span>En Arequipa hay negativas de concordancia de frase para "apnea", "dormir" y "medicina del sueño". Desde el 10 de agosto la campaña no recibe ni una búsqueda con la palabra apnea (antes tenía unas 50 impresiones semanales). En Lima hay negativas para "clínica del sueño" en concordancia exacta, "para el sueño" y "qué médico trata el insomnio".</span></div></li>
+    <li class="w"><div><b>Cargar las listas nuevas de negativas, organizadas por raíz de palabra.</b><span>La cuenta acumula 2,447 negativas, casi todas consultas completas que solo ocurrieron una vez ("porque tengo tanto sueño"). Eso no bloquea nada nuevo. Las seis listas de más abajo, en concordancia de frase, cubren marcas de competidores, fármacos, productos antirronquido y consultas de bienestar sin intención de atenderse.</span></div></li>
+    <li class="w"><div><b>Pausar la campaña Display hasta que la medición esté limpia.</b><span>Con S/ 20 diarios genera el 80 % de las "conversiones" de la cuenta y ninguna es verificable. Ese presupuesto rinde más en la campaña de búsqueda de Lima, que pierde el 40 % de sus impresiones por falta de presupuesto.</span></div></li>
+  </ol>
+
+  <h2>Estado de las campañas</h2>
+  <div class="tbl"><table>
+    <thead><tr><th>Campaña</th><th>Tipo y estrategia de puja</th><th class="n">Presupuesto diario</th><th class="n">Clics</th><th class="n">Costo</th><th class="n">Conversiones reportadas</th><th class="n">Costo por conversión</th></tr></thead>
+    <tbody>
+      <tr><td class="first">Búsqueda Rest 2025 (Lima, pacientes)</td><td>Búsqueda · Maximizar valor de conversión</td><td class="n">S/ 30</td><td class="n">2,029</td><td class="n">S/ 2,638</td><td class="n">384</td><td class="n">S/ 6.9</td></tr>
+      <tr><td class="first">Display Rest 2025</td><td>Display · Maximizar conversiones</td><td class="n">S/ 20</td><td class="n">14,657</td><td class="n">S/ 1,731</td><td class="n">2,425</td><td class="n">S/ 0.7</td></tr>
+      <tr><td class="first">Rest AQP - MOQ 2026 (Arequipa)</td><td>Búsqueda · Maximizar conversiones</td><td class="n">S/ 26</td><td class="n">1,979</td><td class="n">S/ 1,659</td><td class="n">120</td><td class="n">S/ 13.8</td></tr>
+      <tr><td class="first">Búsqueda B2B Rest 2025 (empresas)</td><td>Búsqueda · Maximizar conversiones</td><td class="n">S/ 40</td><td class="n">1,136</td><td class="n">S/ 1,388</td><td class="n">50</td><td class="n">S/ 27.8</td></tr>
+    </tbody>
+    <tfoot><tr><td class="first">Total</td><td></td><td class="n">S/ 116</td><td class="n">19,801</td><td class="n">S/ 7,416</td><td class="n">2,979</td><td class="n">S/ 2.5</td></tr></tfoot>
+  </table></div>
+  <p class="cap">Las conversiones y el costo por conversión son los que reporta Google con la configuración actual. Ver la sección de medición: no son contactos reales.</p>
+
+  <h3>Cuánta demanda se está perdiendo (solo búsqueda)</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>Campaña</th><th class="n">Cuota de impresiones</th><th class="n">Perdida por presupuesto</th><th class="n">Perdida por ranking</th></tr></thead>
+    <tbody>
+      <tr><td class="first">Lima, pacientes</td><td class="n">22 %</td><td class="n">40 %</td><td class="n">38 %</td></tr>
+      <tr><td class="first">Arequipa</td><td class="n">23 %</td><td class="n">26 %</td><td class="n">48 %</td></tr>
+      <tr><td class="first">Empresas</td><td class="n">22 %</td><td class="n">8 %</td><td class="n">57 %</td></tr>
+    </tbody>
+  </table></div>
+  <p class="cap">Los anuncios aparecen en una de cada cinco búsquedas relevantes. La parte perdida por ranking se corrige con relevancia (grupos y páginas de destino), no con más puja.</p>
+
+  <div class="two">
+    <div>
+      <h3>A dónde se fue el dinero de cada campaña de búsqueda</h3>
+      <div class="tbl"><table>
+        <thead><tr><th>Campaña</th><th class="n">Costo total</th><th class="n">Costo en palabras clave</th><th class="n">Costo en Red de Display</th></tr></thead>
+        <tbody>
+          <tr><td class="first">Lima, pacientes</td><td class="n">S/ 2,638</td><td class="n">S/ 2,634</td><td class="n">S/ 4 (0 %)</td></tr>
+          <tr><td class="first">Arequipa</td><td class="n">S/ 1,659</td><td class="n">S/ 1,000</td><td class="n">S/ 659 (40 %)</td></tr>
+          <tr><td class="first">Empresas</td><td class="n">S/ 1,388</td><td class="n">S/ 409</td><td class="n">S/ 979 (71 %)</td></tr>
+        </tbody>
+      </table></div>
+      <p class="small">La diferencia entre el costo de la campaña y el costo de sus palabras clave es tráfico de la Red de Display. En la campaña de empresas se ve desde junio: 67,000 impresiones ese mes con solo 19 soles atribuidos a palabras clave.</p>
+    </div>
+    <div>
+      <h3>Mes a mes</h3>
+      <div class="tbl"><table>
+        <thead><tr><th>Mes</th><th class="n">Costo</th><th class="n">Clics</th><th class="n">Conversiones reportadas</th></tr></thead>
+        <tbody>
+          <tr><td class="first">Junio</td><td class="n">S/ 1,894</td><td class="n">6,362</td><td class="n">3,309</td></tr>
+          <tr><td class="first">Julio</td><td class="n">S/ 2,220</td><td class="n">6,869</td><td class="n">1,075</td></tr>
+          <tr><td class="first">Agosto</td><td class="n">S/ 2,451</td><td class="n">5,204</td><td class="n">166</td></tr>
+          <tr><td class="first">Septiembre (hasta el 22)</td><td class="n">S/ 2,544</td><td class="n">7,204</td><td class="n">1,595</td></tr>
+        </tbody>
+      </table></div>
+      <p class="small">Agosto no fue un mal mes de pauta: fue un mes sin etiquetas de conversión. Entre el 20 de julio y el 23 de agosto las cuatro campañas reportaron cero conversiones mientras gastaban con normalidad.</p>
+    </div>
+  </div>
+
+  <h2>Hallazgo 1 · La medición está inflada y guía las pujas</h2>
+  <p>Las cuatro campañas usan pujas automáticas. Google optimiza hacia lo que la cuenta marca como "conversión principal", y hoy eso incluye lo siguiente:</p>
+  <div class="tbl"><table>
+    <thead><tr><th>Grupo</th><th>Acciones de conversión</th><th class="n">Conversiones en 90 días</th><th>Qué es en realidad</th><th>Qué debería ser</th></tr></thead>
+    <tbody>
+      <tr><td class="first">Vistas de página</td><td>STOP BANG, STOP BANG (1), STOP BANG (2), PV Estudio BH8, PV Ver más Clínica BH9, PV Ver más Smartwatch BH11, PV Ver más Insomnio BH12, PV Ver más Pulsioximetría BH10, VP servicios b2b</td><td class="n">914</td><td>Alguien cargó una página</td><td><span class="pill warn">Secundarias</span></td></tr>
+      <tr><td class="first">Citas</td><td>CITA MEDICA, CITA MEDICA (1), CITA MEDICA (2) AREQUIPA, CITA MEDICA (3), cita online (total)</td><td class="n">1,187</td><td>Cinco etiquetas para el mismo evento. Se disparan también desde Display: 531 "CITA MEDICA" en 90 días con S/ 1,731 de banners</td><td><span class="pill ok">Una sola, principal</span></td></tr>
+      <tr><td class="first">WhatsApp</td><td>contacto whatsapp B2C, Wh Asesor AQP, wh programa 2, contacto whatsapp B2B, whatsapp AQP, wh monitoreo, wh telemonitoreo, wh tamizaje, wh plan, wh capacitacion, wh diagnóstico 2, wh reunión, wh reunion gratis</td><td class="n">760</td><td>Clic en un botón de WhatsApp, repartido en 13 etiquetas</td><td><span class="pill ok">Principales, agrupadas en dos (pacientes y empresas)</span></td></tr>
+      <tr><td class="first">Formulario</td><td>formulario test sueño</td><td class="n">33</td><td>Envío real de un formulario</td><td><span class="pill ok">Principal</span></td></tr>
+    </tbody>
+  </table></div>
+  <p>La prueba de que algo se dispara sin acción del usuario está en la campaña Display. En las últimas cuatro semanas registró 410 "STOP BANG (2)", 217 "cita online" y 200 "CITA MEDICA (2) AREQUIPA" con unos 300 clics diarios y S/ 20 de gasto. Ninguna clínica convierte el 30 % de los clics de un banner en citas.</p>
+  <div class="callout crit">
+    <div class="t">Consecuencia</div>
+    <p>La campaña de Lima usa "Maximizar valor de conversión", pero las acciones no tienen valores asignados: 381 conversiones suman S/ 600 de "valor". Google está comprando vistas de página al precio de un contacto. Mientras esto siga así, ningún costo por conversión de esta cuenta sirve para comparar nada.</p>
+  </div>
+  <h3>Qué hacer</h3>
+  <ul>
+    <li>En Objetivos, Conversiones: dejar como <strong>principales</strong> únicamente "formulario test sueño", una acción de WhatsApp para pacientes, una de WhatsApp para empresas y una de cita confirmada (la que se dispare con la confirmación de Medlink, no con la carga de la página de reserva). Todas las demás pasan a <strong>secundarias</strong>.</li>
+    <li>Revisar en Google Tag Manager por qué "cita online (total)" y "CITA MEDICA (2) AREQUIPA" se disparan desde clics de Display. Casi con seguridad están configuradas como vista de página con un patrón de URL demasiado amplio.</li>
+    <li>Si se mantiene "Maximizar valor", asignar valores distintos: WhatsApp pacientes 1, formulario 2, cita confirmada 5, contacto de empresas 10. Si no, cambiar Lima a "Maximizar conversiones" y fijar un costo objetivo cuando haya 30 días de datos limpios.</li>
+    <li>Investigar qué pasó entre el 20 de julio y el 23 de agosto: etiqueta caída, cambio en la web o en Tag Manager. Axiom puede avisar la próxima vez; tres días con gasto y cero conversiones es una alerta que hoy no existe.</li>
+  </ul>
+
+  <h2>Hallazgo 2 · Negativas que bloquean el negocio</h2>
+  <p>Las negativas actuales aparecen en la primera foto que tomó Axiom (8 de septiembre), así que no sabemos cuándo se añadieron. Su efecto sí se ve en los términos de búsqueda.</p>
+  <div class="tbl"><table>
+    <thead><tr><th>Campaña</th><th>Negativa</th><th>Tipo</th><th>Efecto observado</th><th>Acción</th></tr></thead>
+    <tbody>
+      <tr><td class="first">Arequipa</td><td class="kwt">"apnea"</td><td>Frase, nivel campaña</td><td>Las búsquedas con "apnea" cayeron de unas 50 impresiones semanales a cero desde la semana del 10 de agosto. La apnea es el servicio estrella.</td><td><span class="pill crit">Eliminar</span></td></tr>
+      <tr><td class="first">Arequipa</td><td class="kwt">"dormir"</td><td>Frase, nivel campaña</td><td>De 130 a 270 impresiones semanales a cero desde la misma fecha. Bloquea "no puedo dormir", "problemas para dormir" y cualquier consulta de insomnio en lenguaje común.</td><td><span class="pill crit">Eliminar</span></td></tr>
+      <tr><td class="first">Arequipa</td><td class="kwt">"medicina del sueño", "dispositivo de avance mandibular", "higiene del sueño"</td><td>Frase, nivel campaña</td><td>Bloquean el nombre de la especialidad y un tratamiento que en Lima convirtió 7 veces con S/ 13 de gasto.</td><td><span class="pill crit">Eliminar</span></td></tr>
+      <tr><td class="first">Arequipa</td><td class="kwt">examen del sueño</td><td>Palabra clave eliminada el 10 de agosto</td><td>Era la palabra clave con más clics de la campaña: 283 clics, S/ 280, 9 conversiones. Desde entonces las impresiones bajaron 85 %.</td><td><span class="pill crit">Restituir</span></td></tr>
+      <tr><td class="first">Lima</td><td class="kwt">[clínica del sueño]</td><td>Exacta, nivel campaña</td><td>Contradice la palabra clave "clinica del sueño", que tiene calidad 9 de 10 y 17 conversiones. Hoy no la bloquea por la tilde, pero es una bomba de tiempo.</td><td><span class="pill crit">Eliminar</span></td></tr>
+      <tr><td class="first">Lima</td><td class="kwt">"para el sueño", "problemas de sueño medico", "que medico trata el insomnio", "a que medico debo ir si ronco", "laboratorio del sueño", "analisis del sueño", "apnea del sueño sintomas"</td><td>Frase, nivel campaña</td><td>Son consultas de alta intención: la persona busca un médico. "Qué médico trata el insomnio" convirtió 4 veces en Arequipa.</td><td><span class="pill crit">Eliminar</span></td></tr>
+      <tr><td class="first">Lima</td><td class="kwt">[polisomnografía]</td><td>Exacta, nivel grupo de anuncios</td><td>El término "polisomnografia" trajo 10 conversiones con S/ 31 en 90 días.</td><td><span class="pill crit">Eliminar</span></td></tr>
+    </tbody>
+  </table></div>
+
+  <h2>Hallazgo 3 · Términos de búsqueda y negativas que faltan</h2>
+  <p>El informe de términos muestra 5,665 consultas distintas por S/ 1,740, el 31 % del gasto real de búsqueda (Google oculta el resto por volumen bajo). Dentro de lo visible, unos S/ 650 fueron a consultas sin intención de atenderse: marcas de otros, productos de farmacia y preguntas de bienestar.</p>
+  <div class="tbl"><table>
+    <thead><tr><th>Categoría</th><th class="n">Lima</th><th class="n">Arequipa</th><th class="n">Empresas</th><th>Ejemplos, con lo que costó cada uno</th></tr></thead>
+    <tbody>
+      <tr><td class="first">Competidores y marcas</td><td class="n">S/ 99</td><td class="n">S/ 100</td><td class="n">S/ 16</td><td>auna salud (36), somnium instituto del sueño (37), somno (34), doctoralia (27), doctuz (16), estivill (12), znorex (11), snorerx plus (8), dorma clínica (7), aliviamed (7)</td></tr>
+      <tr><td class="first">Preguntas de bienestar (cómo, por qué)</td><td class="n">S/ 98</td><td class="n">S/ 76</td><td class="n">S/ 0</td><td>que hacer para dormir (12), porque una persona ronca mucho (12), como evitar roncar (10), como tener un sueño profundo y reparador (6), como calmar el insomnio (5)</td></tr>
+      <tr><td class="first">Fármacos, suplementos, remedios y productos</td><td class="n">S/ 61</td><td class="n">S/ 69</td><td class="n">S/ 0</td><td>glicina para el sueño (22), remedios caseros para el insomnio (12), tiras nasales (9), spray nasal para no roncar (6), mascarilla cpap precio (6), melatonina (varias), cpap donde comprar (3)</td></tr>
+      <tr><td class="first">Inglés y otros idiomas</td><td class="n">S/ 29</td><td class="n">S/ 4</td><td class="n">S/ 46</td><td>open world latam (14), plan enterprise sa (8), sym consulting (6), airfit p10 for airmini (4), spring sleep (3)</td></tr>
+      <tr><td class="first">Seguridad laboral genérica, recursos humanos y software</td><td class="n">–</td><td class="n">–</td><td class="n">S/ 50</td><td>somnolencia a secas (43, sin conversiones), turno antiestrés (16), pausas saludables en el trabajo (15), readiwatch, sistema de fatiga y somnolencia, charlas de 5 minutos</td></tr>
+      <tr><td class="first">Otras condiciones o público no atendido</td><td class="n">S/ 9</td><td class="n">S/ 1</td><td class="n">–</td><td>narcolepsia, sonambulismo, bruxismo, especialista del sueño infantil</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Listas para cargar</h3>
+  <p>Cada lista está pensada como <strong>lista de palabras clave negativas compartida</strong> (en Herramientas), aplicada a las campañas que se indican. Un término por línea, listo para pegar. Van sin tildes porque así escribe la gente. La concordancia de frase bloquea la consulta si contiene esas palabras en ese orden.</p>
+  <div class="kwgrid">
+    <div class="kw"><header><div><b>1 · Competidores y marcas</b><small>Frase · Lima, Arequipa y empresas</small></div><button class="copy" type="button" data-for="l1">Copiar</button></header><div class="chips" id="l1"><span>"auna"</span><span>"sanna"</span><span>"somnium"</span><span>"somno"</span><span>"somnia"</span><span>"dorma"</span><span>"doctoralia"</span><span>"aliviamed"</span><span>"estivill"</span><span>"san felipe"</span><span>"neurofesa"</span><span>"brth"</span><span>"airest"</span><span>"somnibel"</span><span>"zmachine"</span><span>"znorex"</span><span>"snorerx"</span><span>"breathe right"</span><span>"samay"</span><span>"dormex"</span><span>"sunosi"</span><span>"doxylamine"</span><span>"quviviq"</span><span>"resmed"</span><span>"philips"</span><span>"respironics"</span><span>"dreamwear"</span><span>"dreamstation"</span><span>"airsense"</span><span>"airfit"</span><span>"airmini"</span><span>"yuwell"</span><span>"fisher paykel"</span><span>"ventmed"</span><span>"doctuz"</span><span>"doktuz"</span><span>"salus laboris"</span><span>"meddigesa"</span><span>"mindsafe"</span><span>"mind safe"</span><span>"inmedical"</span><span>"ebk"</span><span>"sym consulting"</span><span>"open world"</span><span>"readiwatch"</span><span>"prevac"</span><span>"laus"</span><span>"jb cipre"</span><span>"hse rent"</span><span>"siga medic"</span><span>"equilibrio 360"</span><span>"efectiva salud"</span><span>"somma"</span><span>"neuroseguridad"</span></div></div>
+
+    <div class="kw"><header><div><b>2 · Fármacos, suplementos y remedios</b><small>Frase · Lima y Arequipa</small></div><button class="copy" type="button" data-for="l2">Copiar</button></header><div class="chips" id="l2"><span>"melatonina"</span><span>"pastilla"</span><span>"pastillas"</span><span>"medicamento"</span><span>"medicamentos"</span><span>"remedio"</span><span>"remedios"</span><span>"casero"</span><span>"caseros"</span><span>"natural"</span><span>"naturales"</span><span>"hierbas"</span><span>"infusion"</span><span>"vitamina"</span><span>"vitaminas"</span><span>"magnesio"</span><span>"glicina"</span><span>"suplemento"</span><span>"suplementos"</span><span>"gotas"</span><span>"jarabe"</span><span>"cbd"</span><span>"clonazepam"</span><span>"zolpidem"</span><span>"valeriana"</span><span>"gummies"</span><span>"farmacia"</span><span>"inkafarma"</span><span>"mifarma"</span><span>"boticas"</span><span>"que tomar"</span><span>"qué tomar"</span><span>"que puedo tomar"</span><span>"qué puedo tomar"</span></div></div>
+
+    <div class="kw"><header><div><b>3 · Productos antirronquido y equipos en venta</b><small>Frase · Lima y Arequipa</small></div><button class="copy" type="button" data-for="l3">Copiar</button></header><div class="chips" id="l3"><span>"tiras"</span><span>"tira nasal"</span><span>"parche"</span><span>"parches"</span><span>"boquilla"</span><span>"ferula"</span><span>"ferulas"</span><span>"protector bucal"</span><span>"almohada"</span><span>"almohadas"</span><span>"colchon"</span><span>"spray"</span><span>"dilatador"</span><span>"cinta"</span><span>"banda"</span><span>"antironquido"</span><span>"antironquidos"</span><span>"anti ronquido"</span><span>"anti ronquidos"</span><span>"mascarilla"</span><span>"mascara"</span><span>"filtro"</span><span>"humidificador"</span><span>"repuesto"</span><span>"repuestos"</span><span>"accesorio"</span><span>"accesorios"</span><span>"comprar"</span><span>"venta"</span><span>"usado"</span><span>"amazon"</span><span>"mercado libre"</span><span>"aliexpress"</span><span>"app"</span><span>"aplicacion"</span><span>"reloj"</span><span>"smartwatch"</span><span>"xiaomi"</span><span>"garmin"</span><span>"fitbit"</span><span>"apple watch"</span></div></div>
+
+    <div class="kw"><header><div><b>4 · Bienestar sin intención de atenderse</b><small>Frase · Lima y Arequipa</small></div><button class="copy" type="button" data-for="l4">Copiar</button></header><div class="chips" id="l4"><span>"como dormir"</span><span>"cómo dormir"</span><span>"como conciliar"</span><span>"como tener"</span><span>"como lograr"</span><span>"que hacer para dormir"</span><span>"qué hacer para dormir"</span><span>"tips"</span><span>"consejos"</span><span>"trucos"</span><span>"tecnicas"</span><span>"ejercicios"</span><span>"posicion"</span><span>"posiciones"</span><span>"postura"</span><span>"sueño profundo"</span><span>"sueño reparador"</span><span>"dormir rapido"</span><span>"dormir bien"</span><span>"dormir mejor"</span><span>"dormir toda la noche"</span><span>"7 horas"</span><span>"8 horas"</span><span>"ruido blanco"</span><span>"sonidos"</span><span>"musica"</span><span>"meditacion"</span><span>"hipnosis"</span><span>"mindfulness"</span><span>"yoga"</span><span>"acupuntura"</span><span>"acupresion"</span><span>"reiki"</span><span>"significado"</span><span>"que significa"</span><span>"qué significa"</span><span>"definicion"</span><span>"pdf"</span><span>"libro"</span><span>"articulo"</span><span>"tesis"</span><span>"oms"</span><span>"clasificacion"</span><span>"escala"</span><span>"epworth"</span><span>"fisiologia"</span><span>"etapas del sueño"</span><span>"fases del sueño"</span><span>"ciclo del sueño"</span><span>"ciclos del sueño"</span><span>"wikipedia"</span><span>"youtube"</span><span>"video"</span><span>"videos"</span></div></div>
+
+    <div class="kw"><header><div><b>5 · Público y servicios que no se atienden</b><small>Frase · Lima y Arequipa</small></div><button class="copy" type="button" data-for="l5">Copiar</button></header><div class="chips" id="l5"><span>"bebe"</span><span>"bebes"</span><span>"niño"</span><span>"niños"</span><span>"niña"</span><span>"infantil"</span><span>"pediatra"</span><span>"pediatrico"</span><span>"recien nacido"</span><span>"perro"</span><span>"gato"</span><span>"mascota"</span><span>"cirugia"</span><span>"operacion"</span><span>"laser"</span><span>"ortodoncia"</span><span>"dentista"</span><span>"odontologo"</span><span>"narcolepsia"</span><span>"sonambulismo"</span><span>"bruxismo"</span><span>"consulta gratis"</span><span>"consulta gratuita"</span><span>"atencion gratuita"</span><span>"essalud"</span><span>"sis"</span><span>"minsa"</span><span>"hospital"</span><span>"posta"</span><span>"colombia"</span><span>"mexico"</span><span>"chile"</span><span>"argentina"</span><span>"españa"</span><span>"bogota"</span><span>"madrid"</span><span>"quito"</span><span>"ecuador"</span><span>"bolivia"</span><span>"venezuela"</span><span>"sleep"</span><span>"snoring"</span><span>"insomnia"</span><span>"clinic"</span><span>"empleo"</span><span>"bolsa de trabajo"</span><span>"convocatoria"</span><span>"vacante"</span><span>"curso"</span><span>"cursos"</span><span>"universidad"</span><span>"residencia medica"</span><span>"carrera"</span></div></div>
+
+    <div class="kw"><header><div><b>6 · Solo campaña de empresas</b><small>Frase · Búsqueda B2B Rest 2025</small></div><button class="copy" type="button" data-for="l6">Copiar</button></header><div class="chips" id="l6"><span>"software"</span><span>"erp"</span><span>"sistema de turnos"</span><span>"sistemas de turnos"</span><span>"planilla"</span><span>"horario"</span><span>"horarios"</span><span>"pausas"</span><span>"pausa activa"</span><span>"ergonomia"</span><span>"ergonomico"</span><span>"ergonomicos"</span><span>"disergonomico"</span><span>"charla de 5 minutos"</span><span>"charlas de 5 minutos"</span><span>"curso"</span><span>"cursos"</span><span>"pdf"</span><span>"ppt"</span><span>"diapositivas"</span><span>"tesis"</span><span>"sctr"</span><span>"iso"</span><span>"ohsas"</span><span>"45001"</span><span>"iperc"</span><span>"censopas"</span><span>"copsoq"</span><span>"sgsst"</span><span>"phva"</span><span>"higiene industrial"</span><span>"extintor"</span><span>"epp"</span><span>"brigada"</span><span>"simulacro"</span><span>"primeros auxilios"</span><span>"salud mental"</span><span>"clima laboral"</span><span>"bienestar"</span><span>"empresa saludable"</span><span>"seguridad industrial"</span><span>"seguridad basada"</span><span>"consultora"</span><span>"consultoria"</span><span>"health"</span><span>"safety"</span><span>"occupational"</span><span>"wellbeing"</span><span>"enterprise"</span><span>"consulting"</span><span>"group"</span><span>"solutions"</span><span>"antiestres"</span><span>"estres"</span><span>"tengo"</span><span>"siento"</span><span>"me duermo"</span><span>"quitar el sueño"</span><span>"quitarme el sueño"</span><span>"evitar dormirme"</span><span>"oficina"</span><span>[somnolencia]</span><span>"insomnio"</span><span>"roncar"</span><span>"ronquidos"</span></div></div>
+  </div>
+
+  <h3>Por qué cada lista</h3>
+  <p>Tres criterios comunes. Primero, se bloquea por <strong>raíz de palabra</strong> y no por consulta completa: en 90 días aparecieron 5,665 consultas distintas y 1,262 de ellas eran preguntas de bienestar; negarlas una por una, como se hizo hasta ahora con 2,447 entradas, no detiene la siguiente. Segundo, se usa <strong>concordancia de frase</strong> porque bloquea la palabra completa en cualquier posición ("melatonina" frena "melatonina para dormir" y "dónde comprar melatonina") sin tocar palabras parecidas ("somno" no frena "somnolencia"). Tercero, cada término tiene que cumplir una de dos condiciones: gastó sin convertir en estos 90 días, o describe algo que Rest Perú no vende según su propia web (solo pacientes particulares, adultos, sin cirugía, sin venta de equipos).</p>
+  <div class="tbl"><table>
+    <thead><tr><th>Lista</th><th>Evidencia en 90 días</th><th>Criterio</th><th>Qué se dejó fuera a propósito</th></tr></thead>
+    <tbody>
+      <tr><td class="first">1 · Competidores y marcas</td><td>S/ 215 en las tres campañas y 3 conversiones reportadas. Los diez términos más caros son nombres de otras clínicas (Auna S/ 36, Somnium S/ 37, Somno S/ 34, Doctoralia S/ 27, Doctuz S/ 16) o marcas de equipos (ResMed, Philips, AirSense, Dreamwear: 20 consultas distintas).</td><td>Quien escribe "auna" quiere ir a Auna. Quien escribe "resmed airsense 10" busca un distribuidor. Rest Perú paga el clic y pierde la comparación.</td><td>"neurólogo" y "otorrino": hay un neurólogo en el equipo y el otorrino es la vía de entrada habitual del ronquido. "Cayetano": es su propio aliado académico.</td></tr>
+      <tr><td class="first">2 · Fármacos, suplementos y remedios</td><td>Dentro de los S/ 130 de la categoría "productos y remedios", lo más caro fue glicina (S/ 22), remedios caseros para el insomnio (S/ 12), melatonina en siete variantes y "pastilla para dormir profundamente". Ninguno convirtió en algo distinto de una vista de página.</td><td>El tratamiento de insomnio de Rest Perú es terapia cognitivo conductual; los fármacos son temporales y bajo supervisión. Quien busca qué comprar en la farmacia no está buscando una consulta.</td><td>"tratamiento" y "terapia": son el lenguaje del servicio. "clonazepam" y "zolpidem" sí van porque son búsquedas de compra o de dosis.</td></tr>
+      <tr><td class="first">3 · Productos antirronquido y equipos en venta</td><td>Tiras nasales (S/ 9), spray nasal (S/ 6), mascarilla CPAP precio (S/ 6), "cpap dónde comprar" (S/ 3), boquillas, almohadas y férulas. La cuenta ya tiene unas 60 negativas de este tipo, pero como consultas completas ("almohada para la apnea del sueño", "tiras nasales para no roncar"): la persona que gestionaba la cuenta detectó lo mismo, solo que sin generalizarlo.</td><td>Rest Perú no vende equipos ni accesorios. "comprar", "venta", "usado", "amazon" y "mercado libre" separan la intención de compra de la de consulta.</td><td>"cpap" a secas y "cpap precio": la Clínica CPAP es su servicio estrella y "cpap adulto precio" convirtió 7 veces en Arequipa. Ver el aviso de abajo para confirmar alquiler y provisión.</td></tr>
+      <tr><td class="first">4 · Bienestar sin intención de atenderse</td><td>1,262 consultas distintas en Lima y Arequipa por S/ 174; casi todas con una impresión y un clic ("cómo tener un sueño profundo y reparador" S/ 6, "qué hacer para dormir" S/ 12, "cómo calmar el insomnio" S/ 5). Es el bloque que más crece con la concordancia amplia.</td><td>Son preguntas que se responden con un artículo, no con una cita. Se bloquean los verbos de consejo ("cómo dormir", "tips", "trucos", "técnicas") y el vocabulario académico ("etapas del sueño", "pdf", "escala").</td><td>"por qué ronco", "síntomas", "qué médico trata": son preguntas de alguien que sospecha un problema. "porque una persona ronca mucho al dormir" convirtió, y la página del test gratuito existe justamente para esa duda.</td></tr>
+      <tr><td class="first">5 · Público y servicios que no se atienden</td><td>Gasto bajo hoy (niños S/ 2, otras condiciones S/ 9, otros países y seguros con impresiones pero sin clics), pero son términos hacia los que la concordancia amplia deriva en cuanto gana presupuesto.</td><td>Salen directamente de la ficha del negocio: solo atienden particulares (fuera EsSalud, SIS, hospital), solo adultos, no operan (fuera cirugía, láser, ortodoncia) y solo Perú.</td><td>"gratis" a secas: el test de apnea en línea es gratuito y esa página recibe tráfico. Se bloquea solo "consulta gratis" y "atención gratuita". "psicólogo" y "psiquiatra" quedan por ahora.</td></tr>
+      <tr><td class="first">6 · Solo campaña de empresas</td><td>Inglés S/ 46 con 1 conversión, seguridad laboral genérica y software S/ 50 sin conversiones, cursos y pausas activas S/ 22 sin conversiones, "somnolencia" a secas S/ 43 sin conversiones. Además, Google recomienda agregar "software de turnos" como palabra clave: la campaña está siendo leída como un proveedor de software.</td><td>El comprador es un jefe de seguridad y salud en el trabajo en minería, transporte o pesca. Se bloquea lo que compra otro (software, ERP, pausas activas, ergonomía, extintores) y lo que busca un trabajador para sí mismo ("tengo sueño en el trabajo", "me duermo").</td><td>"capacitación", "plataforma", "sistema", "matriz", "norma", "ley" y "rm 375": Rest vende capacitación, una plataforma de monitoreo y una matriz de riesgos, y quien busca la norma de fatiga suele ser el mismo jefe de seguridad. Se afinaron a "sistema de turnos" y "charlas de 5 minutos".</td></tr>
+    </tbody>
+  </table></div>
+  <p class="cap">Costos en soles sobre los términos visibles (31 % del gasto de búsqueda). Las conversiones citadas son las que reporta Google y, como se explica en el Hallazgo 1, incluyen vistas de página.</p>
+
+  <div class="callout warn">
+    <div class="t">Confirmar con Rest Perú antes de bloquear</div>
+    <p>Hay términos que dependen de qué venden exactamente. <strong>"alquiler de cpap"</strong>, <strong>"cpap precio"</strong> y <strong>"máquina cpap"</strong>: si la Clínica CPAP incluye entregar el equipo, se quedan (la palabra clave "cpap adulto precio" convirtió 7 veces en Arequipa); si solo hacen la adaptación, se bloquean. <strong>"dispositivo de avance mandibular"</strong>: convirtió 7 veces en Lima; confirmar si lo indican. <strong>"psicólogo del sueño"</strong> y <strong>"psiquiatra del sueño"</strong>: quien busca terapia para el insomnio puede pensar primero en un psicólogo; el gasto es mínimo, dejar por ahora. <strong>"neurólogo"</strong>: hay uno en el equipo, no bloquear. <strong>"sensor de fatiga"</strong> (empresas): si ofrecen B'alert o similar, es un término suyo.</p>
+  </div>
+
+  <h2>Hallazgo 4 · Estructura de palabras clave</h2>
+  <h3>Lima: un solo grupo y una sola página</h3>
+  <p>Las 60 palabras clave activas viven en un grupo ("G1 REST Servicios") y todas llevan a la página /servicios/. Una sola palabra clave en concordancia amplia, "apnea del sueño tratamiento", concentra S/ 2,077 de los S/ 2,638 (79 %) con calidad 6 de 10. Con señales de conversión falsas, la concordancia amplia se expande hacia "cómo dormir" y "por qué ronco". La campaña pierde el 38 % de las impresiones por ranking, y eso se corrige con relevancia, no con puja.</p>
+  <div class="tbl"><table>
+    <thead><tr><th>Grupo propuesto</th><th>Palabras clave (frase, salvo indicación)</th><th>Página de destino que ya existe</th></tr></thead>
+    <tbody>
+      <tr><td class="first">Apnea y ronquido</td><td>apnea del sueño tratamiento (amplia, mantener), tratamiento para la apnea del sueño, ronquidos fuertes tratamiento, medico ronquidos, especialista apnea del sueño, que medico trata el ronquido</td><td>/servicios/ (o una página propia de apnea)</td></tr>
+      <tr><td class="first">Insomnio</td><td>insomnio tratamiento, tratamiento para el insomnio, terapia cognitivo conductual insomnio, que medico trata el insomnio, insomnio cronico tratamiento, especialista en insomnio</td><td>/tratamiento-insomnio/</td></tr>
+      <tr><td class="first">Estudios del sueño</td><td>polisomnografia, polisomnografia precio, polisomnografia a domicilio, poligrafia respiratoria, examen del sueño, estudio del sueño lima, prueba de apnea</td><td>/estudio-del-sueno-de-poligrafia-respiratoria/</td></tr>
+      <tr><td class="first">Clínica y especialista (genérico)</td><td>clinica del sueño, clinica del sueño lima, medicina del sueño, somnologo, especialista del sueño, doctor del sueño, medico del sueño</td><td>Inicio o /servicios/</td></tr>
+      <tr><td class="first">CPAP</td><td>cpap apnea del sueño, terapia cpap, cpap a domicilio, clinica cpap, adaptacion cpap</td><td>/terapia-cpap-a-domicilio/</td></tr>
+      <tr><td class="first">Nichos propios</td><td>insomnio menopausia, sueño en el embarazo, insomnio adulto mayor, trastorno del sueño adulto mayor, piernas inquietas tratamiento, trabajo por turnos sueño</td><td>/sueno-de-la-mujer/, /medicina-sueno-adulto-mayor/, /sindrome-piernas-inquietas/</td></tr>
+    </tbody>
+  </table></div>
+  <p>Términos que ya convierten y todavía no son palabras clave: "polisomnografia" (10 conversiones, S/ 31), "terapia cognitivo conductual para el insomnio" (3), "polisomnografia del sueño costo peru" (3), "medico ronquidos", "somnólogo". En Arequipa, "que medico trata el insomnio cronico" (3 conversiones, S/ 5).</p>
+
+  <h3>Arequipa</h3>
+  <ul>
+    <li>Restituir "examen del sueño" y agregar "apnea del sueño arequipa", "medico del sueño arequipa", "clinica del sueño arequipa" y "polisomnografia arequipa" una vez retiradas las negativas.</li>
+    <li>Revisar "insomnio severo" (amplia, S/ 154, 4 conversiones) y "tratamiento para el sueño" (amplia, S/ 54, 1 conversión): pasarlas a frase. Las que funcionan son "doctor para el sueño" (S/ 163, 19 conversiones) y "examen del sueño precio" (S/ 88, 13 conversiones).</li>
+    <li>Los tres anuncios de la campaña tienen fuerza "Deficiente" o "Media". Faltan enlaces de sitio, textos destacados y extensión de llamada. Google lo recomienda y esta vez tiene razón.</li>
+  </ul>
+
+  <h3>Empresas</h3>
+  <ul>
+    <li>Descontando Display, la campaña gastó S/ 409 reales en 90 días. Su mejor término es "control de fatiga y somnolencia en conductores" (7 conversiones, S/ 15). Pausar "gestión de turnos" y "turnos rotativos" (S/ 24, cero conversiones): atraen "software de turnos", que Google encima propone como palabra clave nueva. Rechazar.</li>
+    <li>Pasar "fatiga y somnolencia en el trabajo" de amplia a frase. El nivel de calidad de la campaña está entre 2 y 5, con "experiencia en la página de destino inferior al promedio".</li>
+    <li>Agregar palabras clave de sector, que es como buscan los compradores de seguridad y salud en el trabajo: "programa de fatiga y somnolencia mineria", "gestion de fatiga mineria", "fatiga y somnolencia transporte", "tamizaje de apnea conductores", "examen de somnolencia conductores", "programa de fatiga y somnolencia empresa", "fatiga en operadores".</li>
+    <li>Corregir tres errores de tipeo en los títulos: "Gestión Riiesgo por Fatiga", "Política Faitga y Somnolencia", "Programa Fatiga Conductoes".</li>
+    <li>Horario: el 55 % del gasto de esta campaña cae entre las 0 y las 6 de la mañana. Casi todo es Display, pero al quedar solo búsqueda conviene programar de 6 a 22 h de lunes a sábado. Quien compra un programa de fatiga lo busca en horario de oficina.</li>
+  </ul>
+
+  <h2>Hallazgo 5 · Presupuesto, saldo y horarios</h2>
+  <div class="two">
+    <div>
+      <h3>Saldo prepago</h3>
+      <p>La cuenta se recarga a mano con S/ 600 cada 5 a 7 días: 13 recargas en 90 días, S/ 7,800. Los presupuestos diarios suman S/ 116, así que cada recarga dura unos cinco días. El 20 de septiembre a la 1 de la tarde el saldo llegó a cero y la cuenta estuvo apagada hasta el 22 a las 4 de la tarde: dos días sin contactos que nadie vio. La campaña de Lima pierde además el 40 % de sus impresiones por presupuesto.</p>
+      <ul>
+        <li>Pasar a pago automático, o recargar S/ 1,500 cada dos semanas.</li>
+        <li>Lo que se libere de Display (S/ 20 diarios) y de la expansión (unos S/ 18 diarios) va a la campaña de Lima: subir su presupuesto de S/ 30 a S/ 50.</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Horario y dispositivos (Lima, búsqueda)</h3>
+      <div class="tbl"><table>
+        <thead><tr><th>Franja</th><th class="n">Costo</th><th class="n">Conversiones reportadas</th><th class="n">Costo por conversión</th></tr></thead>
+        <tbody>
+          <tr><td class="first">De 0 a 6 h</td><td class="n">S/ 705</td><td class="n">86</td><td class="n">S/ 8.2</td></tr>
+          <tr><td class="first">De 7 a 21 h</td><td class="n">S/ 1,809</td><td class="n">290</td><td class="n">S/ 6.2</td></tr>
+          <tr><td class="first">De 22 a 23 h</td><td class="n">S/ 66</td><td class="n">5</td><td class="n">S/ 13.2</td></tr>
+        </tbody>
+      </table></div>
+      <p class="small">La madrugada es el 27 % del gasto y rinde peor, pero es cuando busca quien no puede dormir. No excluirla: bajar la puja 25 % entre la 1 y las 5 y revisar con datos limpios. En Lima, la computadora convierte al doble que el celular (S/ 4.1 frente a S/ 8.5 por conversión), así que no hay que penalizarla. Sábado y domingo tienen el mejor costo por conversión de la semana (S/ 7.0 y S/ 7.4).</p>
+    </div>
+  </div>
+
+  <h3>Recomendaciones automáticas de Google (foto del 23 de septiembre)</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>Recomendación</th><th>Campaña</th><th>Decisión</th><th>Por qué</th></tr></thead>
+    <tbody>
+      <tr><td class="first">Usar concordancia amplia</td><td>Las tres de búsqueda</td><td><span class="pill crit">Rechazar</span></td><td>Con la medición actual, amplía el problema.</td></tr>
+      <tr><td class="first">Palabra clave "software de turnos" (tres veces)</td><td>Empresas</td><td><span class="pill crit">Rechazar</span></td><td>Rest Perú no vende software.</td></tr>
+      <tr><td class="first">Subir el presupuesto de Display por retorno marginal</td><td>Display</td><td><span class="pill crit">Rechazar</span></td><td>Ese "retorno" son vistas de página.</td></tr>
+      <tr><td class="first">Activar Performance Max</td><td>Cuenta</td><td><span class="pill warn">Ahora no</span></td><td>Solo con conversiones reales y con valores. Reevaluar en 60 días.</td></tr>
+      <tr><td class="first">Enlaces de sitio, textos destacados, llamada y formulario</td><td>Arequipa</td><td><span class="pill ok">Aceptar</span></td><td>La campaña no tiene extensiones. Propuesta de enlaces: Test gratuito de apnea, Estudio a domicilio, Clínica CPAP, Sede Arequipa. Destacados: Telemedicina, Especialista formado en Estados Unidos, Documentos para reembolso del seguro.</td></tr>
+      <tr><td class="first">Fijar costo por conversión objetivo</td><td>Arequipa y empresas</td><td><span class="pill warn">Después</span></td><td>Con 30 días de datos limpios, a partir del costo real observado.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h2>Plan de 30 días</h2>
+  <div class="plan">
+    <div class="week"><b>Semana 1 · Cortar sangrías y arreglar la medición</b><ul>
+      <li>Desactivar la Red de Display en Lima, Arequipa y empresas. Pausar Display Rest 2025.</li>
+      <li>Reconfigurar acciones de conversión: cuatro principales, el resto secundarias. Revisar los disparadores en Tag Manager.</li>
+      <li>Eliminar las negativas de la tabla del Hallazgo 2. Restituir "examen del sueño" en Arequipa.</li>
+      <li>Crear las seis listas de negativas compartidas y aplicarlas.</li>
+      <li>Corregir los tres títulos con errores en la campaña de empresas. Pago automático o recarga mayor.</li>
+    </ul></div>
+    <div class="week"><b>Semana 2 · Estructura</b><ul>
+      <li>Lima: dividir en los seis grupos propuestos, cada uno con su página de destino. Anuncios nuevos por grupo: los actuales son "Excelente", así que se reutilizan los títulos y se afinan por tema.</li>
+      <li>Arequipa: reescribir los tres anuncios, agregar extensiones y palabras clave locales.</li>
+      <li>Empresas: pausar turnos, pasar a frase, agregar palabras clave de sector, programar de 6 a 22 h.</li>
+    </ul></div>
+    <div class="week"><b>Semanas 3 y 4 · Observar sin tocar pujas</b><ul>
+      <li>Revisar los términos de búsqueda cada semana y alimentar las listas con raíces, no con consultas completas.</li>
+      <li>Subir el presupuesto de Lima a S/ 50 si la cuota perdida por presupuesto sigue por encima del 30 %.</li>
+      <li>Al cierre: calcular el costo real por contacto en cada campaña y fijar el objetivo. Recién ahí evaluar Performance Max o retomar Display con audiencias y frecuencia limitada.</li>
+    </ul></div>
+  </div>
+
+  <div class="callout ok">
+    <div class="t">Impacto esperado</div>
+    <p>Sin subir la inversión, se reasignan unos S/ 3,370 por trimestre (45 % del total) que hoy van a Display y a la expansión, más una parte de los S/ 650 visibles en términos sin intención. La cuenta pasará de reportar 2,979 "conversiones" a reportar entre 250 y 400 contactos reales por trimestre, y a esos sí se les puede llamar.</p>
+  </div>
+
+  <h2>Qué vio y qué no vio este análisis</h2>
+  <ul>
+    <li>Datos diarios de la API de Google Ads cargados en Axiom: campañas, grupos, palabras clave, términos de búsqueda, negativas, anuncios, conversiones por acción, geografía, horarios, dispositivos, demografía, páginas de destino, recargas y recomendaciones.</li>
+    <li>Los términos de búsqueda cubren el 31 % del gasto de búsqueda. Google oculta el resto. Las categorías de arriba están calculadas sobre lo visible.</li>
+    <li>Las negativas solo existen en Axiom desde el 8 de septiembre. La fecha en que se añadieron las de Arequipa se deduce del cambio en los términos (semana del 10 de agosto), no de un registro.</li>
+    <li>No hay datos de subasta (competidores) ni de ubicaciones de Display en la base. Para saber en qué aplicaciones se gastó la expansión hay que verlo en la cuenta.</li>
+    <li>No se cruzó con citas efectivamente agendadas en Medlink ni con ventas. Ese cruce es el siguiente paso para pasar de "contactos" a "pacientes por campaña".</li>
+  </ul>
+</div>
+
+<script>
+// Etiquetas para la vista apilada en pantallas angostas
+document.querySelectorAll('.tbl table').forEach(function(t){
+  var heads=[].map.call(t.querySelectorAll('thead th'),function(th){return th.textContent.trim();});
+  t.querySelectorAll('tbody tr, tfoot tr').forEach(function(tr){
+    [].forEach.call(tr.children,function(td,i){ if(!td.hasAttribute('data-label')) td.setAttribute('data-label',heads[i]||''); });
+  });
+});
+document.querySelectorAll('button.copy').forEach(function(btn){
+  btn.addEventListener('click', function(){
+    var pre=document.getElementById(btn.getAttribute('data-for'));
+    var text=[].map.call(pre.querySelectorAll('span'),function(x){return x.textContent;}).join('\n');
+    function ok(){ btn.textContent='Copiado'; btn.classList.add('done'); setTimeout(function(){btn.textContent='Copiar';btn.classList.remove('done');},1800); }
+    function fallback(){ var r=document.createRange(); r.selectNodeContents(pre); var s=window.getSelection(); s.removeAllRanges(); s.addRange(r); btn.textContent='Selecciona y copia'; }
+    if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(text).then(ok).catch(fallback); } else { fallback(); }
+  });
+});
+</script>
+
+</body></html>
