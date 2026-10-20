@@ -1,0 +1,596 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Avanzik web propuesta</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: la portada de Avanzik con su marca (violeta, Montserrat, mono técnica), reescrita según el reporte; notas amarillas = por qué cambia */
+:root {
+  --bg: #f6f5fb;
+  --surface: #ffffff;
+  --ink: #14122b;
+  --muted: #5d5a78;
+  --line: #e3e0f0;
+  --brand: #3b28cc;
+  --brand-ink: #ffffff;
+  --brand-soft: #ebe8fc;
+  --lime: #d4f23a;
+  --lime-ink: #14122b;
+  --note-bg: #fff6cc;
+  --note-ink: #4a3b00;
+  --note-line: #ecd46a;
+  --ok: #17804d;
+  --bad: #c0362c;
+  --plano-bg: #fbfbfe;
+  --wa: #128c4a;
+  --f-display: "Montserrat", "Segoe UI", system-ui, sans-serif;
+  --f-body: "Montserrat", "Segoe UI", system-ui, sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f0d20; --surface: #1a1733; --ink: #eeecf8; --muted: #a7a3c4; --line: #2e2a52;
+    --brand: #8f82ff; --brand-ink: #0f0d20; --brand-soft: #241f4a; --lime: #d4f23a; --lime-ink: #14122b;
+    --note-bg: #2e2810; --note-ink: #f3e3a0; --note-line: #6b5a1a; --ok: #4fc98a; --bad: #ff7b70;
+    --plano-bg: #141228; --wa: #3ccf7f; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f0d20; --surface: #1a1733; --ink: #eeecf8; --muted: #a7a3c4; --line: #2e2a52;
+  --brand: #8f82ff; --brand-ink: #0f0d20; --brand-soft: #241f4a; --lime: #d4f23a; --lime-ink: #14122b;
+  --note-bg: #2e2810; --note-ink: #f3e3a0; --note-line: #6b5a1a; --ok: #4fc98a; --bad: #ff7b70;
+  --plano-bg: #141228; --wa: #3ccf7f; color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 16px; line-height: 1.6; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--surface); }
+.wrap { max-width: 1160px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; margin: 0; line-height: 1.15; }
+h2 { font-size: clamp(1.6rem, 3vw, 2.25rem); font-weight: 800; letter-spacing: -0.02em; }
+h3 { font-size: 1.05rem; font-weight: 700; }
+p { margin: 0; }
+a { color: inherit; }
+.eyebrow { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--brand); }
+.lead { color: var(--muted); font-size: 1.05rem; max-width: 62ch; }
+.mono { font-family: var(--f-mono); font-variant-numeric: tabular-nums; }
+.ph { background: var(--lime); color: var(--lime-ink); padding: 0 0.3em; border-radius: 4px; font-weight: 700; }
+section { padding-block: clamp(48px, 7vw, 88px); }
+.sec-head { display: grid; gap: 12px; margin-bottom: 36px; max-width: 760px; }
+
+/* Botones */
+.btn { display: inline-flex; align-items: center; gap: 8px; border-radius: 999px; padding: 13px 22px; font-weight: 700; font-size: 0.95rem; text-decoration: none; border: 1.5px solid transparent; cursor: pointer; font-family: var(--f-body); }
+.btn:focus-visible, button:focus-visible, summary:focus-visible { outline: 3px solid var(--lime); outline-offset: 2px; }
+.btn-primary { background: var(--brand); color: var(--brand-ink); }
+.btn-ghost { border-color: var(--line); color: var(--ink); background: var(--surface); }
+.btn-wa { background: var(--wa); color: #fff; }
+
+/* Barra de propuesta */
+.propuesta { background: var(--ink); color: var(--bg); font-size: 0.85rem; }
+.propuesta .wrap { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; justify-content: space-between; padding-block: 10px; }
+.toggle { display: inline-flex; align-items: center; gap: 8px; background: transparent; color: inherit; border: 1px solid currentColor; border-radius: 999px; padding: 4px 12px; font: inherit; font-weight: 600; cursor: pointer; }
+.toggle .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--lime); }
+body.sin-notas .toggle .dot { background: transparent; border: 1px solid currentColor; }
+
+/* Notas */
+.nota { background: var(--note-bg); color: var(--note-ink); border: 1px dashed var(--note-line); border-radius: 10px; padding: 10px 14px; font-size: 0.83rem; line-height: 1.5; max-width: 760px; }
+.nota b { font-weight: 700; }
+.nota + .nota { margin-top: 8px; }
+body.sin-notas .nota { display: none; }
+
+/* Navegación */
+header.nav { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--surface); border-bottom: 1px solid var(--line); }
+header.nav .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 12px; }
+.logo { display: flex; align-items: center; gap: 8px; font-weight: 800; font-size: 1.2rem; letter-spacing: -0.02em; text-decoration: none; }
+.logo-mark { width: 28px; height: 28px; border-radius: 7px; background: var(--brand); color: var(--brand-ink); display: grid; place-items: center; font-size: 0.95rem; }
+.nav-links { display: flex; gap: 22px; font-size: 0.9rem; font-weight: 600; color: var(--muted); }
+.nav-links a { text-decoration: none; }
+.nav-cta { display: flex; gap: 10px; align-items: center; }
+.nav-cta .login { font-size: 0.9rem; font-weight: 600; text-decoration: none; color: var(--muted); }
+@media (max-width: 900px) { .nav-links { display: none; } }
+@media (max-width: 480px) { .nav-cta .login { display: none; } .nav-cta .btn { padding: 10px 14px; font-size: 0.85rem; } }
+
+/* Hero */
+.hero { padding-block: clamp(36px, 6vw, 72px) clamp(40px, 6vw, 72px); }
+.hero-grid { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: clamp(28px, 4vw, 56px); align-items: center; }
+.hero h1 { font-size: clamp(2rem, 4.6vw, 3.4rem); font-weight: 800; letter-spacing: -0.03em; margin-top: 14px; }
+.hero h1 em { font-style: normal; color: var(--brand); }
+.hero .lead { margin-top: 18px; }
+.hero-ctas { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+.hero-chips { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-top: 20px; font-size: 0.85rem; font-weight: 600; color: var(--muted); }
+.hero-chips span::before { content: "✓ "; color: var(--ok); }
+.hero .nota { margin-top: 24px; }
+@media (max-width: 860px) { .hero-grid { grid-template-columns: minmax(0, 1fr); } }
+
+/* Editor simulado */
+.editor { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; box-shadow: 0 24px 60px -30px rgba(59, 40, 204, 0.45); }
+.editor-bar { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 10px 14px; border-bottom: 1px solid var(--line); font-size: 0.75rem; color: var(--muted); }
+.editor-bar .tabs { display: flex; gap: 6px; }
+.editor-bar .tab { padding: 3px 10px; border-radius: 6px; font-weight: 600; }
+.editor-bar .tab.on { background: var(--brand-soft); color: var(--brand); }
+.editor-body { display: grid; grid-template-columns: minmax(0, 1fr); }
+.lamina { background: var(--plano-bg); border-bottom: 1px solid var(--line); padding: 10px; }
+.lamina svg { width: 100%; max-height: 300px; height: auto; display: block; margin: 0 auto; }
+.cdt-scroll { overflow-x: auto; }
+.cdt { padding: 12px; font-size: 0.72rem; display: grid; gap: 10px; align-content: start; }
+.cdt-title { display: flex; justify-content: space-between; align-items: center; font-weight: 700; font-size: 0.75rem; }
+.cdt-title .auto { background: var(--lime); color: var(--lime-ink); border-radius: 999px; padding: 1px 8px; font-size: 0.65rem; }
+.cdt table { width: 100%; border-collapse: collapse; }
+.cdt th, .cdt td { text-align: right; padding: 3px 4px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+.cdt th:first-child, .cdt td:first-child { text-align: left; }
+.cdt th { color: var(--muted); font-weight: 500; }
+.cdt .tot { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.cdt .tot div { background: var(--brand-soft); border-radius: 8px; padding: 6px 8px; }
+.cdt .tot small { display: block; color: var(--muted); font-size: 0.62rem; }
+.cdt .tot b { font-size: 0.85rem; color: var(--brand); }
+.editor-foot { display: flex; flex-wrap: wrap; gap: 6px; padding: 10px 14px; border-top: 1px solid var(--line); font-size: 0.7rem; }
+.editor-foot span { border: 1px solid var(--line); border-radius: 6px; padding: 2px 8px; font-weight: 600; }
+.editor-foot .qr { border-color: var(--brand); color: var(--brand); }
+.editor-cap { font-size: 0.72rem; color: var(--muted); padding: 0 14px 10px; }
+
+
+/* Confianza */
+.trust { border-block: 1px solid var(--line); background: var(--surface); padding-block: 22px; }
+.trust .wrap { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px 28px; }
+.trust strong { font-size: 1.05rem; }
+.entidades { display: flex; flex-wrap: wrap; gap: 8px; }
+.entidades span { font-family: var(--f-mono); font-size: 0.75rem; border: 1px solid var(--line); border-radius: 6px; padding: 4px 10px; color: var(--muted); }
+.trust .nota { flex-basis: 100%; }
+
+/* Antes / Con */
+.versus { display: grid; gap: 10px; }
+.versus-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); background: var(--surface); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
+.versus-row > div { padding: 18px 20px; display: grid; gap: 4px; }
+.versus-row .antes { border-right: 1px solid var(--line); color: var(--muted); }
+.versus-row .lbl { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+.versus-row .antes .lbl { color: var(--bad); }
+.versus-row .con .lbl { color: var(--ok); }
+.versus-row .con p { font-weight: 600; }
+@media (max-width: 640px) { .versus-row { grid-template-columns: minmax(0, 1fr); } .versus-row .antes { border-right: 0; border-bottom: 1px solid var(--line); } }
+
+/* Pasos */
+.pasos { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; counter-reset: paso; }
+.paso { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 22px; display: grid; gap: 8px; align-content: start; }
+.paso .n { font-family: var(--f-mono); font-size: 0.8rem; color: var(--brand); font-weight: 500; }
+.paso p { color: var(--muted); font-size: 0.93rem; }
+.formatos { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+.formatos span { font-family: var(--f-mono); font-size: 0.7rem; background: var(--brand-soft); color: var(--brand); border-radius: 5px; padding: 2px 7px; }
+@media (max-width: 760px) { .pasos { grid-template-columns: minmax(0, 1fr); } }
+
+/* Plantillas */
+.plantillas { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.plantilla { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 20px; display: grid; gap: 10px; grid-template-rows: auto auto 1fr auto; }
+.plantilla .ent { font-family: var(--f-mono); font-size: 0.72rem; color: var(--muted); }
+.plantilla p { font-size: 0.9rem; color: var(--muted); }
+.plantilla .pie { display: flex; justify-content: space-between; align-items: center; gap: 10px; border-top: 1px solid var(--line); padding-top: 12px; font-size: 0.85rem; }
+.plantilla .pie a { font-weight: 700; color: var(--brand); text-decoration: none; }
+.plantilla.dest { border-color: var(--brand); box-shadow: inset 0 0 0 1px var(--brand); }
+.badge { justify-self: start; font-size: 0.68rem; font-weight: 700; background: var(--lime); color: var(--lime-ink); border-radius: 999px; padding: 2px 9px; }
+@media (max-width: 900px) { .plantillas { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 560px) { .plantillas { grid-template-columns: minmax(0, 1fr); } }
+
+/* Capas */
+.capas-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(24px, 4vw, 48px); align-items: center; }
+.capas-list { display: grid; gap: 12px; margin-top: 22px; }
+.capa { display: flex; gap: 12px; align-items: flex-start; }
+.capa i { flex: none; width: 14px; height: 14px; border-radius: 4px; margin-top: 5px; }
+.capa p { color: var(--muted); font-size: 0.92rem; }
+.mapa { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 12px; }
+.mapa svg { width: 100%; height: auto; display: block; }
+.alerta { display: flex; gap: 8px; align-items: center; margin-top: 10px; font-size: 0.8rem; font-weight: 600; background: var(--note-bg); color: var(--note-ink); border-radius: 8px; padding: 8px 10px; }
+@media (max-width: 820px) { .capas-grid { grid-template-columns: minmax(0, 1fr); } }
+
+/* Testimonios */
+.testis { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.testi { background: var(--surface); border: 1px dashed var(--line); border-radius: 14px; padding: 22px; display: grid; gap: 14px; align-content: space-between; }
+.testi q { font-size: 0.98rem; font-weight: 500; quotes: "«" "»"; }
+.testi .quien { font-size: 0.82rem; color: var(--muted); }
+.testi .quien b { color: var(--ink); display: block; }
+@media (max-width: 820px) { .testis { grid-template-columns: minmax(0, 1fr); } }
+
+/* Planes */
+.planes { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+.plan { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 20px; display: grid; gap: 10px; align-content: start; }
+.plan .precio { font-size: 1.6rem; font-weight: 800; letter-spacing: -0.02em; }
+.plan .precio small { font-size: 0.8rem; font-weight: 600; color: var(--muted); }
+.plan ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; font-size: 0.87rem; color: var(--muted); }
+.plan li::before { content: "✓ "; color: var(--ok); font-weight: 700; }
+.plan li.no::before { content: "– "; color: var(--muted); }
+.plan .para { font-size: 0.82rem; font-weight: 600; }
+.plan.dest { border-color: var(--brand); box-shadow: inset 0 0 0 1px var(--brand); }
+.pagos { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 18px; font-size: 0.85rem; color: var(--muted); }
+.pagos span { border: 1px solid var(--line); background: var(--surface); border-radius: 6px; padding: 3px 10px; font-weight: 600; color: var(--ink); }
+@media (max-width: 980px) { .planes { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 520px) { .planes { grid-template-columns: minmax(0, 1fr); } }
+
+/* FAQ */
+.faq { display: grid; gap: 10px; max-width: 820px; }
+.faq details { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px 18px; }
+.faq summary { font-weight: 700; cursor: pointer; }
+.faq details p { color: var(--muted); margin-top: 8px; font-size: 0.93rem; }
+
+/* Cierre */
+.cierre { background: var(--brand); color: var(--brand-ink); border-radius: 22px; padding: clamp(28px, 5vw, 56px); display: grid; gap: 18px; }
+.cierre p { opacity: 0.85; max-width: 56ch; }
+.cierre .btns { display: flex; flex-wrap: wrap; gap: 12px; }
+.cierre .btn-primary { background: var(--lime); color: var(--lime-ink); }
+.cierre .num { font-family: var(--f-mono); font-size: 0.85rem; opacity: 0.85; user-select: all; }
+
+footer { border-top: 1px solid var(--line); padding-block: 28px; font-size: 0.82rem; color: var(--muted); }
+footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; }
+
+.wa-float { position: fixed; right: calc(18px + env(safe-area-inset-right, 0px)); bottom: calc(18px + env(safe-area-inset-bottom, 0px)); z-index: 6; background: var(--wa); color: #fff; border-radius: 999px; padding: 12px 18px; font-weight: 700; font-size: 0.88rem; text-decoration: none; box-shadow: 0 10px 30px -10px rgba(0,0,0,0.45); }
+@media (max-width: 480px) { .wa-float { padding: 10px 14px; font-size: 0.8rem; } }
+
+@media (prefers-reduced-motion: no-preference) {
+  .poly { stroke-dasharray: 900; stroke-dashoffset: 900; animation: trazo 2.2s ease-out 0.3s forwards; }
+  .cdt tbody tr { animation: fila 0.4s ease-out backwards; }
+  .cdt tbody tr:nth-child(1) { animation-delay: 1.0s; } .cdt tbody tr:nth-child(2) { animation-delay: 1.2s; }
+  .cdt tbody tr:nth-child(3) { animation-delay: 1.4s; } .cdt tbody tr:nth-child(4) { animation-delay: 1.6s; }
+  .cdt tbody tr:nth-child(5) { animation-delay: 1.8s; }
+  @keyframes trazo { to { stroke-dashoffset: 0; } }
+  @keyframes fila { from { opacity: 0.25; transform: translateX(6px); } }
+}
+</style>
+
+<div class="propuesta">
+  <div class="wrap">
+    <span><b>Maqueta de propuesta</b> · portada de avanzik.com reescrita con el reporte del 20/10/2026. Lo resaltado en verde lima es un dato que falta medir o confirmar.</span>
+    <button class="toggle" id="toggle-notas" type="button" aria-pressed="true"><span class="dot"></span><span id="toggle-txt">Ocultar notas</span></button>
+  </div>
+</div>
+
+<header class="nav">
+  <div class="wrap">
+    <a class="logo" href="#inicio"><span class="logo-mark">A</span>avanzik</a>
+    <nav class="nav-links" aria-label="Principal">
+      <a href="#tramites">Planos por trámite</a>
+      <a href="#como">Cómo funciona</a>
+      <a href="#planes">Precios</a>
+      <a href="#faq">Preguntas</a>
+    </nav>
+    <div class="nav-cta">
+      <a class="login" href="#inicio">Iniciar sesión</a>
+      <a class="btn btn-primary" href="#planes">Hacer mi plano gratis</a>
+    </div>
+  </div>
+</header>
+
+<main id="inicio">
+  <!-- 1. Primera pantalla -->
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <span class="eyebrow">Planos para SUNARP, municipalidades y Ministerio de Cultura</span>
+        <h1>Tu plano perimétrico y de ubicación listo en <span class="ph">[X]</span> minutos, <em>sin AutoCAD</em></h1>
+        <p class="lead">Sube tus coordenadas, Excel o KMZ. Avanzik arma la grilla, el norte, la escala y el cuadro de datos técnicos por ti. Tú solo revisas y firmas.</p>
+        <div class="hero-ctas">
+          <a class="btn btn-primary" href="#planes">Hacer mi plano gratis</a>
+          <a class="btn btn-ghost" href="#como">Ver un plano de ejemplo</a>
+        </div>
+        <div class="hero-chips"><span>Sin instalar</span><span>Funciona en el navegador</span><span>Exporta PDF, Excel y DXF</span></div>
+        <div class="nota"><b>Antes:</b> «Elabora planos perimétricos y de ubicación en minutos». <b>Por qué cambia:</b> «en minutos» no tiene cifra, SUNARP estaba al final de una frase larga y «sin instalar» no aparecía. El <b>[X]</b> sale de cronometrar un plano real en el editor.</div>
+      </div>
+
+      <figure class="editor" aria-label="Plano perimétrico de ejemplo con su cuadro de datos técnicos" style="margin:0">
+        <div class="editor-bar">
+          <div class="tabs"><span class="tab">Modelo</span><span class="tab on">Lámina</span></div>
+          <span class="mono">UTM WGS84 · 18S</span>
+        </div>
+        <div class="editor-body">
+          <div class="lamina">
+            <svg viewBox="0 0 320 340" role="img" aria-label="Polígono de 5 vértices sobre grilla UTM">
+              <g stroke="var(--line)" stroke-width="1" fill="none">
+                <line x1="80" y1="14" x2="80" y2="318"/><line x1="140" y1="14" x2="140" y2="318"/><line x1="200" y1="14" x2="200" y2="318"/><line x1="260" y1="14" x2="260" y2="318"/>
+                <line x1="14" y1="65" x2="306" y2="65"/><line x1="14" y1="125" x2="306" y2="125"/><line x1="14" y1="185" x2="306" y2="185"/><line x1="14" y1="245" x2="306" y2="245"/><line x1="14" y1="305" x2="306" y2="305"/>
+              </g>
+              <g font-family="JetBrains Mono, monospace" font-size="7" fill="var(--muted)">
+                <text x="80" y="330" text-anchor="middle">284 600</text><text x="200" y="330" text-anchor="middle">284 640</text>
+                <text x="10" y="68" text-anchor="start">8 664 260</text><text x="10" y="188" text-anchor="start">8 664 220</text>
+              </g>
+              <polygon class="poly" points="80,305 230.96,241.46 284.3,123.35 171.2,56.9 58.25,154.4" fill="var(--brand-soft)" stroke="var(--brand)" stroke-width="2.2" stroke-linejoin="round"/>
+              <g fill="var(--surface)" stroke="var(--brand)" stroke-width="1.8">
+                <circle cx="80" cy="305" r="4"/><circle cx="230.96" cy="241.46" r="4"/><circle cx="284.3" cy="123.35" r="4"/><circle cx="171.2" cy="56.9" r="4"/><circle cx="58.25" cy="154.4" r="4"/>
+              </g>
+              <g font-family="JetBrains Mono, monospace" font-size="9" font-weight="500" fill="var(--ink)">
+                <text x="88" y="300">V1</text><text x="238" y="250">V2</text><text x="276" y="113">V3</text><text x="164" y="48">V4</text><text x="36" y="150">V5</text>
+              </g>
+              <g transform="translate(286,34)" fill="var(--ink)">
+                <path d="M0,-14 L6,6 L0,2 L-6,6 Z"/>
+                <text y="18" text-anchor="middle" font-family="Montserrat, sans-serif" font-size="9" font-weight="700">N</text>
+              </g>
+              <g transform="translate(160,290)" font-family="JetBrains Mono, monospace" font-size="7" fill="var(--muted)">
+                <rect x="0" y="0" width="30" height="4" fill="var(--ink)"/><rect x="30" y="0" width="30" height="4" fill="var(--surface)" stroke="var(--ink)" stroke-width="0.8"/>
+                <text x="0" y="13">0</text><text x="56" y="13">20 m</text>
+              </g>
+            </svg>
+          </div>
+          <div class="cdt">
+            <div class="cdt-title"><span>Cuadro de datos técnicos</span><span class="auto">automático</span></div>
+            <div class="cdt-scroll"><table class="mono">
+              <thead><tr><th>Vért.</th><th>Este</th><th>Norte</th><th>Lado m</th></tr></thead>
+              <tbody>
+                <tr><td>V1</td><td>284 600.00</td><td>8 664 180.00</td><td>54.60</td></tr>
+                <tr><td>V2</td><td>284 650.32</td><td>8 664 201.18</td><td>43.20</td></tr>
+                <tr><td>V3</td><td>284 668.10</td><td>8 664 240.55</td><td>43.73</td></tr>
+                <tr><td>V4</td><td>284 630.40</td><td>8 664 262.70</td><td>49.74</td></tr>
+                <tr><td>V5</td><td>284 592.75</td><td>8 664 230.20</td><td>50.72</td></tr>
+              </tbody>
+            </table></div>
+            <div class="tot mono">
+              <div><small>Área</small><b>3 760.66 m²</b></div>
+              <div><small>Perímetro</small><b>241.98 m</b></div>
+            </div>
+          </div>
+        </div>
+        <div class="editor-foot"><span>PDF</span><span>Excel</span><span>DXF</span><span class="qr">QR de veracidad</span></div>
+        <figcaption class="editor-cap">Plano de ejemplo. Las distancias, el área y el perímetro se calculan desde las coordenadas.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- 2. Confianza -->
+  <div class="trust">
+    <div class="wrap">
+      <strong>Más de <span class="ph">[4 000]</span> profesionales en Perú ya hacen sus planos en Avanzik</strong>
+      <div class="entidades" aria-label="Trámites para los que se usa"><span>SUNARP</span><span>Municipalidades</span><span>Ministerio de Cultura · CIRA</span><span>COFOPRI</span><span>INGEMMET</span></div>
+      <div class="nota"><b>Nuevo.</b> Hoy la web no muestra ninguna prueba social. La cifra sale de la base de registrados (4 011 al 06/10); confirmar con el cliente antes de publicar. Si hay permiso, cambiar las entidades por logos de clientes.</div>
+    </div>
+  </div>
+
+  <!-- 3. Dolores -->
+  <section id="dolores">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="eyebrow">Topógrafos, arquitectos, arqueólogos, abogados</span>
+        <h2>La especialidad cambia, pero el dolor se repite</h2>
+        <p class="lead">Datos dispersos, planos armados a mano y trámites que vuelven observados.</p>
+      </div>
+      <div class="versus">
+        <div class="versus-row">
+          <div class="antes"><span class="lbl">Hoy</span><p>Armas a mano la grilla, el norte, la escala y el rótulo en cada plano.</p></div>
+          <div class="con"><span class="lbl">Con Avanzik</span><p>Eliges una plantilla y la lámina ya viene armada.</p></div>
+        </div>
+        <div class="versus-row">
+          <div class="antes"><span class="lbl">Hoy</span><p>Copias coordenadas al cuadro y un error hace que observen tu trámite.</p></div>
+          <div class="con"><span class="lbl">Con Avanzik</span><p>El cuadro de datos técnicos se genera solo desde la geometría.</p></div>
+        </div>
+        <div class="versus-row">
+          <div class="antes"><span class="lbl">Hoy</span><p>Pagas una licencia cara y necesitas una computadora potente.</p></div>
+          <div class="con"><span class="lbl">Con Avanzik</span><p>Trabajas en el navegador desde S/ 0.</p></div>
+        </div>
+      </div>
+      <div class="nota" style="margin-top:20px"><b>Por qué:</b> este titular es el mejor de la web y hoy está escondido al final de Casos de uso. El dolor «que me observen el trámite» no aparecía en ningún texto.</div>
+    </div>
+  </section>
+
+  <!-- 4. Cómo funciona -->
+  <section id="como" style="padding-top:0">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="eyebrow">Cómo funciona</span>
+        <h2>Del archivo de campo al plano firmado en tres pasos</h2>
+      </div>
+      <div class="pasos">
+        <div class="paso">
+          <span class="n">Paso 1</span>
+          <h3>Sube tu dato</h3>
+          <p>Coordenadas pegadas, Excel, KMZ de Google Earth o el DXF que ya tienes.</p>
+          <div class="formatos"><span>KMZ</span><span>KML</span><span>Excel</span><span>CSV</span><span>DXF</span><span>DWG</span><span>SHP</span><span>GeoJSON</span></div>
+        </div>
+        <div class="paso">
+          <span class="n">Paso 2</span>
+          <h3>Elige la plantilla</h3>
+          <p>Perimétrico, ubicación, CIRA, lotización o catastro. La lámina trae grilla, norte, escala y rótulo.</p>
+        </div>
+        <div class="paso">
+          <span class="n">Paso 3</span>
+          <h3>Descarga y presenta</h3>
+          <p>PDF con QR de veracidad, Excel del cuadro y DXF para seguir en AutoCAD si tu cliente lo pide.</p>
+        </div>
+      </div>
+      <div class="nota" style="margin-top:20px"><b>Antes:</b> una lista de funciones («Coordenadas UTM, Escala precisa, Grilla técnica, Capas GIS…»). <b>Ahora:</b> lo que el usuario hace y lo que obtiene. Usar capturas del editor real en cada paso.</div>
+    </div>
+  </section>
+
+  <!-- 5. Plantillas por trámite -->
+  <section id="tramites" style="background:var(--surface);border-block:1px solid var(--line)">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="eyebrow">Plantillas</span>
+        <h2>Empieza desde el plano que te piden</h2>
+        <p class="lead">Cada plantilla sigue el formato del trámite. Cambias tus datos y descargas.</p>
+      </div>
+      <div class="plantillas">
+        <article class="plantilla dest">
+          <span class="badge">Más usado</span>
+          <span class="ent">SUNARP · independización · subdivisión</span>
+          <div><h3>Plano perimétrico</h3><p>Vértices, lados, área, perímetro y cuadro de coordenadas UTM listos para revisión.</p></div>
+          <div class="pie"><span>Listo en <span class="ph">[X] min</span></span><a href="#planes">Usar →</a></div>
+        </article>
+        <article class="plantilla">
+          <span class="ent">Municipalidad · licencia de edificación</span>
+          <div><h3>Plano de ubicación</h3><p>Ubicación y localización con mapa de contexto, norte y escala.</p></div>
+          <div class="pie"><span>Listo en <span class="ph">[X] min</span></span><a href="#planes">Usar →</a></div>
+        </article>
+        <article class="plantilla">
+          <span class="ent">Ministerio de Cultura · CIRA</span>
+          <div><h3>CIRA: área y longitudinal</h3><p>Las dos láminas que pide el expediente del CIRA, con capa de sitios arqueológicos.</p></div>
+          <div class="pie"><span>Listo en <span class="ph">[X] min</span></span><a href="#planes">Usar →</a></div>
+        </article>
+        <article class="plantilla">
+          <span class="ent">Inmobiliarias · habilitación</span>
+          <div><h3>Lotización</h3><p>Lámina con norte, escala, cuadro técnico y espacio para todos los lotes.</p></div>
+          <div class="pie"><span>Listo en <span class="ph">[X] min</span></span><a href="#planes">Usar →</a></div>
+        </article>
+        <article class="plantilla">
+          <span class="ent">Concesiones · catastro</span>
+          <div><h3>Catastro minero</h3><p>Polígono de la concesión sobre mapa de contexto y referencias territoriales.</p></div>
+          <div class="pie"><span>Listo en <span class="ph">[X] min</span></span><a href="#planes">Usar →</a></div>
+        </article>
+        <article class="plantilla">
+          <span class="ent">Predios rurales · forestal</span>
+          <div><h3>Catastro forestal</h3><p>Parcelas con área y linderos desde tus coordenadas GPS o KMZ.</p></div>
+          <div class="pie"><span>Listo en <span class="ph">[X] min</span></span><a href="#planes">Usar →</a></div>
+        </article>
+      </div>
+      <div class="nota" style="margin-top:20px"><b>Antes:</b> «Lotizacion · 2 min para iniciar», sin tildes, y CIRA no estaba en la portada aunque su video es el más visto de la marca. <b>Ahora:</b> cada tarjeta nombra el trámite y dice el tiempo hasta el plano terminado.</div>
+    </div>
+  </section>
+
+  <!-- 6. Capas -->
+  <section>
+    <div class="wrap capas-grid">
+      <div>
+        <span class="eyebrow">Revisa antes de presentar</span>
+        <h2 style="margin-top:12px">Mira si tu predio toca un sitio arqueológico o un río antes de que te observen</h2>
+        <div class="capas-list">
+          <div class="capa"><i style="background:#b86e00"></i><div><h3>Sitios arqueológicos</h3><p>Capa del patrimonio cultural para saber si necesitas CIRA.</p></div></div>
+          <div class="capa"><i style="background:#2f7bbf"></i><div><h3>Ríos y quebradas</h3><p>Hidrografía oficial para ver fajas marginales cerca de tu terreno.</p></div></div>
+          <div class="capa"><i style="background:#17804d"></i><div><h3>Carta nacional y mapa satelital</h3><p>Cartografía base para ubicar el predio con contexto.</p></div></div>
+        </div>
+        <div class="nota" style="margin-top:20px"><b>Antes:</b> «Visualiza contexto territorial sin separar el plano del analisis». <b>Ahora:</b> la misma función, dicha como el problema que evita.</div>
+      </div>
+      <div class="mapa">
+        <svg viewBox="0 0 400 280" role="img" aria-label="Predio de ejemplo junto a un río y cerca de un sitio arqueológico">
+          <rect x="0" y="0" width="400" height="280" rx="10" fill="var(--plano-bg)"/>
+          <g stroke="var(--line)" stroke-width="1"><path d="M0 70 H400 M0 140 H400 M0 210 H400 M100 0 V280 M200 0 V280 M300 0 V280"/></g>
+          <path d="M0 230 C 80 200, 120 250, 190 215 S 300 160, 400 175" fill="none" stroke="#2f7bbf" stroke-width="6" stroke-linecap="round" opacity="0.85"/>
+          <path d="M260 20 L370 30 L380 110 L300 125 L250 80 Z" fill="#b86e00" fill-opacity="0.18" stroke="#b86e00" stroke-width="1.5" stroke-dasharray="5 4"/>
+          <text x="315" y="72" text-anchor="middle" font-family="Montserrat, sans-serif" font-size="11" font-weight="700" fill="#b86e00">Sitio arqueológico</text>
+          <polygon points="150,95 245,85 262,150 205,190 140,160" fill="var(--brand-soft)" stroke="var(--brand)" stroke-width="2.5"/>
+          <text x="200" y="142" text-anchor="middle" font-family="Montserrat, sans-serif" font-size="12" font-weight="700" fill="var(--brand)">Tu predio</text>
+          <text x="60" y="226" font-family="Montserrat, sans-serif" font-size="11" font-weight="600" fill="#2f7bbf">Río</text>
+        </svg>
+        <div class="alerta">⚠ El predio está a menos de 20 m del sitio. Revisa si corresponde tramitar el CIRA.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. Testimonios -->
+  <section style="padding-top:0">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="eyebrow">Quienes ya lo usan</span>
+        <h2>Menos horas de gabinete, menos observaciones</h2>
+      </div>
+      <div class="testis">
+        <figure class="testi" style="margin:0"><q>Antes me tomaba <span class="ph">[X] horas</span> armar el cuadro de un perimétrico. Ahora lo saco en <span class="ph">[X] minutos</span>.</q><figcaption class="quien"><b>[Nombre]</b>Topógrafo · [ciudad]</figcaption></figure>
+        <figure class="testi" style="margin:0"><q>Las láminas del CIRA salen con el mismo formato en cada expediente. Ya no las rehago.</q><figcaption class="quien"><b>[Nombre]</b>Arqueólogo · [ciudad]</figcaption></figure>
+        <figure class="testi" style="margin:0"><q>Hago el plano de ubicación para la licencia sin abrir AutoCAD.</q><figcaption class="quien"><b>[Nombre]</b>Arquitecto · [ciudad]</figcaption></figure>
+      </div>
+      <div class="nota" style="margin-top:20px"><b>Pendiente:</b> estos son modelos de estructura, no testimonios reales. Pedir 3 a usuarios (o a los Partners) con nombre, profesión, ciudad y una cifra.</div>
+    </div>
+  </section>
+
+  <!-- 8. Gratis vs pago -->
+  <section id="planes" style="background:var(--surface);border-block:1px solid var(--line)">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="eyebrow">Precios</span>
+        <h2>Arma tu plano completo gratis. Paga solo cuando lo descargues.</h2>
+        <p class="lead">¿Un solo trámite? Compra un crédito. ¿Entregas planos cada semana? Pro te sale más a cuenta.</p>
+      </div>
+      <div class="planes">
+        <div class="plan">
+          <h3>Gratis</h3>
+          <div class="precio">S/ 0</div>
+          <p class="para">Para probar con tu propio plano</p>
+          <ul><li>Editor y plantillas base</li><li>Vista previa ilimitada</li><li class="no">Sin descarga limpia</li></ul>
+          <a class="btn btn-ghost" href="#inicio">Hacer mi plano gratis</a>
+        </div>
+        <div class="plan">
+          <h3>Crédito</h3>
+          <div class="precio">S/ 15 <small>por descarga</small></div>
+          <p class="para">Para un trámite puntual</p>
+          <ul><li>1 descarga limpia</li><li>PDF, Excel y DXF</li><li>Válido 6 meses</li></ul>
+          <a class="btn btn-ghost" href="#inicio">Comprar crédito</a>
+        </div>
+        <div class="plan dest">
+          <span class="badge">Más elegido</span>
+          <h3>Pro</h3>
+          <div class="precio">S/ 59 <small>/ mes</small></div>
+          <p class="para">Para quien entrega planos cada semana</p>
+          <ul><li><span class="ph">[N]</span> descargas al mes</li><li>Plantillas profesionales</li><li><span class="ph">[N]</span> acciones de IA al mes</li><li>Curvas de nivel en PDF</li></ul>
+          <a class="btn btn-primary" href="#inicio">Probar Pro 7 días</a>
+        </div>
+        <div class="plan">
+          <h3>Ultra</h3>
+          <div class="precio">S/ 99 <small>/ mes</small></div>
+          <p class="para">Para uso intensivo</p>
+          <ul><li>Descargas ilimitadas</li><li>Todas las plantillas</li><li>Agente IA</li><li>Curvas de nivel en DXF</li></ul>
+          <a class="btn btn-ghost" href="#inicio">Elegir Ultra</a>
+        </div>
+      </div>
+      <div class="pagos">Pagas con <span>Tarjeta</span><span>PagoEfectivo</span><span class="ph">[Yape / Plin]</span> · Sin permanencia · ¿Equipo de hasta 5? Plan Equipos desde S/ 199/mes</div>
+      <div class="nota" style="margin-top:20px"><b>Antes:</b> la portada prometía «PDF gratis para empezar» y Precios decía «Sin descarga de archivos». Pro no decía cuántas exportaciones incluye; la prueba de 7 días y el plan Equipos solo aparecían en la FAQ. <b>Confirmar con el cliente:</b> qué se descarga gratis, los números de Pro y si acepta Yape.</div>
+      <div class="nota">Si el cliente prefiere no mostrar precios en la portada (como en la campaña de WhatsApp), esta sección se queda solo con el titular, «Gratis / Crédito / Pro / Ultra» y el botón a Precios.</div>
+    </div>
+  </section>
+
+  <!-- 9. FAQ -->
+  <section id="faq">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="eyebrow">Preguntas frecuentes</span>
+        <h2>Lo que preguntan antes de empezar</h2>
+      </div>
+      <div class="faq">
+        <details open><summary>¿Puedo hacer mi plano gratis?</summary><p>Sí. Creas el plano completo sin pagar. Para descargarlo limpio eliges un plan o compras un crédito.</p></details>
+        <details><summary>¿Mi plano sirve para SUNARP o la municipalidad?</summary><p>Avanzik arma el plano con el formato técnico que piden: cuadro de datos, escala, norte y coordenadas UTM. La firma y la responsabilidad son del profesional habilitado.</p></details>
+        <details><summary>¿Puedo abrir el plano en AutoCAD?</summary><p>Sí. Lo exportas en DXF y sigues trabajando en AutoCAD o en cualquier programa CAD.</p></details>
+        <details><summary>¿Qué archivos puedo subir?</summary><p>KML, KMZ, GeoJSON, DXF, DWG, Shapefile, Excel, CSV y TXT. También puedes pegar las coordenadas.</p></details>
+        <details><summary>¿Qué verifica el QR de veracidad?</summary><p>Quien recibe el plano escanea el QR y comprueba que el archivo no fue alterado después de exportarlo.</p></details>
+        <details><summary>¿Cómo pago?</summary><p>Con tarjeta o PagoEfectivo. Sin permanencia: cancelas cuando quieras.</p></details>
+      </div>
+      <div class="nota" style="margin-top:20px"><b>Borrado:</b> «La conversión mejora cuando el usuario entiende que puede trabajar gratis, pero necesita Pro…» (nota interna publicada) y «según disponibilidad del flujo implementado». Todas las respuestas pasan a segunda persona.</div>
+    </div>
+  </section>
+
+  <!-- Cierre -->
+  <section style="padding-top:0">
+    <div class="wrap">
+      <div class="cierre">
+        <h2>¿Tienes un trámite esta semana? Haz el plano hoy.</h2>
+        <p>Sube tus coordenadas y mira el plano armado antes de pagar nada. Si tienes dudas, te ayudamos por WhatsApp.</p>
+        <div class="btns">
+          <a class="btn btn-primary" href="#inicio">Hacer mi plano gratis</a>
+          <a class="btn btn-ghost" href="https://wa.me/51993693102" target="_blank" rel="noopener">Hablar por WhatsApp</a>
+        </div>
+        <span class="num">WhatsApp +51 993 693 102</span>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 Avanzik · Hecho en Cusco para trámites en todo el Perú</span>
+    <span>Cal. Juan Espinoza Medrano P-5, Urb. Rosaspata, Cusco · hola@avanzik.com <span class="ph">[correo con dominio]</span></span>
+  </div>
+</footer>
+
+<a class="wa-float" href="https://wa.me/51993693102" target="_blank" rel="noopener">¿Dudas con tu plano? WhatsApp</a>
+
+<script>
+(function () {
+  var btn = document.getElementById('toggle-notas');
+  var txt = document.getElementById('toggle-txt');
+  function aplicar(ocultas) {
+    document.body.classList.toggle('sin-notas', ocultas);
+    btn.setAttribute('aria-pressed', String(!ocultas));
+    txt.textContent = ocultas ? 'Mostrar notas' : 'Ocultar notas';
+  }
+  var inicial = false;
+  try { inicial = localStorage.getItem('avz-notas') === 'ocultas'; } catch (e) {}
+  aplicar(inicial);
+  btn.addEventListener('click', function () {
+    var ocultas = !document.body.classList.contains('sin-notas');
+    aplicar(ocultas);
+    try { localStorage.setItem('avz-notas', ocultas ? 'ocultas' : 'visibles'); } catch (e) {}
+  });
+})();
+</script>
+
+</body></html>
